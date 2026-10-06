@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Roll Credits</title>
+  <meta name="description" content="Roll dice to pick tonight's movie." />
+  <meta name="theme-color" content="#14100c" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="icons/icon-192.png" type="image/png" />
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Roll Credits" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body data-theme="pumpkin">
+  <div class="app">
+    <header class="topbar">
+      <h1 class="brand">Roll Credits</h1>
+      <span class="menu-name" id="menu-name">Halloween</span>
+    </header>
+
+    <main>
+      <!-- HOME: roll + slots to fill + watched list -->
+      <section class="screen" id="screen-home" aria-label="Roll">
+        <div class="card roll-card">
+          <div class="seg" id="dice-mode" role="radiogroup" aria-label="Dice mode">
+            <button type="button" role="radio" data-mode="virtual">Virtual dice</button>
+            <button type="button" role="radio" data-mode="physical">Physical dice</button>
+          </div>
+          <div id="roll-area"></div>
+        </div>
+
+        <div id="open-slots"></div>
+
+        <section class="watched">
+          <h2 class="section-title">Watched this season <span class="count" id="watched-count"></span></h2>
+          <ul class="watched-list" id="watched-list"></ul>
+        </section>
+      </section>
+
+      <!-- TABLES: category chips + 12 slots -->
+      <section class="screen" id="screen-tables" aria-label="Tables" hidden>
+        <div class="chips" id="chips" role="tablist" aria-label="Categories"></div>
+        <div id="cat-header"></div>
+        <ol class="slot-list" id="slot-list"></ol>
+      </section>
+
+      <!-- SETTINGS -->
+      <section class="screen" id="screen-settings" aria-label="Settings" hidden>
+        <h2 class="section-title">Theme</h2>
+        <div class="theme-grid" id="theme-grid"></div>
+
+        <h2 class="section-title">After a movie is watched</h2>
+        <div class="seg" id="slot-mode" role="radiogroup" aria-label="Slot mode">
+          <button type="button" role="radio" data-mode="keep">Keep in table</button>
+          <button type="button" role="radio" data-mode="replace">Replace it</button>
+        </div>
+        <p class="hint" id="slot-mode-hint"></p>
+
+        <h2 class="section-title">Your data</h2>
+        <div class="card settings-list">
+          <button type="button" class="row-btn" id="btn-export">
+            <span>Export backup</span><small>Save everything as a file</small>
+          </button>
+          <button type="button" class="row-btn" id="btn-import">
+            <span>Import backup</span><small>Load a saved file (replaces current data)</small>
+          </button>
+          <input type="file" id="import-file" accept="application/json,.json" hidden />
+          <button type="button" class="row-btn" id="btn-season">
+            <span>Start new season</span><small>Clears the watched list, keeps your tables</small>
+          </button>
+          <button type="button" class="row-btn danger" id="btn-reset">
+            <span>Reset to defaults</span><small>Restores the starter movies and clears everything</small>
+          </button>
+        </div>
+        <p class="hint" id="storage-warning" hidden>This browser isn't letting the app save. Changes will be lost when you close it. Export a backup to be safe.</p>
+        <p class="fine">Roll Credits v1.0 · Saved on this device only</p>
+      </section>
+    </main>
+
+    <nav class="tabbar" aria-label="Main">
+      <button type="button" data-screen="home" aria-current="page">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="4"/><circle cx="8.5" cy="8.5" r="1.4" class="fill"/><circle cx="15.5" cy="15.5" r="1.4" class="fill"/><circle cx="12" cy="12" r="1.4" class="fill"/></svg>
+        <span>Roll</span>
+      </button>
+      <button type="button" data-screen="tables">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+        <span>Tables</span>
+      </button>
+      <button type="button" data-screen="settings">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/></svg>
+        <span>Settings</span>
+      </button>
+    </nav>
+  </div>
+
+  <div class="sheet-backdrop" id="sheet-backdrop" hidden></div>
+  <div class="sheet" id="sheet" role="dialog" aria-modal="true" hidden></div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
