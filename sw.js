@@ -3,7 +3,7 @@
 // IMPORTANT: every time you push changes to GitHub, bump CACHE_VERSION
 // (v1 -> v2 -> v3 ...). Otherwise phones keep showing the old version.
 
-const CACHE_VERSION = 'v1';
+const CACHE_VERSION = 'v2';
 const CACHE_NAME = 'roll-credits-' + CACHE_VERSION;
 
 const FILES = [
@@ -14,6 +14,14 @@ const FILES = [
   './js/store.js',
   './js/defaults.js',
   './js/dice.js',
+  './js/themes.js',
+  './js/icons.js',
+  './js/ui.js',
+  './js/screens/roll.js',
+  './js/screens/watched.js',
+  './js/screens/tables.js',
+  './js/screens/settings.js',
+  './js/screens/creator.js',
   './manifest.webmanifest',
   './icons/icon-192.png',
   './icons/icon-512.png',
@@ -34,10 +42,19 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// Serve from the cache first, fall back to the network.
+// Network first, so updates show up right away when online.
+// Falls back to the saved copy when offline.
 self.addEventListener('fetch', (event) => {
-  if (event.request.method !== 'GET') return;
+  if (event.request.method !== 'GET' || !event.request.url.startsWith(self.location.origin)) return;
   event.respondWith(
-    caches.match(event.request, { ignoreSearch: true }).then((hit) => hit || fetch(event.request))
+    fetch(event.request)
+      .then((res) => {
+        if (res.ok) {
+          const copy = res.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
+        }
+        return res;
+      })
+      .catch(() => caches.match(event.request, { ignoreSearch: true }))
   );
 });

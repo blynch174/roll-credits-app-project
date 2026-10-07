@@ -14,24 +14,17 @@ export function randInt(min, max) {
   return min + Math.floor(Math.random() * range);
 }
 
+// What a die shows for a number. Coins show H/T.
+export const faceLabel = (sides, n) => (n == null ? '?' : sides === 2 ? (n === 1 ? 'H' : 'T') : String(n));
+
 const reduceMotion = () =>
   window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-// SVG outline for a die face. d6 = square, d12 = pentagon.
-export function dieSVG(sides) {
-  const shape =
-    sides === 6
-      ? '<rect x="8" y="8" width="84" height="84" rx="16" />'
-      : '<polygon points="50,6 93,37 77,90 23,90 7,37" />';
-  return `<svg viewBox="0 0 100 100" aria-hidden="true">${shape}</svg>`;
-}
-
-// Tumbles a die element and lands on `final`.
-// The element needs a child with class "die-num".
+// Tumbles a die element (needs a child .die-num) and lands on `final`.
 export function tumble(el, sides, final, duration = 900) {
   const num = el.querySelector('.die-num');
   if (reduceMotion()) {
-    num.textContent = final;
+    num.textContent = faceLabel(sides, final);
     el.classList.add('landed');
     return Promise.resolve();
   }
@@ -42,18 +35,17 @@ export function tumble(el, sides, final, duration = 900) {
     let last = 0;
     function frame(now) {
       const t = now - start;
-      // Numbers flicker fast at first, then slow down before landing.
-      const gap = 50 + (t / duration) * 140;
+      const gap = 50 + (t / duration) * 140; // flicker fast, then slow down
       if (now - last > gap) {
-        num.textContent = randInt(1, sides);
+        num.textContent = faceLabel(sides, randInt(1, sides));
         last = now;
       }
       if (t < duration) {
         requestAnimationFrame(frame);
       } else {
-        num.textContent = final;
+        num.textContent = faceLabel(sides, final);
         el.classList.remove('rolling');
-        void el.offsetWidth; // restart the landing animation
+        void el.offsetWidth;
         el.classList.add('landed');
         resolve();
       }
@@ -61,3 +53,5 @@ export function tumble(el, sides, final, duration = 900) {
     requestAnimationFrame(frame);
   });
 }
+
+export const wait = (ms) => new Promise((r) => setTimeout(r, ms));

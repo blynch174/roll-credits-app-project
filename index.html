@@ -15,33 +15,40 @@
   <meta name="apple-mobile-web-app-title" content="Roll Credits" />
   <link rel="stylesheet" href="css/styles.css" />
 </head>
-<body data-theme="pumpkin">
+<body>
   <div class="app">
     <header class="topbar">
       <h1 class="brand">Roll Credits</h1>
-      <span class="menu-name" id="menu-name">Halloween</span>
+      <button type="button" class="fest-btn" id="fest-btn" aria-label="Switch film festival">
+        <span class="fest-btn-icon" id="fest-btn-icon"></span>
+        <span id="fest-name">Halloween</span>
+        <svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5"/></svg>
+      </button>
     </header>
 
     <main>
-      <!-- HOME: roll + slots to fill + watched list -->
+      <!-- ROLL -->
       <section class="screen" id="screen-home" aria-label="Roll">
         <div class="card roll-card">
           <div class="seg" id="dice-mode" role="radiogroup" aria-label="Dice mode">
-            <button type="button" role="radio" data-mode="virtual">Virtual dice</button>
-            <button type="button" role="radio" data-mode="physical">Physical dice</button>
+            <button type="button" role="radio" data-value="virtual">Virtual dice</button>
+            <button type="button" role="radio" data-value="physical">Physical dice</button>
           </div>
           <div id="roll-area"></div>
         </div>
-
         <div id="open-slots"></div>
-
-        <section class="watched">
-          <h2 class="section-title">Watched this season <span class="count" id="watched-count"></span></h2>
-          <ul class="watched-list" id="watched-list"></ul>
-        </section>
+        <section id="recent"></section>
       </section>
 
-      <!-- TABLES: category chips + 12 slots -->
+      <!-- WATCHED -->
+      <section class="screen" id="screen-watched" aria-label="Watched" hidden>
+        <h2 class="section-title first">Watch history</h2>
+        <div class="filters" id="watched-filters"></div>
+        <div class="watched-summary" id="watched-summary"></div>
+        <ul class="watched-list" id="history-list"></ul>
+      </section>
+
+      <!-- TABLES -->
       <section class="screen" id="screen-tables" aria-label="Tables" hidden>
         <div class="chips" id="chips" role="tablist" aria-label="Categories"></div>
         <div id="cat-header"></div>
@@ -50,15 +57,26 @@
 
       <!-- SETTINGS -->
       <section class="screen" id="screen-settings" aria-label="Settings" hidden>
+        <h2 class="section-title first">This festival</h2>
+        <div class="card settings-list" id="fest-card"></div>
+        <button type="button" class="btn ghost big new-fest" id="btn-new-festival">+ Create a new festival</button>
+
         <h2 class="section-title">Theme</h2>
         <div class="theme-grid" id="theme-grid"></div>
 
         <h2 class="section-title">After a movie is watched</h2>
         <div class="seg" id="slot-mode" role="radiogroup" aria-label="Slot mode">
-          <button type="button" role="radio" data-mode="keep">Keep in table</button>
-          <button type="button" role="radio" data-mode="replace">Replace it</button>
+          <button type="button" role="radio" data-value="keep">Keep in table</button>
+          <button type="button" role="radio" data-value="replace">Replace it</button>
         </div>
         <p class="hint" id="slot-mode-hint"></p>
+
+        <h2 class="section-title">Watch history</h2>
+        <div class="card settings-list">
+          <button type="button" class="row-btn danger" id="btn-clear-history">
+            <span>Clear watch history</span><small>One festival or everything. Asks twice.</small>
+          </button>
+        </div>
 
         <h2 class="section-title">Your data</h2>
         <div class="card settings-list">
@@ -69,15 +87,17 @@
             <span>Import backup</span><small>Load a saved file (replaces current data)</small>
           </button>
           <input type="file" id="import-file" accept="application/json,.json" hidden />
-          <button type="button" class="row-btn" id="btn-season">
-            <span>Start new season</span><small>Clears the watched list, keeps your tables</small>
-          </button>
           <button type="button" class="row-btn danger" id="btn-reset">
-            <span>Reset to defaults</span><small>Restores the starter movies and clears everything</small>
+            <span>Reset everything</span><small>Back to a fresh install. Asks twice.</small>
           </button>
         </div>
         <p class="hint" id="storage-warning" hidden>This browser isn't letting the app save. Changes will be lost when you close it. Export a backup to be safe.</p>
-        <p class="fine">Roll Credits v1.0 · Saved on this device only</p>
+        <p class="fine">Roll Credits v2.0 · Saved on this device only</p>
+      </section>
+
+      <!-- FESTIVAL CREATOR (opened from the festival menu or Settings) -->
+      <section class="screen" id="screen-creator" aria-label="New festival" hidden>
+        <div id="creator"></div>
       </section>
     </main>
 
@@ -85,6 +105,10 @@
       <button type="button" data-screen="home" aria-current="page">
         <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="4"/><circle cx="8.5" cy="8.5" r="1.4" class="fill"/><circle cx="15.5" cy="15.5" r="1.4" class="fill"/><circle cx="12" cy="12" r="1.4" class="fill"/></svg>
         <span>Roll</span>
+      </button>
+      <button type="button" data-screen="watched">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M3 9h18M7 5l-1.5 4M12 5l-1.5 4M17 5l-1.5 4"/></svg>
+        <span>Watched</span>
       </button>
       <button type="button" data-screen="tables">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
