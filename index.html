@@ -67,6 +67,13 @@
         <h2 class="section-title">Theme</h2>
         <div class="theme-grid" id="theme-grid"></div>
 
+        <h2 class="section-title">Dice style</h2>
+        <div class="seg" id="dice-style" role="radiogroup" aria-label="Dice style">
+          <button type="button" role="radio" data-value="3d">3D</button>
+          <button type="button" role="radio" data-value="flat">Flat</button>
+        </div>
+        <p class="hint" id="dice-style-hint"></p>
+
         <h2 class="section-title">After a movie is watched</h2>
         <div class="seg" id="slot-mode" role="radiogroup" aria-label="Slot mode">
           <button type="button" role="radio" data-value="keep">Keep in table</button>
@@ -102,7 +109,7 @@
           </button>
         </div>
         <p class="hint" id="storage-warning" hidden>This browser isn't letting the app save. Changes will be lost when you close it. Export a backup to be safe.</p>
-        <p class="fine">Roll Credits v3.0 · Saved on this device only</p>
+        <p class="fine">Roll Credits v3.1 · Saved on this device only</p>
       </section>
 
       <!-- FESTIVAL CREATOR (opened from the festival menu or Settings) -->
@@ -131,6 +138,7 @@
     </nav>
   </div>
 
+  <div class="dice-stage" id="dice-stage" hidden aria-hidden="true"></div>
   <div class="sheet-backdrop" id="sheet-backdrop" hidden></div>
   <div class="sheet" id="sheet" role="dialog" aria-modal="true" hidden></div>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>

@@ -51,6 +51,7 @@ function migrate(d) {
   if (d.version === 2) d = migrateV2toV3(d);
   // Future: if (d.version === 3) d = migrateV3toV4(d);
   ensureBuiltIns(d);
+  if (!d.settings.diceStyle) d.settings.diceStyle = '3d'; // added in v3.1, defaults to 3D
   if (!d.festivals.some((f) => f.id === d.activeFestival)) d.activeFestival = d.festivals[0].id;
   d.version = CURRENT_VERSION;
   return d;

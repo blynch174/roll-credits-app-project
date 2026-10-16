@@ -836,3 +836,51 @@ input[type="date"] {
 }
 .field-row select { min-height: 46px; }
 #lg-match:empty { display: none; }
+
+/* ================= v3.1: 3D dice + coin ================= */
+
+/* Full-screen layer the 3D dice are thrown onto. Taps pass through it. */
+.dice-stage {
+  position: fixed;
+  inset: 0;
+  z-index: 15;
+  pointer-events: none;
+  transition: opacity .35s;
+}
+.dice-stage canvas { width: 100%; height: 100%; display: block; }
+.dice-stage.fade { opacity: 0; }
+
+/* CSS 3D coin */
+.die.coin { perspective: 600px; }
+.coin-3d {
+  position: absolute;
+  inset: 6px;
+  transform-style: preserve-3d;
+  transform: rotateX(0deg);
+}
+.die.coin.tails .coin-3d { transform: rotateX(180deg); }
+.coin-face, .coin-edge {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+}
+.coin-face {
+  display: grid;
+  place-items: center;
+  font-size: 40px;
+  font-weight: 800;
+  color: var(--die-ink, #fff);
+  background:
+    radial-gradient(circle at 35% 30%, rgba(255,255,255,.35), transparent 55%),
+    var(--die);
+  box-shadow: inset 0 0 0 5px color-mix(in srgb, var(--die) 70%, #000), inset 0 0 0 8px color-mix(in srgb, var(--die) 85%, #fff);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.coin-face.heads { transform: translateZ(3.5px); }
+.coin-face.tails { transform: rotateX(180deg) translateZ(3.5px); }
+.coin-edge {
+  background: color-mix(in srgb, var(--die) 60%, #000);
+  transform: translateZ(var(--z));
+}
+.die.coin:not(.has-value) .coin-face { color: color-mix(in srgb, var(--die-ink, #fff) 80%, transparent); }

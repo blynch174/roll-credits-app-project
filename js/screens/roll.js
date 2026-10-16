@@ -3,7 +3,8 @@
 import * as store from '../store.js';
 import * as catalog from '../catalog.js';
 import { swatchHex, dieName } from '../defaults.js';
-import { randInt, tumble, wait, faceLabel } from '../dice.js';
+import { randInt, tumble, showFace, wait, faceLabel } from '../dice.js';
+import * as dice3d from '../dice3d.js';
 import { $, $$, esc, toast, nav, dieHTML, movieLabel, syncSeg } from '../ui.js';
 import { editSlotSheet } from './tables.js';
 import { entrySheet, entryRow } from './watched.js';
@@ -208,7 +209,7 @@ function renderRollArea() {
       : `<p class="phys-echo">You rolled ${fest.mode === 'two' ? (r.wild ? 'Wild Card' : esc(faceLabel(fest.categoryDie, r.catRoll))) + ' and ' : ''}${esc(faceLabel(cat.die, r.movieRoll))}</p>`}
     ${card}
     <div class="roll-actions">${actions}</div>`;
-  if (mode === 'virtual' && r.wild) $('#die-cat .die-num').textContent = 'W';
+  if (mode === 'virtual' && r.wild) setWild();
 
   area.querySelector('.roll-actions').addEventListener('click', (e) => {
     const b = e.target.closest('button');
@@ -255,6 +256,33 @@ function showResult(catId, movieRoll) {
   renderRollArea();
 }
 
+// The Wild Card shows a W on the category die (coins have no number to replace).
+function setWild() {
+  const n = $('#die-cat .die-num');
+  if (n) n.textContent = 'W';
+}
+
+const use3D = () => store.getState().settings.diceStyle !== 'flat' && !dice3d.hasFailed();
+const accentColor = () => getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#ff7a1a';
+
+// Rolls one die: 3D when it's on and supported, otherwise the flat tumble (and always the coin for d2).
+async function throwDie(el, sides, color, flatDuration) {
+  if (use3D() && dice3d.supports(sides)) {
+    const btn = $('#roll-area .btn.primary');
+    if (btn && !dice3d.isLoaded()) btn.textContent = 'Loading 3D dice…';
+    const v = await dice3d.roll(sides, color);
+    if (btn) btn.textContent = 'Rolling…';
+    if (v) {
+      await showFace(el, sides, v);
+      return v;
+    }
+    if (dice3d.hasFailed()) toast("3D dice couldn't start here, so these are flat dice.");
+  }
+  const v = randInt(1, sides);
+  await tumble(el, sides, v, flatDuration);
+  return v;
+}
+
 async function rollAll() {
   const fest = f();
   r = idle();
@@ -263,10 +291,10 @@ async function rollAll() {
   r.phase = 'rolling';
   const area = $('#roll-area');
   area.innerHTML = diceRow(fest, {}) + '<button type="button" class="btn primary big" disabled>Rolling…</button>';
-  const catRoll = randInt(1, fest.categoryDie);
-  await tumble($('#die-cat'), fest.categoryDie, catRoll, 850);
+  const catRoll = await throwDie($('#die-cat'), fest.categoryDie, accentColor(), 850);
   afterCategory(catRoll);
   if (r.phase === 'pickCategory') {
+    dice3d.settle();
     await wait(350);
     return renderRollArea();
   }
@@ -283,9 +311,9 @@ async function rollMovie(catId) {
   area.innerHTML = diceRow(fest, {
     catVal: r.wild ? null : r.catRoll, catColor: swatchHex(cat.color), cat, showMovie: true,
   }) + '<button type="button" class="btn primary big" disabled>Rolling…</button>';
-  if (r.wild && fest.mode === 'two') $('#die-cat .die-num').textContent = 'W';
-  const movieRoll = randInt(1, cat.die);
-  await tumble($('#die-movie'), cat.die, movieRoll, 1000);
+  if (r.wild && fest.mode === 'two') setWild();
+  const movieRoll = await throwDie($('#die-movie'), cat.die, swatchHex(cat.color), 1000);
+  dice3d.settle();
   await wait(300);
   showResult(cat.id, movieRoll);
 }

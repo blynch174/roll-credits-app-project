@@ -8,6 +8,7 @@ import { $, $$, esc, nav, openSheet, closeSheet, initSheets, toast } from './ui.
 import { renderRoll, initRoll, resetRoll } from './screens/roll.js';
 import { renderWatched, initWatched } from './screens/watched.js';
 import * as catalog from './catalog.js';
+import * as dice3d from './dice3d.js';
 import { renderTables } from './screens/tables.js';
 import { renderSettings, initSettings } from './screens/settings.js';
 import { renderCreator, openCreator } from './screens/creator.js';
@@ -17,6 +18,7 @@ let screen = 'home';
 let screenOpts = {};
 
 function go(name, opts = {}) {
+  if (name !== 'home') dice3d.clearNow();
   screen = name;
   screenOpts = opts;
   for (const s of SCREENS) $('#screen-' + s).hidden = s !== name;
@@ -93,6 +95,12 @@ catalog.load().then(() => {
   store.linkCatalog(catalog.match);
   catalog.loadCollection(store.activeFestival().id);
 });
+
+// 3D dice: start downloading in the background only if they're turned on.
+if (store.getState().settings.diceStyle !== 'flat') {
+  const later = window.requestIdleCallback || ((cb) => setTimeout(cb, 1500));
+  later(() => dice3d.prepare());
+}
 
 if ('serviceWorker' in navigator && location.protocol !== 'file:') {
   window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));

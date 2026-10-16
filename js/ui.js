@@ -151,10 +151,25 @@ export function ratingIcons(icon, rating, interactive = false) {
 // Before a category is known, dice use the theme accent; after, the category color.
 export function dieHTML(sides, value, color, id, label) {
   const style = color ? `--die:${color};--die-ink:#fff` : '--die:var(--accent);--die-ink:var(--accent-ink)';
+  if (sides === 2) return coinHTML(value, style, id, label);
   return `
     <div class="die d${sides}" ${id ? `id="${id}"` : ''} style="${style}">
       ${dieSVG(sides)}<span class="die-num">${esc(faceLabel(sides, value))}</span>
       <span class="die-label">${esc(label || dieName(sides))}</span>
+    </div>`;
+}
+
+// A two-sided 3D coin built with CSS. Heads = 1, Tails = 2.
+function coinHTML(value, style, id, label) {
+  const edges = Array.from({ length: 7 }, (_, i) => `<span class="coin-edge" style="--z:${(i - 3) * 0.9}px"></span>`).join('');
+  return `
+    <div class="die d2 coin ${value === 2 ? 'tails' : ''} ${value ? 'has-value' : ''}" ${id ? `id="${id}"` : ''} style="${style}">
+      <div class="coin-3d">
+        ${edges}
+        <span class="coin-face heads">H</span>
+        <span class="coin-face tails">T</span>
+      </div>
+      <span class="die-label">${esc(label || dieName(2))}</span>
     </div>`;
 }
 

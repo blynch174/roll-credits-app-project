@@ -20,8 +20,42 @@ export const faceLabel = (sides, n) => (n == null ? '?' : sides === 2 ? (n === 1
 const reduceMotion = () =>
   window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+// Flips the CSS coin and lands on heads (1) or tails (2).
+export function flipCoin(el, final, duration = 1300) {
+  const inner = el.querySelector('.coin-3d');
+  const end = final === 2 ? 180 : 0;
+  el.classList.add('has-value');
+  el.classList.toggle('tails', final === 2);
+  if (!duration || reduceMotion() || !inner.animate) return Promise.resolve();
+  const turns = 4 + randInt(0, 2); // full spins before landing
+  const spin = turns * 360 + end;
+  const anim = inner.animate(
+    [
+      { transform: 'translateY(0) rotateX(0deg) scale(1)' },
+      { transform: `translateY(-90px) rotateX(${spin * 0.5}deg) scale(1.18)`, offset: 0.45 },
+      { transform: `translateY(0) rotateX(${spin - 14}deg) scale(1)`, offset: 0.85 },
+      { transform: `translateY(-6px) rotateX(${spin + 6}deg) scale(1)`, offset: 0.93 },
+      { transform: `translateY(0) rotateX(${spin}deg) scale(1)` },
+    ],
+    { duration, easing: 'cubic-bezier(.3,.7,.4,1)' }
+  );
+  return anim.finished.then(() => {}).catch(() => {});
+}
+
+// Shows a result on a flat die without the tumble (used after a 3D roll).
+export function showFace(el, sides, value) {
+  if (sides === 2) return flipCoin(el, value, 0);
+  const num = el.querySelector('.die-num');
+  num.textContent = faceLabel(sides, value);
+  el.classList.remove('landed');
+  void el.offsetWidth;
+  el.classList.add('landed');
+  return Promise.resolve();
+}
+
 // Tumbles a die element (needs a child .die-num) and lands on `final`.
 export function tumble(el, sides, final, duration = 900) {
+  if (sides === 2) return flipCoin(el, final);
   const num = el.querySelector('.die-num');
   if (reduceMotion()) {
     num.textContent = faceLabel(sides, final);

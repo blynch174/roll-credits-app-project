@@ -1,0 +1,1 @@
+@3d-dice/dice-box v1.1.4 (MIT) — https://github.com/3d-dice/dice-box. Copied unmodified from the npm package's dist/ folder.
