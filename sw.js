@@ -5,7 +5,7 @@
 // The data/ and vendor/ files are not listed here on purpose (too big to download at install).
 // They get saved for offline use the first time the app loads them.
 
-const CACHE_VERSION = 'v4';
+const CACHE_VERSION = 'v5';
 const CACHE_NAME = 'roll-credits-' + CACHE_VERSION;
 
 const FILES = [
@@ -49,10 +49,13 @@ self.addEventListener('activate', (event) => {
 
 // Network first, so updates show up right away when online.
 // Falls back to the saved copy when offline.
+// cache: 'no-cache' makes the browser check with GitHub every time instead of reusing its own
+// 10-minute copy, so a new push never shows up as a mix of old and new files.
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET' || !event.request.url.startsWith(self.location.origin)) return;
+  const fresh = new Request(event.request.url, { cache: 'no-cache', credentials: 'same-origin' });
   event.respondWith(
-    fetch(event.request)
+    fetch(fresh)
       .then((res) => {
         if (res.ok) {
           const copy = res.clone();
