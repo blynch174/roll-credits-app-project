@@ -1115,3 +1115,11 @@ input[type="date"] {
 .pp-intro { margin: -4px 2px 12px; color: var(--muted); }
 #screen-popcorn .pp-moods { margin: 0 -16px; padding: 2px 16px 4px; }
 #screen-popcorn .pp-stage { height: 300px; }
+
+/* v3.3 spacing fixes */
+#screen-watched .section-head { align-items: center; margin-bottom: 12px; }
+#screen-watched .section-head .section-title { margin-top: 0; margin-bottom: 0; }
+/* The stage grows with the screen so the bucket sits low and centered in the open space,
+   with room above for the popping kernels and below for the buttons after a pick. */
+#screen-popcorn .pp-stage { height: clamp(300px, calc(100dvh - 430px), 420px); }
+#screen-popcorn .pp-bucket { margin-bottom: 34px; }
