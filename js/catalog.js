@@ -133,3 +133,13 @@ export function nextInFranchise(catalogId, isOpen) {
   const start = m.seriesOrder || 0;
   return arr.find((x) => (x.seriesOrder || 0) > start && isOpen(x)) || null;
 }
+
+// Every catalog movie (for Popcorn Pick).
+export const all = () => list;
+
+// Mood words with how many movies have each, most common first.
+export function moodCounts() {
+  const c = new Map();
+  for (const m of list) for (const t of m.moodTone || []) c.set(t, (c.get(t) || 0) + 1);
+  return [...c.entries()].sort((a, b) => b[1] - a[1]);
+}

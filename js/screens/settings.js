@@ -194,10 +194,7 @@ function clearHistorySheet() {
   if (!hist.length) return toast('Your watch history is already empty.');
   const counts = new Map();
   hist.forEach((e) => counts.set(e.festivalId, (counts.get(e.festivalId) || 0) + 1));
-  const name = (id) => {
-    const f = store.festival(id);
-    return f ? f.name : (hist.find((e) => e.festivalId === id) || {}).festivalName + ' (deleted)';
-  };
+  const name = (id) => store.historyGroupName(id);
   const sheet = openSheet({
     title: 'Clear watch history',
     body: `

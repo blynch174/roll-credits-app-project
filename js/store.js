@@ -442,7 +442,7 @@ export function removeEntry(id, reason) {
   if (i === -1) return '';
   const e = state.history[i];
   state.history.splice(i, 1);
-  if (e.categoryId === OFF_MENU) {
+  if (e.categoryId === OFF_MENU || e.festivalId === POPCORN) {
     save();
     return `${e.title} removed from your history.`;
   }
@@ -522,6 +522,42 @@ export function logMovie({ festivalId, title, year, catalogId, date, rating, not
   if (found && state.settings.slotMode === 'replace') found.cat.slots[found.index] = null;
   save();
   return { entry, found };
+}
+
+// Popcorn Pick: a random movie from the whole catalog. Not a festival, but it gets its own
+// "Popcorn Pick" label in the watch history.
+export const POPCORN = 'popcorn';
+export const POPCORN_NAME = 'Popcorn Pick';
+
+export function addPopcornPick(movie, mood) {
+  const entry = {
+    id: uid(),
+    festivalId: POPCORN,
+    festivalName: POPCORN_NAME,
+    icon: 'popcorn',
+    categoryId: 'popcorn-' + norm(mood || 'any'),
+    categoryName: mood ? `${mood} mood` : 'Any mood',
+    movieId: movie.id,
+    catalogId: movie.id,
+    title: movie.title,
+    year: movie.releaseYear,
+    slotIndex: null,
+    date: new Date().toISOString(),
+    rating: 0,
+    notes: '',
+  };
+  state.history.unshift(entry);
+  save();
+  return entry;
+}
+
+// Display name for a history group: festival name, Popcorn Pick, or a deleted festival.
+export function historyGroupName(id) {
+  if (id === POPCORN) return POPCORN_NAME;
+  const f = festival(id);
+  if (f) return f.name;
+  const e = state.history.find((x) => x.festivalId === id);
+  return (e ? e.festivalName : 'Unknown') + ' (deleted)';
 }
 
 // scope: a festival id, or 'all'.

@@ -12,7 +12,7 @@ let filters = blank();
 export function entryRow(e, showFestival) {
   const fest = store.festival(e.festivalId);
   const cat = fest && store.category(fest, e.categoryId);
-  const color = swatchHex(cat ? cat.color : 'slate');
+  const color = swatchHex(cat ? cat.color : e.festivalId === store.POPCORN ? 'gold' : 'slate');
   const where = showFestival ? `${esc(fest ? fest.name : e.festivalName)} · ` : '';
   return `
     <li>
@@ -69,7 +69,7 @@ export function renderWatched() {
   const years = [...new Set(history.map((e) => new Date(e.date).getFullYear()))].sort((a, b) => b - a);
   // History can include festivals that were deleted.
   const festChoices = new Map(fests.map((x) => [x.id, x.name]));
-  history.forEach((e) => { if (!festChoices.has(e.festivalId)) festChoices.set(e.festivalId, e.festivalName + ' (deleted)'); });
+  history.forEach((e) => { if (!festChoices.has(e.festivalId)) festChoices.set(e.festivalId, store.historyGroupName(e.festivalId)); });
 
   $('#watched-filters').innerHTML = `
     <input id="wf-q" type="search" placeholder="Search titles and notes" value="${esc(filters.q)}" autocomplete="off">
@@ -163,7 +163,7 @@ export function entrySheet(entryId, after) {
 function removeSheet(entryId, after) {
   const e = store.entry(entryId);
   if (!e) return;
-  if (e.categoryId === store.OFF_MENU) {
+  if (e.categoryId === store.OFF_MENU || e.festivalId === store.POPCORN) {
     swapSheet({
       title: `Remove ${e.title}?`,
       body: '<p class="sheet-text">It comes off your watch history. It was never on a table, so nothing else changes.</p>',
