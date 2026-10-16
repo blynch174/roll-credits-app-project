@@ -51,7 +51,8 @@ function migrate(d) {
   if (d.version === 2) d = migrateV2toV3(d);
   // Future: if (d.version === 3) d = migrateV3toV4(d);
   ensureBuiltIns(d);
-  if (!d.settings.diceStyle) d.settings.diceStyle = '3d'; // added in v3.1, defaults to 3D
+  // 3D dice are opt-in for now: anyone who never picked a style themselves goes to flat dice.
+  if (!d.settings.diceStyleChosen) d.settings.diceStyle = 'flat';
   // Added in v3.3. Anyone with saved data from before already knows the app, so skip the tour for them.
   if (d.settings.tutorialSeen === undefined) d.settings.tutorialSeen = true;
   if (!d.festivals.some((f) => f.id === d.activeFestival)) d.activeFestival = d.festivals[0].id;
@@ -569,6 +570,17 @@ export function clearHistory(scope) {
   state.history = scope === 'all' ? [] : state.history.filter((e) => e.festivalId !== scope);
   save();
   return before - state.history.length;
+}
+
+// ---------- Undo ----------
+
+export function snapshot() {
+  return JSON.stringify(state);
+}
+
+export function restore(snap) {
+  state = JSON.parse(snap);
+  save();
 }
 
 // ---------- Backup and reset ----------

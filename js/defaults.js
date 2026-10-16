@@ -161,7 +161,7 @@ export function buildBuiltInFestival(def) {
 export function buildDefaultState() {
   return {
     version: 3,
-    settings: { diceMode: 'virtual', diceStyle: '3d', slotMode: 'keep', sequels: true, tutorialSeen: false },
+    settings: { diceMode: 'virtual', diceStyle: 'flat', slotMode: 'keep', sequels: true, tutorialSeen: false },
     activeFestival: 'halloween',
     festivals: BUILT_IN_FESTIVALS.map(buildBuiltInFestival),
     history: [],

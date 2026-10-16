@@ -5,9 +5,9 @@ import * as catalog from '../catalog.js';
 import { swatchHex, dieName } from '../defaults.js';
 import { randInt, tumble, showFace, wait, faceLabel } from '../dice.js';
 import * as dice3d from '../dice3d.js';
-import { $, $$, esc, toast, nav, dieHTML, movieLabel, syncSeg } from '../ui.js';
+import { $, $$, esc, toast, nav, dieHTML, movieLabel, syncSeg, attachSwipe } from '../ui.js';
 import { editSlotSheet } from './tables.js';
-import { entrySheet, entryRow } from './watched.js';
+import { entrySheet, entryRow, swipeDelete } from './watched.js';
 
 const idle = () => ({ phase: 'idle', catRoll: null, movieRoll: null, catId: null, wild: false });
 let r = idle();
@@ -358,6 +358,7 @@ function renderRecent() {
     nav.go('watched');
   });
   $$('.watched-item', box).forEach((b) => b.addEventListener('click', () => entrySheet(b.dataset.id, renderRoll)));
+  attachSwipe($('.watched-list', box), (id) => swipeDelete(id, renderRoll));
 }
 
 // ---------- Wiring that only happens once ----------

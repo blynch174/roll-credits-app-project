@@ -1123,3 +1123,38 @@ input[type="date"] {
    with room above for the popping kernels and below for the buttons after a pick. */
 #screen-popcorn .pp-stage { height: clamp(300px, calc(100dvh - 430px), 420px); }
 #screen-popcorn .pp-bucket { margin-bottom: 34px; }
+
+/* ================= swipe to delete + toast action ================= */
+.swipe-row { position: relative; border-radius: 14px; overflow: hidden; }
+.swipe-row .watched-item { position: relative; z-index: 1; touch-action: pan-y; }
+.swipe-del {
+  position: absolute;
+  inset: 0 0 0 auto;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 24px;
+  border: 0;
+  border-radius: 14px;
+  background: var(--danger);
+  color: #fff;
+  font-weight: 750;
+  visibility: hidden;
+}
+.swipe-row.swiping .swipe-del, .swipe-row.open .swipe-del, .swipe-row.removing .swipe-del { visibility: visible; }
+.swipe-row.removing { animation: row-out .25s ease-in .15s forwards; }
+@keyframes row-out { to { opacity: 0; max-height: 0; margin: 0; } }
+.swipe-row { max-height: 400px; }
+
+.toast.has-action { display: flex; align-items: center; justify-content: space-between; gap: 12px; text-align: left; pointer-events: auto; }
+.toast-action {
+  flex: none;
+  padding: 6px 12px;
+  border: 0;
+  border-radius: 9px;
+  background: color-mix(in srgb, var(--bg) 14%, transparent);
+  color: var(--accent);
+  font-weight: 800;
+}
+.toast:not(.show) { pointer-events: none; }

@@ -17,10 +17,10 @@ export function renderSettings() {
     : 'Watched movies leave the table. Their slot shows up under "slots to fill" on the Roll screen.';
   syncSeg($('#dice-style'), s.diceStyle === 'flat' ? 'flat' : '3d');
   $('#dice-style-hint').textContent = s.diceStyle === 'flat'
-    ? 'Flat dice tumble in place. Light and quick.'
+    ? 'Flat dice tumble in place. Light and quick. Coin flips always use the 3D coin.'
     : dice3d.hasFailed()
       ? "3D dice couldn't start on this device, so rolls use flat dice."
-      : 'Real 3D dice get thrown across the screen. Downloads about 1 MB the first time. Coin flips always use the 3D coin.';
+      : 'Real 3D dice get thrown across the screen. Still in testing, so they may not work on every device. Downloads about 1 MB the first time.';
   syncSeg($('#sequel-mode'), s.sequels === false ? 'off' : 'on');
   $('#sequel-hint').textContent = s.sequels === false
     ? 'Rolling a movie you already watched just offers a reroll.'
@@ -100,6 +100,7 @@ export function initSettings() {
   $('#dice-style').addEventListener('click', (e) => {
     const b = e.target.closest('button'); if (!b) return;
     store.setSetting('diceStyle', b.dataset.value);
+    store.setSetting('diceStyleChosen', true);
     if (b.dataset.value === '3d') dice3d.prepare().then(() => renderSettings());
     renderSettings();
   });

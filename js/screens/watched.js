@@ -2,7 +2,7 @@
 
 import * as store from '../store.js';
 import { swatchHex } from '../defaults.js';
-import { $, $$, esc, nav, openSheet, closeSheet, swapSheet, toast, ratingIcons, movieLabel, fmtDate } from '../ui.js';
+import { $, $$, esc, nav, openSheet, closeSheet, swapSheet, toast, ratingIcons, movieLabel, fmtDate, attachSwipe } from '../ui.js';
 import { autofindBox, attachAutofind } from '../autofind.js';
 
 const blank = () => ({ q: '', festival: 'all', category: 'all', rating: 'any', year: 'all' });
@@ -15,7 +15,8 @@ export function entryRow(e, showFestival) {
   const color = swatchHex(cat ? cat.color : e.festivalId === store.POPCORN ? 'gold' : 'slate');
   const where = showFestival ? `${esc(fest ? fest.name : e.festivalName)} · ` : '';
   return `
-    <li>
+    <li class="swipe-row">
+      <button type="button" class="swipe-del" tabindex="-1">Delete</button>
       <button type="button" class="watched-item" data-id="${esc(e.id)}" style="--cat:${color}">
         <span class="wi-main">
           <span class="wi-title">${movieLabel(e)}</span>
@@ -123,6 +124,7 @@ function renderList() {
     ? list.map((e) => entryRow(e, filters.festival === 'all')).join('')
     : '<li class="empty-state">Nothing matches those filters.</li>';
   $$('.watched-item', ul).forEach((b) => b.addEventListener('click', () => entrySheet(b.dataset.id, renderList)));
+  attachSwipe(ul, (id) => swipeDelete(id, () => nav.render()));
 }
 
 // ---------- Rate / notes / remove ----------
@@ -298,4 +300,18 @@ export function logSheet(after) {
 
 export function initWatched() {
   $('#btn-log').addEventListener('click', () => logSheet(() => nav.render()));
+}
+
+// Swipe-to-delete: removes the movie as if it was never watched (same as "Rolled by mistake"),
+// with an Undo in the toast.
+export function swipeDelete(id, after) {
+  const e = store.entry(id);
+  if (!e) return;
+  const snap = store.snapshot();
+  store.removeEntry(id, 'mistake');
+  after && after();
+  toast(`${e.title} deleted.`, {
+    action: 'Undo',
+    onAction: () => { store.restore(snap); nav.render(); },
+  });
 }

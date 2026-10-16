@@ -37,7 +37,7 @@ Then open http://localhost:8000. (The JS loads as modules, which don't run from 
 
 1. Make your changes.
 2. If you added a new file under `js/`, add it to the `FILES` list in `sw.js`.
-3. Bump `CACHE_VERSION` in `sw.js` (`v7` → `v8`).
+3. Bump `CACHE_VERSION` in `sw.js` (`v8` → `v9`).
 4. `git add .`, `git commit -m "what changed"`, `git push`.
 
 `data/` and `vendor/` are deliberately not in `FILES`. They're too big to download at install, and get saved for
@@ -85,7 +85,7 @@ Stored in localStorage under `roll-credits:data`, on this device only. Settings 
 - **Two dice:** the first die picks a category (number of categories = its sides), the second picks a movie.
   Each category has its own movie die. **One die:** a single list, no categories.
 - Dice: Coin (2), d4, d6, d8, d12, d20. Shrinking a die warns before removing anything.
-- **Dice style** (Settings, 3D by default): 3D dice are thrown across the screen and the number they land on is the
+- **Dice style** (Settings, Flat by default; 3D is in beta and opt-in): 3D dice are thrown across the screen and the number they land on is the
   roll. Flat dice tumble in place. Coin flips always use the CSS 3D coin, in both styles.
 - An empty category in a two-dice festival acts as the Wild Card.
 - **Keep mode:** watched movies stay in their slot, marked Seen. **Replace mode:** they leave the table.
@@ -98,5 +98,6 @@ Stored in localStorage under `roll-credits:data`, on this device only. Settings 
 - **Popcorn Pick** (Popcorn tab): one random movie from the whole catalog, optionally limited to a mood. Every movie
   has an equal chance and watched ones stay in the mix. Watched picks go under their own "Popcorn Pick" label
   (`festivalId: "popcorn"`) and are rated with popcorn.
+- **Swipe a watched movie left** to delete it (same as *Rolled by mistake*), with Undo in the toast.
 - Removing from history: *Didn't finish* goes back to its slot and keeps the note, *Hated it* is removed
   from the table, *Rolled by mistake* is undone.
