@@ -3,6 +3,7 @@
 import * as store from '../store.js';
 import { swatchHex } from '../defaults.js';
 import { $, $$, esc, nav, openSheet, closeSheet, swapSheet, toast, ratingIcons, movieLabel, fmtDate } from '../ui.js';
+import { autofindBox, attachAutofind } from '../autofind.js';
 
 const blank = () => ({ q: '', festival: 'all', category: 'all', rating: 'any', year: 'all' });
 let filters = blank();
@@ -162,6 +163,18 @@ export function entrySheet(entryId, after) {
 function removeSheet(entryId, after) {
   const e = store.entry(entryId);
   if (!e) return;
+  if (e.categoryId === store.OFF_MENU) {
+    swapSheet({
+      title: `Remove ${e.title}?`,
+      body: '<p class="sheet-text">It comes off your watch history. It was never on a table, so nothing else changes.</p>',
+      actions: [
+        { label: 'Cancel', kind: 'ghost', onClick: () => entrySheet(entryId, after) },
+        { label: 'Remove', kind: 'danger', onClick: () => { const msg = store.removeEntry(entryId, 'mistake'); closeSheet(); toast(msg); } },
+      ],
+      onClose: () => after && after(),
+    });
+    return;
+  }
   swapSheet({
     title: `Remove ${e.title}?`,
     body: `
@@ -197,4 +210,92 @@ function removeSheet(entryId, after) {
   const setHint = () => ($('#rm-hint').textContent = hints[sel.value]);
   sel.addEventListener('change', setHint);
   setHint();
+}
+
+// ---------- Log a movie watched outside the app ----------
+
+const todayStr = () => {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+};
+
+export function logSheet(after) {
+  const active = store.activeFestival();
+  let festId = active.id;
+  let rating = 0;
+  let getCatalogId = () => null;
+  const sheet = openSheet({
+    title: 'Log a movie',
+    body: `
+      <p class="sheet-sub">For anything you watched without rolling for it.</p>
+      <div class="field-row">
+        <label class="field grow"><span class="label">Title <em>required</em></span>
+          <input id="f-title" type="text" maxlength="120" autocomplete="off" placeholder="Start typing to search"></label>
+        <label class="field year"><span class="label">Year</span>
+          <input id="f-year" type="number" inputmode="numeric" min="1888" max="2999" placeholder="Optional"></label>
+      </div>
+      ${autofindBox()}
+      <div class="field-row">
+        <label class="field grow"><span class="label">Festival</span>
+          <select id="lg-fest">${store.festivals().map((x) => `<option value="${x.id}" ${x.id === festId ? 'selected' : ''}>${esc(x.name)}</option>`).join('')}</select></label>
+        <label class="field date"><span class="label">Watched on</span>
+          <input id="lg-date" type="date" value="${todayStr()}" max="${todayStr()}"></label>
+      </div>
+      <p class="hint" id="lg-match"></p>
+      <div class="field"><span class="label">Rating</span><div class="rating-row" id="rating-row"></div></div>
+      <label class="field"><span class="label">Notes</span>
+        <textarea id="lg-notes" rows="2" maxlength="500" placeholder="Optional"></textarea></label>`,
+    actions: [
+      { label: 'Cancel', kind: 'ghost', onClick: closeSheet },
+      {
+        label: 'Add to watched list',
+        kind: 'primary',
+        onClick: (s) => {
+          const title = $('#f-title', s).value.trim();
+          if (!title) { $('#f-title', s).focus(); return toast('A title is required.'); }
+          const day = $('#lg-date', s).value || todayStr();
+          if (day > todayStr()) return toast("That date hasn't happened yet.");
+          const date = day === todayStr() ? new Date().toISOString() : new Date(day + 'T12:00:00').toISOString();
+          const res = store.logMovie({
+            festivalId: festId, title, year: $('#f-year', s).value, catalogId: getCatalogId(),
+            date, rating, notes: $('#lg-notes', s).value,
+          });
+          closeSheet();
+          after && after();
+          if (res) toast(res.found ? `${res.entry.title} logged and marked on your ${res.found.cat.name} table.` : `${res.entry.title} logged.`);
+        },
+      },
+    ],
+  });
+
+  const fest = () => store.festival(festId);
+  const drawRating = () => { $('#rating-row', sheet).innerHTML = ratingIcons(fest().icon, rating, true); };
+  const updateMatch = () => {
+    const title = $('#f-title', sheet).value.trim();
+    const el = $('#lg-match', sheet);
+    if (!title) { el.textContent = ''; return; }
+    const y = parseInt($('#f-year', sheet).value, 10) || null;
+    const hit = store.findSlot(fest(), { title, year: y, catalogId: getCatalogId() });
+    const mode = store.getState().settings.slotMode;
+    el.textContent = hit
+      ? `On your ${hit.cat.name} table. It'll be ${mode === 'replace' ? 'taken off the table' : 'marked Seen'}.`
+      : `Not on ${fest().name}'s tables. It'll be listed as "Off the menu".`;
+  };
+
+  getCatalogId = attachAutofind(sheet, { festivalId: festId, onPick: updateMatch });
+  $('#f-title', sheet).addEventListener('input', updateMatch);
+  $('#f-year', sheet).addEventListener('input', updateMatch);
+  $('#lg-fest', sheet).addEventListener('change', (e) => { festId = e.target.value; drawRating(); updateMatch(); });
+  $('#rating-row', sheet).addEventListener('click', (e) => {
+    const b = e.target.closest('.ricon');
+    if (!b) return;
+    const n = parseInt(b.dataset.r, 10);
+    rating = n === rating ? 0 : n;
+    drawRating();
+  });
+  drawRating();
+}
+
+export function initWatched() {
+  $('#btn-log').addEventListener('click', () => logSheet(() => nav.render()));
 }

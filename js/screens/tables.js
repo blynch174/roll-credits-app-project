@@ -6,6 +6,7 @@ import { randInt, faceLabel } from '../dice.js';
 import {
   $, $$, esc, toast, openSheet, closeSheet, confirmSheet, movieLabel, dieChips, wireChips,
 } from '../ui.js';
+import { autofindBox, attachAutofind } from '../autofind.js';
 
 let currentCat = null;
 
@@ -15,7 +16,6 @@ export function renderTables(opts = {}) {
   if (!currentCat || !store.category(f, currentCat)) currentCat = f.categories[0].id;
   const cat = store.category(f, currentCat);
   const color = swatchHex(cat.color);
-  const seen = store.seenIds(f);
 
   const chips = $('#chips');
   if (f.mode === 'two') {
@@ -60,7 +60,7 @@ export function renderTables(opts = {}) {
       return `<li><button type="button" class="slot empty" data-i="${i}" style="--cat:${color}">
         <span class="slot-n">${n}</span><span class="slot-main"><span class="slot-title">Empty slot</span><span class="slot-sub">Tap to add a movie</span></span></button></li>`;
     }
-    const isSeen = seen.has(m.id);
+    const isSeen = store.isSeen(f, m);
     return `<li><button type="button" class="slot ${isSeen ? 'seen' : ''}" data-i="${i}" style="--cat:${color}">
       <span class="slot-n">${n}</span>
       <span class="slot-main">
@@ -79,6 +79,7 @@ export function editSlotSheet(fId, catId, index, after) {
   const f = store.festival(fId);
   const cat = store.category(f, catId);
   const m = cat.slots[index];
+  let getCatalogId = () => null;
   const actions = [{ label: 'Cancel', kind: 'ghost', onClick: closeSheet }];
   if (m) {
     actions.push({
@@ -93,12 +94,12 @@ export function editSlotSheet(fId, catId, index, after) {
     onClick: (sheet) => {
       const title = $('#f-title', sheet).value.trim();
       if (!title) { $('#f-title', sheet).focus(); return toast('A title is required.'); }
-      store.setSlot(fId, catId, index, { title, year: $('#f-year', sheet).value });
+      store.setSlot(fId, catId, index, { title, year: $('#f-year', sheet).value, catalogId: getCatalogId() });
       closeSheet();
       after && after();
     },
   });
-  openSheet({
+  const sheet = openSheet({
     title: `${cat.name} · ${faceLabel(cat.die, index + 1)}`,
     body: `
       <div class="field-row">
@@ -107,9 +108,11 @@ export function editSlotSheet(fId, catId, index, after) {
         <label class="field year"><span class="label">Year</span>
           <input id="f-year" type="number" inputmode="numeric" min="1888" max="2999" value="${m && m.year ? m.year : ''}" placeholder="Optional"></label>
       </div>
-      ${m && store.isSeen(f, m.id) ? '<p class="hint">Changing the title swaps in a new movie. Your watch history is not affected.</p>' : ''}`,
+      ${autofindBox()}
+      ${m && store.isSeen(f, m) ? '<p class="hint">Changing the title swaps in a new movie. Your watch history is not affected.</p>' : ''}`,
     actions,
   });
+  getCatalogId = attachAutofind(sheet, { festivalId: fId });
 }
 
 function editCategorySheet(fId, catId) {

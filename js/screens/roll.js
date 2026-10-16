@@ -1,6 +1,7 @@
 // ROLL screen: dice, result card, slots-to-fill reminder, recently watched.
 
 import * as store from '../store.js';
+import * as catalog from '../catalog.js';
 import { swatchHex, dieName } from '../defaults.js';
 import { randInt, tumble, wait, faceLabel } from '../dice.js';
 import { $, $$, esc, toast, nav, dieHTML, movieLabel, syncSeg } from '../ui.js';
@@ -145,7 +146,13 @@ function renderRollArea() {
   if (!cat) { resetRoll(); return renderRollArea(); }
   const idx = r.movieRoll - 1;
   const movie = cat.slots[idx];
-  const seen = movie && store.isSeen(fest, movie.id);
+  const seen = movie && store.isSeen(fest, movie);
+  // Sequel switching: if this one's been seen, offer the next unseen entry in its series.
+  let sequel = null;
+  if (seen && store.getState().settings.sequels && movie.catalogId && catalog.isReady()) {
+    sequel = catalog.nextInFranchise(movie.catalogId,
+      (x) => !store.isCatalogSeen(fest, x.id) && !store.onTables(fest, x.id));
+  }
   const color = swatchHex(cat.color);
   const label = `${esc(cat.name)} · ${esc(faceLabel(cat.die, r.movieRoll))}`;
 
@@ -164,6 +171,19 @@ function renderRollArea() {
       </div>
       <p class="roll-q">Watching it tonight?</p>`;
     actions = `<button type="button" class="btn primary big" data-act="watch">Yes, watch it</button>${rerolls}`;
+  } else if (movie && sequel) {
+    card = `
+      <div class="pick-card" style="--cat:${color}">
+        <p class="pick-cat">${label}</p>
+        <p class="pick-was">Already seen <s>${movieLabel(movie)}</s></p>
+        <p class="pick-title">${esc(sequel.title)} <span class="year">(${sequel.releaseYear})</span></p>
+        <p class="pick-flag">Next in the ${esc(sequel.franchise)} series</p>
+      </div>
+      <p class="roll-q">Watch the sequel instead?</p>`;
+    actions = `
+      <button type="button" class="btn primary big" data-act="sequel">Watch ${esc(sequel.title)}</button>
+      <button type="button" class="btn ghost" data-act="watch">Rewatch ${esc(movie.title)}</button>
+      ${rerolls}`;
   } else if (movie) {
     card = `
       <div class="pick-card seen" style="--cat:${color}">
@@ -171,7 +191,7 @@ function renderRollArea() {
         <p class="pick-title">${movieLabel(movie)}</p>
         <p class="pick-flag">Already watched at this festival</p>
       </div>`;
-    actions = rerolls;
+    actions = `${rerolls}<button type="button" class="btn ghost" data-act="watch">Rewatch anyway</button>`;
   } else {
     card = `
       <div class="pick-card empty" style="--cat:${color}">
@@ -194,7 +214,8 @@ function renderRollArea() {
     const b = e.target.closest('button');
     if (!b) return;
     const act = b.dataset.act;
-    if (act === 'watch') {
+    if (act === 'watch' || act === 'sequel') {
+      if (act === 'sequel') store.stepToSequel(fest.id, cat.id, idx, sequel);
       const entry = store.watchMovie(fest.id, cat.id, idx);
       resetRoll();
       renderRoll();

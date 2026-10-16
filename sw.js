@@ -2,8 +2,10 @@
 //
 // IMPORTANT: every time you push changes to GitHub, bump CACHE_VERSION
 // (v1 -> v2 -> v3 ...). Otherwise phones keep showing the old version.
+// The data/ files are not listed here on purpose (too big to download at install).
+// They get saved for offline use the first time the app loads them.
 
-const CACHE_VERSION = 'v2';
+const CACHE_VERSION = 'v3';
 const CACHE_NAME = 'roll-credits-' + CACHE_VERSION;
 
 const FILES = [
@@ -17,6 +19,8 @@ const FILES = [
   './js/themes.js',
   './js/icons.js',
   './js/ui.js',
+  './js/catalog.js',
+  './js/autofind.js',
   './js/screens/roll.js',
   './js/screens/watched.js',
   './js/screens/tables.js',

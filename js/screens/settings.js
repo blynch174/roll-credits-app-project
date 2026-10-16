@@ -47,6 +47,10 @@ export function renderSettings() {
   $('#slot-mode-hint').textContent = s.slotMode === 'keep'
     ? 'Watched movies stay in their slot, marked Seen. Rolling one offers a reroll.'
     : 'Watched movies leave the table. Their slot shows up under "slots to fill" on the Roll screen.';
+  syncSeg($('#sequel-mode'), s.sequels === false ? 'off' : 'on');
+  $('#sequel-hint').textContent = s.sequels === false
+    ? 'Rolling a movie you already watched just offers a reroll.'
+    : 'Rolling a movie you already watched here offers the next unseen movie in its series, like Scream → Scream 2. Start fresh puts the originals back.';
   $('#storage-warning').hidden = store.canSave();
 
   const look = $('#btn-look');
@@ -54,7 +58,7 @@ export function renderSettings() {
   $('#btn-dice').addEventListener('click', () => diceSheet(f.id));
   $('#btn-fresh').addEventListener('click', () => confirmSheet(
     'Start fresh?',
-    `Every movie in ${f.name} goes back to unseen, so rolls won't skip anything. Your watch history isn't touched.`,
+    `Every movie in ${f.name} goes back to unseen, and slots that moved on to a sequel go back to the original. Your watch history isn't touched.`,
     'Start fresh',
     () => { store.startFresh(f.id); nav.render(); toast(`${f.name} starts fresh.`); }
   ));
@@ -244,6 +248,11 @@ export function initSettings() {
   $('#slot-mode').addEventListener('click', (e) => {
     const b = e.target.closest('button'); if (!b) return;
     store.setSetting('slotMode', b.dataset.value);
+    renderSettings();
+  });
+  $('#sequel-mode').addEventListener('click', (e) => {
+    const b = e.target.closest('button'); if (!b) return;
+    store.setSetting('sequels', b.dataset.value === 'on');
     renderSettings();
   });
   $('#btn-clear-history').addEventListener('click', clearHistorySheet);

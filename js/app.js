@@ -6,7 +6,8 @@ import { applyTheme } from './themes.js';
 import { iconSVG } from './icons.js';
 import { $, $$, esc, nav, openSheet, closeSheet, initSheets, toast } from './ui.js';
 import { renderRoll, initRoll, resetRoll } from './screens/roll.js';
-import { renderWatched } from './screens/watched.js';
+import { renderWatched, initWatched } from './screens/watched.js';
+import * as catalog from './catalog.js';
 import { renderTables } from './screens/tables.js';
 import { renderSettings, initSettings } from './screens/settings.js';
 import { renderCreator, openCreator } from './screens/creator.js';
@@ -82,8 +83,16 @@ $$('.tabbar button').forEach((b) => b.addEventListener('click', () => go(b.datas
 $('#fest-btn').addEventListener('click', festivalSheet);
 $('#btn-new-festival').addEventListener('click', openCreator);
 initRoll();
+initWatched();
 initSettings();
 go('home');
+
+// Load the movie catalog in the background, then link any movies typed before it existed.
+catalog.load().then(() => {
+  if (!catalog.isReady()) return;
+  store.linkCatalog(catalog.match);
+  catalog.loadCollection(store.activeFestival().id);
+});
 
 if ('serviceWorker' in navigator && location.protocol !== 'file:') {
   window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));

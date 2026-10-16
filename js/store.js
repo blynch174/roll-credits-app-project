@@ -4,9 +4,10 @@ import {
   BUILT_IN_FESTIVALS, buildBuiltInFestival, buildDefaultState, builtInCategories,
   makeCategory, makeMovie, uid, SWATCHES,
 } from './defaults.js';
+import { norm } from './catalog.js';
 
 const STORAGE_KEY = 'roll-credits:data';
-const CURRENT_VERSION = 2;
+const CURRENT_VERSION = 3;
 
 let state = null;
 let storageWorks = true;
@@ -47,7 +48,8 @@ function looksValid(d) {
 // Upgrades older saved data one version at a time.
 function migrate(d) {
   if (d.version === 1) d = migrateV1toV2(d);
-  // Future: if (d.version === 2) d = migrateV2toV3(d);
+  if (d.version === 2) d = migrateV2toV3(d);
+  // Future: if (d.version === 3) d = migrateV3toV4(d);
   ensureBuiltIns(d);
   if (!d.festivals.some((f) => f.id === d.activeFestival)) d.activeFestival = d.festivals[0].id;
   d.version = CURRENT_VERSION;
@@ -98,6 +100,13 @@ function migrateV1toV2(old) {
   };
 }
 
+// v3 added sequel switching (on by default) and manually logged movies.
+function migrateV2toV3(d) {
+  d.settings.sequels = true;
+  d.version = 3;
+  return d;
+}
+
 // New built-in festivals shipped in an update appear for existing users too.
 function ensureBuiltIns(d) {
   for (const def of BUILT_IN_FESTIVALS) {
@@ -127,18 +136,24 @@ export const filledCount = (cat) => cat.slots.filter(Boolean).length;
 export const isWild = (f, cat) => f.mode === 'two' && filledCount(cat) === 0;
 
 // "Seen" only counts history from this festival since its last "Start fresh".
-export function isSeen(f, movieId) {
-  return state.history.some(
-    (e) => e.festivalId === f.id && e.movieId === movieId && (!f.freshSince || e.date >= f.freshSince)
-  );
+// A movie counts as seen if that exact slot movie was watched, or the same catalog movie was.
+function festivalHistory(f) {
+  return state.history.filter((e) => e.festivalId === f.id && (!f.freshSince || e.date >= f.freshSince));
 }
 
-export function seenIds(f) {
-  return new Set(
-    state.history
-      .filter((e) => e.festivalId === f.id && (!f.freshSince || e.date >= f.freshSince))
-      .map((e) => e.movieId)
-  );
+export function isSeen(f, movie) {
+  if (!movie) return false;
+  return festivalHistory(f).some((e) => e.movieId === movie.id || (movie.catalogId && e.catalogId === movie.catalogId));
+}
+
+// Seen-check for a catalog movie (used when stepping through a franchise).
+export function isCatalogSeen(f, catalogId) {
+  return festivalHistory(f).some((e) => e.catalogId === catalogId);
+}
+
+// Is this catalog movie already sitting in one of the festival's slots?
+export function onTables(f, catalogId) {
+  return f.categories.some((c) => c.slots.some((s) => s && s.catalogId === catalogId));
 }
 
 // Empty slots worth a reminder (skips untouched Wild Card categories).
@@ -161,7 +176,7 @@ export function setSetting(key, value) {
 
 // ---------- Editing tables ----------
 
-export function setSlot(fId, catId, index, { title, year }) {
+export function setSlot(fId, catId, index, { title, year, catalogId = null }) {
   const cat = category(festival(fId), catId);
   if (!cat) return;
   const clean = String(title || '').trim();
@@ -171,9 +186,44 @@ export function setSlot(fId, catId, index, { title, year }) {
   const existing = cat.slots[index];
   if (existing && existing.title === clean) {
     existing.year = yearVal; // same movie tidied up: keep its id
+    existing.catalogId = catalogId;
   } else {
-    cat.slots[index] = makeMovie(clean, yearVal);
+    cat.slots[index] = makeMovie(clean, yearVal, catalogId);
   }
+  save();
+}
+
+// Fills in catalog links for slots and history typed before the catalog existed.
+// matchFn(title, year) returns a catalog movie or null.
+export function linkCatalog(matchFn) {
+  let changed = 0;
+  for (const f of state.festivals) {
+    for (const c of f.categories) {
+      for (const m of c.slots) {
+        if (m && !m.catalogId) {
+          const hit = matchFn(m.title, m.year);
+          if (hit) { m.catalogId = hit.id; changed++; }
+        }
+      }
+    }
+  }
+  for (const e of state.history) {
+    if (!e.catalogId) {
+      const hit = matchFn(e.title, e.year);
+      if (hit) { e.catalogId = hit.id; changed++; }
+    }
+  }
+  if (changed) save();
+  return changed;
+}
+
+// Sequel switching: the slot now shows the sequel. The original is kept so Start fresh can restore it.
+export function stepToSequel(fId, catId, index, sequel) {
+  const cat = category(festival(fId), catId);
+  const cur = cat && cat.slots[index];
+  if (!cur) return;
+  const base = cur.base || { id: cur.id, title: cur.title, year: cur.year, catalogId: cur.catalogId || null };
+  cat.slots[index] = { ...makeMovie(sequel.title, sequel.releaseYear, sequel.id), base };
   save();
 }
 
@@ -275,6 +325,10 @@ export function startFresh(fId) {
   const f = festival(fId);
   if (!f) return;
   f.freshSince = new Date().toISOString();
+  // Slots that stepped through a franchise go back to the original movie.
+  for (const c of f.categories) {
+    c.slots = c.slots.map((m) => (m && m.base ? { ...m.base } : m));
+  }
   save();
 }
 
@@ -387,6 +441,10 @@ export function removeEntry(id, reason) {
   if (i === -1) return '';
   const e = state.history[i];
   state.history.splice(i, 1);
+  if (e.categoryId === OFF_MENU) {
+    save();
+    return `${e.title} removed from your history.`;
+  }
   const f = festival(e.festivalId);
   const cat = f && category(f, e.categoryId);
 
@@ -416,6 +474,53 @@ export function removeEntry(id, reason) {
   }
   save();
   return msg;
+}
+
+// Movies logged by hand that aren't on any of the festival's tables.
+export const OFF_MENU = 'off-menu';
+
+// Finds the slot in a festival holding this movie (by catalog id, or title + year).
+export function findSlot(f, { title, year, catalogId }) {
+  const key = norm(title) + '|' + (year || '');
+  for (const cat of f.categories) {
+    const i = cat.slots.findIndex((m) =>
+      m && ((catalogId && m.catalogId === catalogId) || norm(m.title) + '|' + (m.year || '') === key)
+    );
+    if (i !== -1) return { cat, index: i, movie: cat.slots[i] };
+  }
+  return null;
+}
+
+// Log a movie watched outside the app. If it's on the festival's tables, it's linked to that slot
+// (marked Seen, or opened in Replace mode), just like watching it from a roll.
+export function logMovie({ festivalId, title, year, catalogId, date, rating, notes }) {
+  const f = festival(festivalId);
+  if (!f || !String(title || '').trim()) return null;
+  const y = parseInt(year, 10);
+  const yearVal = Number.isFinite(y) && y > 1800 && y < 3000 ? y : null;
+  const found = findSlot(f, { title, year: yearVal, catalogId });
+  const entry = {
+    id: uid(),
+    festivalId: f.id,
+    festivalName: f.name,
+    icon: f.icon,
+    categoryId: found ? found.cat.id : OFF_MENU,
+    categoryName: found ? found.cat.name : 'Off the menu',
+    movieId: found ? found.movie.id : uid(),
+    catalogId: catalogId || (found && found.movie.catalogId) || null,
+    title: found ? found.movie.title : String(title).trim(),
+    year: found ? found.movie.year : yearVal,
+    slotIndex: found ? found.index : null,
+    date: date || new Date().toISOString(),
+    rating: rating || 0,
+    notes: notes || '',
+    logged: true,
+  };
+  state.history.push(entry);
+  state.history.sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
+  if (found && state.settings.slotMode === 'replace') found.cat.slots[found.index] = null;
+  save();
+  return { entry, found };
 }
 
 // scope: a festival id, or 'all'.

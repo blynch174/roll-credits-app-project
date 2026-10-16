@@ -786,3 +786,53 @@ input[type="search"] {
 .summary { margin: 0; font-weight: 650; }
 #cr-create { margin-top: 22px; }
 .slot-sub { font-size: 13px; color: var(--muted); }
+
+/* ================= v3 additions ================= */
+
+/* Autofind suggestions */
+.af-list {
+  display: grid;
+  margin-top: -6px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface-2);
+  overflow: hidden;
+}
+.af-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1px;
+  min-height: 48px;
+  padding: 8px 12px;
+  border: 0;
+  background: transparent;
+  text-align: left;
+}
+.af-item + .af-item { border-top: 1px solid var(--line); }
+.af-item:active, .af-item:hover { background: color-mix(in srgb, var(--accent) 12%, transparent); }
+.af-title { font-weight: 650; }
+.af-sub { font-size: 13px; color: var(--muted); }
+.af-sub:empty { display: none; }
+
+/* Sequel offer */
+.pick-was { margin: 6px 0 0; font-size: 14px; color: var(--muted); }
+.pick-was s { opacity: .8; }
+.pick-was .year { font-size: 1em; }
+
+/* Log a movie */
+.section-head.first { margin-top: 4px; }
+.section-head .section-title { margin-top: 4px; }
+.field-row .date { width: 150px; flex: none; }
+input[type="date"] {
+  width: 100%;
+  min-height: 46px;
+  padding: 10px 12px;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  font-size: 16px;
+  color-scheme: light dark;
+}
+.field-row select { min-height: 46px; }
+#lg-match:empty { display: none; }
