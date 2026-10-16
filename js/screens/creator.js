@@ -94,7 +94,7 @@ export function renderCreator() {
     });
   };
 
-  $('#cr-cancel').addEventListener('click', () => { form = null; nav.go('settings'); });
+  $('#cr-cancel').addEventListener('click', () => { form = null; nav.back(); });
   $('#cr-copy').addEventListener('change', (e) => {
     form.copyFrom = e.target.value;
     const src = store.festival(form.copyFrom);
@@ -138,7 +138,7 @@ export function renderCreator() {
     const f = store.createFestival({ ...form, copyFrom: form.copyFrom || null });
     form = null;
     applyTheme(f);
-    nav.go('tables');
+    nav.go('edit', { part: 'tables' });
     toast(`${f.name} is ready. Fill in your tables!`);
   });
   refresh();

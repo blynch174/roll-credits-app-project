@@ -8,7 +8,6 @@ import * as dice3d from '../dice3d.js';
 import { $, $$, esc, toast, nav, dieHTML, movieLabel, syncSeg } from '../ui.js';
 import { editSlotSheet } from './tables.js';
 import { entrySheet, entryRow } from './watched.js';
-import { openPopcorn } from './popcorn.js';
 
 const idle = () => ({ phase: 'idle', catRoll: null, movieRoll: null, catId: null, wild: false });
 let r = idle();
@@ -337,7 +336,7 @@ function renderOpenSlots() {
           </button></li>`).join('')}
       </ul>
     </div>`;
-  $$('button', box).forEach((b) => b.addEventListener('click', () => nav.go('tables', { cat: b.dataset.cat })));
+  $$('button', box).forEach((b) => b.addEventListener('click', () => nav.go('edit', { cat: b.dataset.cat })));
 }
 
 function renderRecent() {
@@ -364,7 +363,6 @@ function renderRecent() {
 // ---------- Wiring that only happens once ----------
 
 export function initRoll() {
-  $('#btn-popcorn').addEventListener('click', () => openPopcorn(renderRoll));
   $('#dice-mode').addEventListener('click', (e) => {
     const b = e.target.closest('button');
     if (!b || r.phase === 'rolling') return;

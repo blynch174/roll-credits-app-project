@@ -23,6 +23,7 @@ export const movieLabel = (m) =>
 // Screens register here so they can switch to each other without circular imports.
 export const nav = {
   go: () => {},
+  back: () => {},
   render: () => {},
   filters: null, // Watched-screen filters other screens can preset
 };
@@ -126,7 +127,65 @@ export function typedConfirm(title, text, onOk) {
   input.addEventListener('input', () => (ok.disabled = input.value.trim() !== 'DELETE'));
 }
 
+// Swipe down to close a bottom sheet (phones). Starts from the grip/title anytime, or from the
+// content when it's scrolled to the top. Sideways swipes and form fields are left alone.
+function initSheetSwipe() {
+  const sheet = $('#sheet');
+  const backdrop = $('#sheet-backdrop');
+  const wide = window.matchMedia('(min-width: 700px)'); // centered dialog on big screens: no swipe
+  let startY = 0, startX = 0, dy = 0, startT = 0, tracking = false, dragging = false;
+
+  sheet.addEventListener('touchstart', (e) => {
+    if (wide.matches || e.touches.length !== 1) return;
+    const t = e.target;
+    const fromHandle = !!t.closest('.sheet-grip, .sheet-title');
+    if (!fromHandle && (sheet.scrollTop > 0 || t.closest('input, textarea, select, .pp-moods, .chips, .die-chips, .swatches'))) return;
+    tracking = true;
+    dragging = false;
+    startY = e.touches[0].clientY;
+    startX = e.touches[0].clientX;
+    startT = Date.now();
+    dy = 0;
+  }, { passive: true });
+
+  sheet.addEventListener('touchmove', (e) => {
+    if (!tracking) return;
+    const y = e.touches[0].clientY - startY;
+    const x = e.touches[0].clientX - startX;
+    if (!dragging) {
+      if (Math.abs(y) < 8 && Math.abs(x) < 8) return;
+      if (y <= 0 || Math.abs(x) > Math.abs(y)) { tracking = false; return; } // scrolling up or sideways
+      dragging = true;
+      sheet.style.transition = 'none';
+    }
+    dy = Math.max(0, y);
+    sheet.style.transform = `translateY(${dy}px)`;
+    backdrop.style.opacity = String(Math.max(0, 1 - dy / (sheet.offsetHeight || 400)));
+    e.preventDefault();
+  }, { passive: false });
+
+  const end = () => {
+    if (!tracking) return;
+    tracking = false;
+    if (!dragging) return;
+    dragging = false;
+    const fast = dy / Math.max(1, Date.now() - startT) > 0.6; // flick
+    sheet.style.transition = '';
+    backdrop.style.opacity = '';
+    if (dy > Math.min(140, sheet.offsetHeight * 0.3) || (fast && dy > 30)) {
+      sheet.style.transform = 'translateY(100%)'; // slide the rest of the way down from where the finger left it
+      closeSheet();
+      setTimeout(() => { sheet.style.transform = ''; }, 260);
+    } else {
+      sheet.style.transform = ''; // snaps back via the CSS transition
+    }
+  };
+  sheet.addEventListener('touchend', end);
+  sheet.addEventListener('touchcancel', end);
+}
+
 export function initSheets() {
+  initSheetSwipe();
   $('#sheet-backdrop').addEventListener('click', closeSheet);
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') closeSheet();

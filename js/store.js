@@ -52,6 +52,8 @@ function migrate(d) {
   // Future: if (d.version === 3) d = migrateV3toV4(d);
   ensureBuiltIns(d);
   if (!d.settings.diceStyle) d.settings.diceStyle = '3d'; // added in v3.1, defaults to 3D
+  // Added in v3.3. Anyone with saved data from before already knows the app, so skip the tour for them.
+  if (d.settings.tutorialSeen === undefined) d.settings.tutorialSeen = true;
   if (!d.festivals.some((f) => f.id === d.activeFestival)) d.activeFestival = d.festivals[0].id;
   d.version = CURRENT_VERSION;
   return d;
@@ -529,14 +531,15 @@ export function logMovie({ festivalId, title, year, catalogId, date, rating, not
 export const POPCORN = 'popcorn';
 export const POPCORN_NAME = 'Popcorn Pick';
 
-export function addPopcornPick(movie, mood) {
+// moodList: the moods that were selected (empty = any).
+export function addPopcornPick(movie, moodList = []) {
   const entry = {
     id: uid(),
     festivalId: POPCORN,
     festivalName: POPCORN_NAME,
     icon: 'popcorn',
-    categoryId: 'popcorn-' + norm(mood || 'any'),
-    categoryName: mood ? `${mood} mood` : 'Any mood',
+    categoryId: 'popcorn-' + (moodList.length ? moodList.map(norm).join('-') : 'any'),
+    categoryName: moodList.length ? `${moodList.join(' / ')} mood${moodList.length > 1 ? 's' : ''}` : 'Any mood',
     movieId: movie.id,
     catalogId: movie.id,
     title: movie.title,

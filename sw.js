@@ -5,7 +5,7 @@
 // The data/ and vendor/ files are not listed here on purpose (too big to download at install).
 // They get saved for offline use the first time the app loads them.
 
-const CACHE_VERSION = 'v6';
+const CACHE_VERSION = 'v7';
 const CACHE_NAME = 'roll-credits-' + CACHE_VERSION;
 
 const FILES = [
@@ -22,9 +22,11 @@ const FILES = [
   './js/catalog.js',
   './js/autofind.js',
   './js/dice3d.js',
+  './js/tutorial.js',
   './js/screens/roll.js',
   './js/screens/watched.js',
   './js/screens/tables.js',
+  './js/screens/editor.js',
   './js/screens/settings.js',
   './js/screens/creator.js',
   './js/screens/popcorn.js',

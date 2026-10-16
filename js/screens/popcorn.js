@@ -1,14 +1,15 @@
-// POPCORN PICK: a random movie from the whole catalog, revealed by a popping kernel.
+// POPCORN PICK tab: a random movie from the whole catalog, revealed by a popping kernel.
 // The movie is chosen first (every movie has an equal chance); the popcorn just reveals it.
 
 import * as store from '../store.js';
 import * as catalog from '../catalog.js';
 import { randInt, wait } from '../dice.js';
-import { $, $$, esc, toast, openSheet, closeSheet } from '../ui.js';
+import { $, $$, esc, toast } from '../ui.js';
 
 const MOOD_MIN = 10; // only offer moods with at least this many movies
-let mood = null; // null = any mood
+let moods = new Set(); // empty = any mood. Several = movies with ANY of them (and/or).
 let current = null; // the movie on the ticket
+let currentMoods = []; // the moods selected when it was popped
 let busy = false;
 
 const reducedMotion = () => window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -28,7 +29,7 @@ const BUCKET = `<svg viewBox="0 0 120 120" aria-hidden="true">
 </svg>`;
 
 function pickMovie() {
-  const pool = mood ? catalog.all().filter((m) => (m.moodTone || []).includes(mood)) : catalog.all();
+  const pool = moods.size ? catalog.all().filter((m) => (m.moodTone || []).some((t) => moods.has(t))) : catalog.all();
   if (!pool.length) return null;
   return pool[randInt(0, pool.length - 1)];
 }
@@ -41,91 +42,110 @@ function ticketHTML(m) {
       <p class="t-title">${esc(m.title)}</p>
       <p class="t-meta">${esc(bits.join(' · '))}</p>
       ${m.directors && m.directors.length ? `<p class="t-dir">Directed by ${esc(m.directors.join(', '))}</p>` : ''}
-      ${m.moodTone && m.moodTone.length ? `<p class="t-moods">${[...new Set([mood, ...m.moodTone].filter((t) => t && m.moodTone.includes(t)))].slice(0, 3).map((t) => `<span>${esc(t)}</span>`).join('')}</p>` : ''}
+      ${m.moodTone && m.moodTone.length ? `<p class="t-moods">${[...new Set([...moods, ...m.moodTone].filter((t) => m.moodTone.includes(t)))].slice(0, 3).map((t) => `<span>${esc(t)}</span>`).join('')}</p>` : ''}
     </div>`;
 }
 
-// Opens the Popcorn Pick sheet.
-export async function openPopcorn(after) {
-  current = null;
-  const sheet = openSheet({
-    title: 'Popcorn Pick',
-    body: `
-      <p class="sheet-sub">One random movie from the whole catalog. Pick a mood, or don't.</p>
-      <div class="pp-moods" id="pp-moods"><p class="hint">Loading the movie list…</p></div>
-      <div class="pp-stage" id="pp-stage">
-        <div class="pp-bucket" id="pp-bucket">${BUCKET}</div>
-        <p class="pp-tap" id="pp-tap">Tap the bucket</p>
-      </div>
-      <div class="pp-actions" id="pp-actions" hidden>
-        <button type="button" class="btn primary big" id="pp-watch">Watch it</button>
-        <button type="button" class="btn ghost" id="pp-again">Pop again</button>
-      </div>`,
-    actions: [{ label: 'Close', kind: 'ghost', onClick: closeSheet }],
-    onClose: () => after && after(),
-  });
+let wired = false;
+
+// Renders the Popcorn tab. Keeps the last ticket on screen if there is one.
+export async function renderPopcorn() {
+  const root = $('#popcorn');
+  root.innerHTML = `
+    <h2 class="section-title first">Popcorn Pick</h2>
+    <p class="pp-intro">One random movie from the whole catalog. Pick one or more moods, or don't.</p>
+    <div class="pp-moods" id="pp-moods"><p class="hint">Loading the movie list…</p></div>
+    <div class="pp-stage" id="pp-stage">
+      <div class="pp-bucket" id="pp-bucket" role="button" tabindex="0" aria-label="Pop some popcorn">${BUCKET}</div>
+      <p class="pp-tap" id="pp-tap">Tap the bucket</p>
+    </div>
+    <div class="pp-actions" id="pp-actions" hidden>
+      <button type="button" class="btn primary big" id="pp-watch">Watch it</button>
+      <button type="button" class="btn ghost" id="pp-again">Pop again</button>
+    </div>`;
+  busy = false;
+  if (current) showTicket(root, current, false);
+
+  if (!wired) {
+    wired = true;
+    root.addEventListener('click', (e) => {
+      const chip = e.target.closest('.pp-chip');
+      if (chip && !busy) {
+        const t = chip.dataset.mood;
+        if (!t) moods.clear(); // "Any" clears the selection
+        else if (moods.has(t)) moods.delete(t);
+        else moods.add(t);
+        drawMoods();
+        return;
+      }
+      if (e.target.closest('#pp-bucket') || e.target.closest('#pp-again')) return popcorn(root);
+      if (e.target.closest('#pp-watch') && current) {
+        const entry = store.addPopcornPick(current, currentMoods);
+        current = null;
+        renderPopcorn();
+        toast(`${entry.title} added to your watched list. Enjoy!`);
+      }
+    });
+    root.addEventListener('keydown', (e) => {
+      if ((e.key === 'Enter' || e.key === ' ') && e.target.id === 'pp-bucket') { e.preventDefault(); popcorn(root); }
+    });
+  }
 
   await catalog.load();
   if (!catalog.isReady()) {
-    $('#pp-moods', sheet).innerHTML = '<p class="hint">Popcorn Pick needs to download the movie list once. Connect to the internet and try again.</p>';
-    $('#pp-bucket', sheet).classList.add('disabled');
+    $('#pp-moods', root).innerHTML = '<p class="hint">Popcorn Pick needs to download the movie list once. Connect to the internet and try again.</p>';
+    $('#pp-bucket', root).classList.add('disabled');
     return;
   }
-
-  const moods = catalog.moodCounts().filter(([, n]) => n >= MOOD_MIN).map(([t]) => t).sort();
-  if (mood && !moods.includes(mood)) moods.unshift(mood);
-  const drawMoods = () => {
-    $('#pp-moods', sheet).innerHTML = [null, ...moods].map((t) =>
-      `<button type="button" class="pp-chip ${t === mood ? 'on' : ''}" data-mood="${esc(t || '')}">${esc(t || 'Any')}</button>`
-    ).join('');
-  };
   drawMoods();
-  $('#pp-moods', sheet).addEventListener('click', (e) => {
-    const b = e.target.closest('.pp-chip');
-    if (!b || busy) return;
-    mood = b.dataset.mood || null;
-    drawMoods();
-  });
-
-  const pop = () => popcorn(sheet);
-  $('#pp-bucket', sheet).addEventListener('click', pop);
-  $('#pp-again', sheet).addEventListener('click', pop);
-  $('#pp-watch', sheet).addEventListener('click', () => {
-    if (!current) return;
-    const entry = store.addPopcornPick(current, mood);
-    closeSheet();
-    toast(`${entry.title} added to your watched list. Enjoy!`);
-  });
 }
 
-async function popcorn(sheet) {
-  if (busy) return;
-  const movie = pickMovie();
-  if (!movie) return toast('No movies match that mood.');
-  busy = true;
-  current = movie;
-  const stage = $('#pp-stage', sheet);
-  const actions = $('#pp-actions', sheet);
-  actions.hidden = true;
-  const old = $('#pp-ticket', sheet);
-  if (old) old.remove();
-  $$('.pp-kernel, .pp-crumb', stage).forEach((k) => k.remove());
-  const bucket = $('#pp-bucket', sheet);
-  bucket.hidden = false;
-  $('#pp-tap', sheet).hidden = true;
+function drawMoods() {
+  const box = $('#pp-moods');
+  if (!box || !catalog.isReady()) return;
+  const list = catalog.moodCounts().filter(([, n]) => n >= MOOD_MIN).map(([t]) => t).sort();
+  box.innerHTML = [null, ...list].map((t) => {
+    const on = t ? moods.has(t) : moods.size === 0;
+    return `<button type="button" class="pp-chip ${on ? 'on' : ''}" data-mood="${esc(t || '')}" aria-pressed="${on}">${esc(t || 'Any')}</button>`;
+  }
+  ).join('');
+}
 
-  if (!reducedMotion()) await popAnimation(stage, bucket);
-
-  bucket.hidden = true;
+function showTicket(root, movie, animate) {
+  const stage = $('#pp-stage', root);
+  $('#pp-bucket', root).hidden = true;
+  $('#pp-tap', root).hidden = true;
   stage.insertAdjacentHTML('beforeend', ticketHTML(movie));
-  const ticket = $('#pp-ticket', sheet);
-  if (!reducedMotion() && ticket.animate) {
+  const ticket = $('#pp-ticket', root);
+  if (animate && !reducedMotion() && ticket.animate) {
     ticket.animate(
       [{ transform: 'scale(.4) rotate(-6deg)', opacity: 0 }, { transform: 'scale(1.04) rotate(1deg)', opacity: 1, offset: 0.7 }, { transform: 'none', opacity: 1 }],
       { duration: 420, easing: 'cubic-bezier(.2,.9,.3,1.2)' }
     );
   }
-  actions.hidden = false;
+  $('#pp-actions', root).hidden = false;
+}
+
+async function popcorn(root) {
+  if (busy) return;
+  if (!catalog.isReady()) return;
+  const movie = pickMovie();
+  if (!movie) return toast('No movies match those moods.');
+  busy = true;
+  current = movie;
+  currentMoods = [...moods].sort();
+  const stage = $('#pp-stage', root);
+  $('#pp-actions', root).hidden = true;
+  const old = $('#pp-ticket', root);
+  if (old) old.remove();
+  $$('.pp-kernel, .pp-crumb', stage).forEach((k) => k.remove());
+  const bucket = $('#pp-bucket', root);
+  bucket.hidden = false;
+  $('#pp-tap', root).hidden = true;
+
+  if (!reducedMotion()) await popAnimation(stage, bucket);
+  if (!root.isConnected || !$('#pp-stage', root)) { busy = false; return; }
+  showTicket(root, movie, true);
   busy = false;
 }
 

@@ -15,7 +15,7 @@ Then open http://localhost:8000. (The JS loads as modules, which don't run from 
 
 | File | What it does |
 |---|---|
-| `index.html` | Screen layout: Roll, Watched, Tables, Settings, and the festival creator |
+| `index.html` | Screen layout: the Roll, Watched, Popcorn, and Settings tabs, plus the Edit festival screen and the festival creator |
 | `css/styles.css` | All styling. Colors come from variables set by `js/themes.js` |
 | `js/app.js` | Boot, tab navigation, festival switcher, background loading of the catalog and 3D dice |
 | `js/store.js` | Saved data and every change to it, plus upgrading older saved data |
@@ -26,8 +26,9 @@ Then open http://localhost:8000. (The JS loads as modules, which don't run from 
 | `js/dice3d.js` | 3D dice: loads dice-box only when 3D is on, falls back to flat dice if it can't start |
 | `js/catalog.js` | Loads `data/all_movies.json`: title search, title matching, franchise lookups |
 | `js/autofind.js` | Catalog suggestions under a title box (slot editor and Log a movie) |
-| `js/ui.js` | Shared helpers: sheets, toasts, the type-DELETE confirm, dice and coin markup |
-| `js/screens/*.js` | One file per screen (`popcorn.js` is Popcorn Pick) |
+| `js/tutorial.js` | First-run tour (shows on a fresh install; Settings → Show the tutorial replays it) |
+| `js/ui.js` | Shared helpers: sheets (with swipe-down to close), toasts, the type-DELETE confirm, dice and coin markup |
+| `js/screens/*.js` | One file per screen. `editor.js` is Edit festival (tables + festival settings), `tables.js` draws the tables inside it, `popcorn.js` is the Popcorn tab |
 | `data/` | The movie catalog. `all_movies.json` is the master copy the app reads; the collection files list each built-in festival's movies |
 | `vendor/dice-box/` | [dice-box](https://github.com/3d-dice/dice-box) v1.1.4 (MIT), copied unmodified from npm. About 3 MB, only downloaded when 3D dice are used |
 | `sw.js` | Offline support |
@@ -36,7 +37,7 @@ Then open http://localhost:8000. (The JS loads as modules, which don't run from 
 
 1. Make your changes.
 2. If you added a new file under `js/`, add it to the `FILES` list in `sw.js`.
-3. Bump `CACHE_VERSION` in `sw.js` (`v6` → `v7`).
+3. Bump `CACHE_VERSION` in `sw.js` (`v7` → `v8`).
 4. `git add .`, `git commit -m "what changed"`, `git push`.
 
 `data/` and `vendor/` are deliberately not in `FILES`. They're too big to download at install, and get saved for
@@ -92,7 +93,9 @@ Stored in localStorage under `roll-credits:data`, on this device only. Settings 
   unseen movie in its franchise (by `seriesOrder`), skipping any that are already on the tables.
 - **Log a movie** (Watched tab): add something watched outside the app. If it's on that festival's tables it's
   linked to that slot, like a normal watch.
-- **Popcorn Pick** (Roll tab): one random movie from the whole catalog, optionally limited to a mood. Every movie
+- **Editing a festival:** tap the festival name at the top → **Edit**. Tables and everything specific to that festival
+  (dice, theme, look, Start fresh, restore/delete) live there. Settings only holds app-wide options.
+- **Popcorn Pick** (Popcorn tab): one random movie from the whole catalog, optionally limited to a mood. Every movie
   has an equal chance and watched ones stay in the mix. Watched picks go under their own "Popcorn Pick" label
   (`festivalId: "popcorn"`) and are rated with popcorn.
 - Removing from history: *Didn't finish* goes back to its slot and keeps the note, *Hated it* is removed
