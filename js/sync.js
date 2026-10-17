@@ -9,7 +9,7 @@
 import * as store from './store.js';
 import * as cloud from './cloud.js';
 
-export const APP_VERSION = '3.10';
+export const APP_VERSION = '3.11';
 const META_KEY = 'roll-credits:sync';
 const DEVICE_KEY = 'roll-credits:device';
 const PUSH_DELAY = 1500;

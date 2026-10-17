@@ -24,7 +24,7 @@ export function renderBanner() {
         <b>${a.applied ? `${esc(f.name)} just got an update` : `${esc(f.name)} has an update`}</b>
         ${a.message ? `<p>${esc(a.message)}</p>` : ''}
       </div>
-      <button type="button" class="btn ${a.applied ? 'ghost' : 'primary'} small" id="ub-go">${a.applied ? 'Got it' : 'Review'}</button>
+      <button type="button" class="btn ${a.applied ? 'ghost' : 'primary'} small" id="ub-go">${a.applied ? 'Got It' : 'Review'}</button>
     </div>`;
   $('#ub-go').addEventListener('click', () => {
     if (a.applied) {
@@ -48,7 +48,7 @@ export function reviewSheet(fId) {
       <p class="sheet-text">Replaces its tables and dice${edited ? ', including your changes' : ''}. History and Seen marks stay.</p>`,
     actions: [
       {
-        label: 'Keep mine', kind: 'ghost', onClick: () => {
+        label: 'Keep Mine', kind: 'ghost', onClick: () => {
           store.keepMine(f.id, pub.rev);
           closeSheet();
           nav.render();

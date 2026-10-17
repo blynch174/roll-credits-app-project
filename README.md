@@ -109,7 +109,7 @@ One theme for the whole app (`settings.theme`), picked in Settings → Themes. A
 ## Saved data (version 3)
 
 Stored in localStorage under `roll-credits:data` (sync bookkeeping is in `roll-credits:sync`).
-Settings → Export backup saves a copy.
+Settings → Export Backup saves a copy.
 
 ```
 {
@@ -120,7 +120,8 @@ Settings → Export backup saves a copy.
                  sourceRev, sourceSig, dismissedRev, announce, isNew,   (official festivals only)
                  categories: [ { id, name, color, die, slots: [movie or null] } ] } ],
   history: [ { festivalId, festivalName, icon, categoryId, categoryName, movieId, catalogId,
-               title, year, date, rating, notes } ]
+               title, year, date, rating, notes } ],
+  savedPicks: [ { movieId, title, year, moods, date } ]   (Popcorn Pick "Save for Later", up to 3)
 }
 ```
 
@@ -130,6 +131,7 @@ Settings → Export backup saves a copy.
 - Each slot movie has a `catalogId` linking it to `data/all_movies.json`. Movies typed before the catalog existed get
   linked automatically when the catalog loads (exact title + year). A slot that moved on to a sequel keeps the
   original in `base`, which Start fresh restores.
+- **Saved for Later** (Popcorn tab): swipe left removes, swipe right moves it to the watch history as a Popcorn Pick.
 - Logged movies that aren't on a table use the category id `off-menu` ("Off the menu").
 - Version 1 and 2 data upgrade automatically. To change the shape again, bump `CURRENT_VERSION` in `store.js`
   and add a step in `migrate()`.

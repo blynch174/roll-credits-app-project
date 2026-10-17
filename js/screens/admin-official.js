@@ -65,7 +65,7 @@ export async function renderOfficialSection() {
           </button>
         </li>`).join('')}
     </ul>
-    <button type="button" class="btn ghost" id="of-new">+ New official festival</button>`;
+    <button type="button" class="btn ghost" id="of-new">+ New Official Festival</button>`;
   const imp = $('#of-import');
   if (imp) imp.addEventListener('click', () => importBuiltIns(missing));
   $$('[data-edit]', box).forEach((b) => b.addEventListener('click', () => openDraftEditor(b.dataset.edit)));
@@ -104,7 +104,7 @@ function newFestivalSheet() {
     actions: [
       { label: 'Cancel', kind: 'ghost', onClick: closeSheet },
       {
-        label: 'Create draft', kind: 'primary', onClick: async (s) => {
+        label: 'Create Draft', kind: 'primary', onClick: async (s) => {
           const name = $('#nf-name', s).value.trim();
           if (!name) return toast('Give it a name.');
           const taken = new Set([...pubs.map((p) => p.id), ...drafts.map((d) => d.id), ...BUILT_IN_FESTIVALS.map((d) => d.id), ...store.festivals().map((f) => f.id)]);
@@ -215,11 +215,11 @@ export function draftSettingsHTML(f) {
   const info = f.draftInfo;
   return `
     <p class="draft-status" id="draft-status">${esc(draftStatus)}</p>
-    <button type="button" class="row-btn" id="btn-look"><span>Name &amp; rating icon</span></button>
-    <button type="button" class="row-btn" id="btn-dice"><span>Festival dice</span></button>
+    <button type="button" class="row-btn" id="btn-look"><span>Name &amp; Rating Icon</span></button>
+    <button type="button" class="row-btn" id="btn-dice"><span>Festival Dice</span></button>
     <button type="button" class="row-btn accent" id="btn-publish"><span>Publish…</span></button>
-    ${info.published ? `<button type="button" class="row-btn" id="btn-hide"><span>${info.hidden ? 'Unhide' : 'Hide from new users'}</span></button>` : ''}
-    ${info.hasDraft ? '<button type="button" class="row-btn danger" id="btn-discard"><span>Discard draft</span></button>' : ''}`;
+    ${info.published ? `<button type="button" class="row-btn" id="btn-hide"><span>${info.hidden ? 'Unhide' : 'Hide from New Users'}</span></button>` : ''}
+    ${info.hasDraft ? '<button type="button" class="row-btn danger" id="btn-discard"><span>Discard Draft</span></button>' : ''}`;
 }
 
 export function wireDraftSettings(f) {
@@ -268,8 +268,8 @@ function publishSheet(f) {
       ${info.published ? `
         <div class="field"><span class="label">What kind of update?</span>
           <div class="seg" id="p-kind">
-            <button type="button" data-value="version">New version</button>
-            <button type="button" data-value="fix">Quick fix</button>
+            <button type="button" data-value="version">New Version</button>
+            <button type="button" data-value="fix">Quick Fix</button>
           </div>
           <p class="hint" id="p-hint"></p>
         </div>` : ''}

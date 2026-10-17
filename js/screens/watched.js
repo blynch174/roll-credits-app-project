@@ -112,7 +112,7 @@ function renderList() {
   const active = JSON.stringify(filters) !== JSON.stringify(blank());
   $('#watched-summary').innerHTML = `
     <span>${list.length} movie${list.length === 1 ? '' : 's'}${active ? ` of ${all.length}` : ''}</span>
-    ${active ? '<button type="button" class="link" id="wf-clear">Clear filters</button>' : ''}`;
+    ${active ? '<button type="button" class="link" id="wf-clear">Clear Filters</button>' : ''}`;
   const clear = $('#wf-clear');
   if (clear) clear.addEventListener('click', () => { filters = blank(); renderWatched(); });
 
@@ -147,7 +147,7 @@ export function entrySheet(entryId, after) {
         <span class="label">Notes</span>
         <textarea id="e-notes" rows="3" maxlength="500" placeholder="What did you think?">${esc(e.notes)}</textarea>
       </label>
-      <button type="button" class="btn danger-text" id="btn-remove">Remove from watched list</button>`,
+      <button type="button" class="btn danger-text" id="btn-remove">Remove from Watched List</button>`,
     actions: [{ label: 'Done', kind: 'primary', onClick: closeSheet }],
     onClose: () => after && after(),
   });
@@ -229,7 +229,7 @@ export function logSheet(after) {
   let rating = 0;
   let getCatalogId = () => null;
   const sheet = openSheet({
-    title: 'Log a movie',
+    title: 'Log a Movie',
     body: `
       <p class="sheet-sub">For anything you watched without rolling for it.</p>
       <div class="field-row">
@@ -252,7 +252,7 @@ export function logSheet(after) {
     actions: [
       { label: 'Cancel', kind: 'ghost', onClick: closeSheet },
       {
-        label: 'Add to watched list',
+        label: 'Add to Watched List',
         kind: 'primary',
         onClick: (s) => {
           const title = $('#f-title', s).value.trim();

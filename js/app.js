@@ -88,8 +88,8 @@ function festivalSheet() {
             </div>
           </li>`).join('')}
       </ul>
-      <button type="button" class="btn ghost big" id="btn-new-fest">+ Create a festival</button>
-      ${removed.length ? '<button type="button" class="btn ghost big" id="btn-add-official">+ Add an official festival</button>' : ''}`,
+      <button type="button" class="btn ghost big" id="btn-new-fest">+ Create a Festival</button>
+      ${removed.length ? '<button type="button" class="btn ghost big" id="btn-add-official">+ Add an Official Festival</button>' : ''}`,
     actions: [{ label: 'Close', kind: 'ghost', onClick: closeSheet }],
   });
   const switchTo = (id) => {
@@ -199,3 +199,18 @@ if (store.getState().settings.diceStyle !== 'flat') {
 if ('serviceWorker' in navigator && location.protocol !== 'file:') {
   window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
 }
+
+// iOS home-screen apps sometimes lay out the fixed tab bar above the real bottom edge on launch, until the
+// first scroll. A tiny scroll and a forced relayout after load puts it where it belongs.
+function settleLayout() {
+  requestAnimationFrame(() => {
+    const y = window.scrollY;
+    window.scrollTo(0, y + 1);
+    window.scrollTo(0, y);
+    const bar = document.querySelector('.tabbar');
+    if (bar) { bar.style.display = 'none'; void bar.offsetHeight; bar.style.display = ''; }
+  });
+}
+window.addEventListener('load', () => { settleLayout(); setTimeout(settleLayout, 300); });
+window.addEventListener('pageshow', settleLayout);
+window.addEventListener('orientationchange', () => setTimeout(settleLayout, 300));

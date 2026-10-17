@@ -84,7 +84,7 @@ export function editSlotSheet(fId, catId, index, after) {
   const actions = [{ label: 'Cancel', kind: 'ghost', onClick: closeSheet }];
   if (m) {
     actions.push({
-      label: 'Clear slot',
+      label: 'Clear Slot',
       kind: 'danger-ghost',
       onClick: () => { store.clearSlot(fId, catId, index); closeSheet(); after && after(); },
     });
@@ -136,7 +136,7 @@ function editCategorySheet(fId, catId) {
         ${dieChips(DIE_OPTIONS, die, 'movie')}
         <p class="hint" id="c-die-hint"></p>
       </div>
-      <button type="button" class="btn danger-text" id="btn-clear-cat">Clear all slots</button>`,
+      <button type="button" class="btn danger-text" id="btn-clear-cat">Clear All Slots</button>`,
     actions: [
       { label: 'Cancel', kind: 'ghost', onClick: closeSheet },
       {

@@ -50,12 +50,12 @@ function renderFestivalSettings() {
   }
   const upd = official.updateFor(f);
   $('#fest-card').innerHTML = `${head}
-    ${upd ? `<button type="button" class="row-btn accent" id="btn-update"><span>Update available</span><small>${esc(upd.message || (upd.kind === 'fix' ? 'Small fixes to the official tables' : 'A new version of this festival'))}</small></button>` : ''}
-    ${f.builtIn ? '' : '<button type="button" class="row-btn" id="btn-look"><span>Name &amp; rating icon</span></button>'}
-    <button type="button" class="row-btn" id="btn-dice"><span>Festival dice</span></button>
-    <button type="button" class="row-btn" id="btn-fresh"><span>Start fresh</span></button>
-    ${f.builtIn ? '<button type="button" class="row-btn" id="btn-restore"><span>Restore default tables</span></button>' : ''}
-    ${store.festivals().length > 1 ? '<button type="button" class="row-btn danger" id="btn-delete-fest"><span>Delete festival</span></button>' : ''}`;
+    ${upd ? `<button type="button" class="row-btn accent" id="btn-update"><span>Update Available</span><small>${esc(upd.message || (upd.kind === 'fix' ? 'Small fixes to the official tables' : 'A new version of this festival'))}</small></button>` : ''}
+    ${f.builtIn ? '' : '<button type="button" class="row-btn" id="btn-look"><span>Name &amp; Rating Icon</span></button>'}
+    <button type="button" class="row-btn" id="btn-dice"><span>Festival Dice</span></button>
+    <button type="button" class="row-btn" id="btn-fresh"><span>Start Fresh</span></button>
+    ${f.builtIn ? '<button type="button" class="row-btn" id="btn-restore"><span>Restore Default Tables</span></button>' : ''}
+    ${store.festivals().length > 1 ? '<button type="button" class="row-btn danger" id="btn-delete-fest"><span>Delete Festival</span></button>' : ''}`;
 
   const ub = $('#btn-update');
   if (ub) ub.addEventListener('click', () => reviewSheet(f.id));
@@ -132,8 +132,8 @@ function diceSheet(fId) {
     body: `
       <div class="field"><span class="label">How many dice?</span>
         <div class="seg" id="d-mode">
-          <button type="button" data-value="two">Two: category + movie</button>
-          <button type="button" data-value="one">One: a single list</button>
+          <button type="button" data-value="two">Two: Category + Movie</button>
+          <button type="button" data-value="one">One: A Single List</button>
         </div>
       </div>
       <div class="field" id="d-cat-wrap"><span class="label">Category die (number of categories)</span>

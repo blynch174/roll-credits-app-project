@@ -83,7 +83,7 @@ export function signInSheet(email = '') {
       </div>`,
     actions: [
       { label: 'Cancel', kind: 'ghost', onClick: closeSheet },
-      { label: 'Sign in', kind: 'primary', id: 'a-go', onClick: (s) => submitSignIn(s) },
+      { label: 'Sign In', kind: 'primary', id: 'a-go', onClick: (s) => submitSignIn(s) },
     ],
   });
   $('#a-forgot', sheet).addEventListener('click', () => resetSheet($('#a-email', sheet).value));
@@ -119,7 +119,7 @@ function createSheet(email = '') {
       <div class="sheet-links"><button type="button" class="link" id="a-have">Already have an account? Sign in</button></div>`,
     actions: [
       { label: 'Cancel', kind: 'ghost', onClick: closeSheet },
-      { label: 'Create account', kind: 'primary', id: 'a-go', onClick: (s) => submitCreate(s) },
+      { label: 'Create Account', kind: 'primary', id: 'a-go', onClick: (s) => submitCreate(s) },
     ],
   });
   $('#a-have', sheet).addEventListener('click', () => signInSheet($('#a-email', sheet).value));
@@ -140,7 +140,7 @@ async function submitCreate(sheet) {
       body: `<p class="sheet-text">We sent a link to <b>${esc(email)}</b>. Tap it to confirm your email, then come back and tap <b>I've confirmed it</b>. Check spam if it's not there in a minute.</p>`,
       actions: [
         { label: 'Later', kind: 'ghost', onClick: closeSheet },
-        { label: "I've confirmed it", kind: 'primary', id: 'a-ver', onClick: (s) => checkVerified(s) },
+        { label: "I've Confirmed it", kind: 'primary', id: 'a-ver', onClick: (s) => checkVerified(s) },
       ],
     });
   } catch (e) {
@@ -171,7 +171,7 @@ function resetSheet(email = '') {
     actions: [
       { label: 'Back', kind: 'ghost', onClick: (s) => signInSheet($('#a-email', s).value) },
       {
-        label: 'Send link', kind: 'primary', id: 'a-go', onClick: async (s) => {
+        label: 'Send Link', kind: 'primary', id: 'a-go', onClick: async (s) => {
           const em = $('#a-email', s).value.trim();
           if (!em) return showError(s, 'Enter your email.');
           busy(s, 'a-go', true, 'Sending…');
@@ -195,14 +195,14 @@ function accountSheet() {
   const actions = [];
   if (st.status === 'notInvited') {
     note = `<p class="sheet-text">Roll Credits is invite-only while it's being tested. Ask ${esc(INVITE_CONTACT)} to add <b>${esc(st.email)}</b> to the invite list, then tap Check again. Until then your data stays on this device only.</p>`;
-    actions.push({ label: 'Check again', kind: 'primary', id: 'a-go', onClick: (s) => recheck(s) });
+    actions.push({ label: 'Check Again', kind: 'primary', id: 'a-go', onClick: (s) => recheck(s) });
   } else if (st.status === 'unverified') {
     note = `<p class="sheet-text">Tap the link we emailed to <b>${esc(st.email)}</b>, then come back and tap I've confirmed it.</p>
-      <div class="sheet-links"><button type="button" class="link" id="a-resend">Send the email again</button></div>`;
-    actions.push({ label: "I've confirmed it", kind: 'primary', id: 'a-ver', onClick: (s) => checkVerified(s) });
+      <div class="sheet-links"><button type="button" class="link" id="a-resend">Resend the Email</button></div>`;
+    actions.push({ label: "I've Confirmed it", kind: 'primary', id: 'a-ver', onClick: (s) => checkVerified(s) });
   } else {
     actions.push({
-      label: 'Back up now', kind: 'primary', id: 'a-go', onClick: async (s) => {
+      label: 'Back Up Now', kind: 'primary', id: 'a-go', onClick: async (s) => {
         busy(s, 'a-go', true, 'Backing up…');
         await sync.syncNow();
         closeSheet();
@@ -217,8 +217,8 @@ function accountSheet() {
       <div class="acct-head"><b>${esc(st.email)}</b><small>${esc(statusText(st))}</small></div>
       ${note}
       <div class="settings-list card acct-list">
-        <button type="button" class="row-btn" id="a-pw"><span>Change password</span></button>
-        <button type="button" class="row-btn danger" id="a-out"><span>Sign out</span></button>
+        <button type="button" class="row-btn" id="a-pw"><span>Change Password</span></button>
+        <button type="button" class="row-btn danger" id="a-out"><span>Sign Out</span></button>
       </div>
       <p class="fine acct-uid">User ID <code>${esc(st.uid)}</code> <button type="button" class="link" id="a-copy">Copy</button></p>`,
     actions: [{ label: 'Close', kind: 'ghost', onClick: closeSheet }, ...actions],
@@ -260,8 +260,8 @@ export function chooseSideSheet(remote, done) {
     body: `
       <p class="sheet-text">This device and your account both have Roll Credits data.</p>
       <div class="settings-list card acct-list">
-        <button type="button" class="row-btn" id="c-account"><span>Use my account's data</span><small>Replaces what's on this device${when ? ` · last backed up ${esc(when)}` : ''}</small></button>
-        <button type="button" class="row-btn" id="c-device"><span>Use this device's data</span><small>Replaces what's in your account</small></button>
+        <button type="button" class="row-btn" id="c-account"><span>Use My Account's Data</span><small>Replaces what's on this device${when ? ` · last backed up ${esc(when)}` : ''}</small></button>
+        <button type="button" class="row-btn" id="c-device"><span>Use This Device's Data</span><small>Replaces what's in your account</small></button>
       </div>
       <p class="sheet-text">Whichever one you don't pick gets replaced.</p>`,
     actions: [],

@@ -67,7 +67,7 @@ export function replaceState(d) {
 
 // True when nothing on this device is worth keeping: no history, no custom festivals, built-in tables untouched.
 export function isPristine() {
-  if (state.history.length) return false;
+  if (state.history.length || savedPicks().length) return false;
   if (state.festivals.some((f) => !f.builtIn)) return false;
   for (const f of state.festivals) {
     const def = BUILT_IN_FESTIVALS.find((d) => d.id === f.id);
@@ -94,6 +94,7 @@ function migrate(d) {
   if (d.version === 2) d = migrateV2toV3(d);
   // Future: if (d.version === 3) d = migrateV3toV4(d);
   ensureBuiltIns(d);
+  if (!Array.isArray(d.savedPicks)) d.savedPicks = [];
   // 3D dice are opt-in for now: anyone who never picked a style themselves goes to flat dice.
   if (!d.settings.diceStyleChosen) d.settings.diceStyle = 'flat';
   // Added in v3.3. Anyone with saved data from before already knows the app, so skip the tour for them.
@@ -702,8 +703,31 @@ export function addPopcornPick(movie, moodList = []) {
     notes: '',
   };
   state.history.unshift(entry);
+  removeSaved(movie.id, true); // watched it, so it's no longer saved for later
   save();
   return entry;
+}
+
+// Save for Later (Popcorn Pick): up to SAVED_MAX movies kept for another night.
+export const SAVED_MAX = 3;
+export const savedPicks = () => state.savedPicks || [];
+export const isSaved = (movieId) => savedPicks().some((s) => s.movieId === movieId);
+export function savePick(movie, moodList = []) {
+  if (isSaved(movie.id) || savedPicks().length >= SAVED_MAX) return false;
+  state.savedPicks = [...savedPicks(), { movieId: movie.id, title: movie.title, year: movie.releaseYear, moods: moodList, date: new Date().toISOString() }];
+  save();
+  return true;
+}
+export function removeSaved(movieId, silent = false) {
+  if (!isSaved(movieId)) return;
+  state.savedPicks = savedPicks().filter((s) => s.movieId !== movieId);
+  if (!silent) save();
+}
+// Moves a saved movie into the watch history as a Popcorn Pick.
+export function watchSaved(movie) {
+  const s = savedPicks().find((x) => x.movieId === movie.id);
+  removeSaved(movie.id, true);
+  return addPopcornPick(movie, s ? s.moods : []);
 }
 
 // Display name for a history group: festival name, Popcorn Pick, or a deleted festival.

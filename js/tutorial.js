@@ -18,9 +18,9 @@ const STEPS = [
   },
   {
     icon: DIE,
-    title: 'Roll for tonight',
-    text: 'On the Roll tab, tap <b>Roll for tonight</b>. The first die picks a category, the second picks a movie in it. Like it? Tap <b>Watch it</b>. Not feeling it? <b>Reroll It</b> as many times as you want.',
-    tip: 'Have real dice? Switch to <b>Physical dice</b> and type in what you rolled.',
+    title: 'Roll for Tonight',
+    text: 'On the Roll tab, tap <b>Roll for Tonight</b>. The first die picks a category, the second picks a movie in it. Like it? Tap <b>Watch it</b>. Not feeling it? <b>Reroll it</b> as many times as you want.',
+    tip: 'Have real dice? Switch to <b>Physical Dice</b> and type in what you rolled.',
   },
   {
     icon: () => iconSVG(store.activeFestival().icon),
@@ -35,7 +35,7 @@ const STEPS = [
   {
     icon: TICKET,
     title: 'Keep track of what you watched',
-    text: 'Everything you watch lands on the <b>Watched</b> tab. Tap a movie to rate it and add notes. Watched something without rolling? Use <b>+ Log a movie</b>.',
+    text: 'Everything you watch lands on the <b>Watched</b> tab. Tap a movie to rate it and add notes. Watched something without rolling? Use <b>+ Log a Movie</b>.',
   },
   {
     icon: () => iconSVG('popcorn'),

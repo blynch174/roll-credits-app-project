@@ -47,22 +47,22 @@ export function renderCreator() {
     <h3 class="section-title">Dice</h3>
     <div class="card form-card" id="cr-dice">
       <div class="seg" id="cr-mode">
-        <button type="button" data-value="two">Two dice</button>
-        <button type="button" data-value="one">One die</button>
+        <button type="button" data-value="two">Two Dice</button>
+        <button type="button" data-value="one">One Die</button>
       </div>
       <div class="field" id="cr-cat-wrap"><span class="label">Category die</span>${dieChips(DIE_OPTIONS, form.categoryDie, 'cat')}</div>
       <div class="field"><span class="label">Movie die</span>${dieChips(DIE_OPTIONS, form.movieDie, 'movie')}</div>
       <p class="summary" id="cr-summary"></p>
     </div>
 
-    <button type="button" class="btn primary big" id="cr-create">Create festival</button>
+    <button type="button" class="btn primary big" id="cr-create">Create Festival</button>
 `;
 
   const refresh = () => {
     syncSeg($('#cr-mode'), form.mode);
     $('#cr-preview').innerHTML = `
       <span class="pv-title">${esc(form.name || 'Your festival')}</span>
-      <span class="pv-btn">Roll for tonight</span>
+      <span class="pv-btn">Roll for Tonight</span>
       <span class="pv-icons">${[1, 2, 3, 4, 5].map((i) => `<span class="ricon ${i <= 3 ? 'on' : ''}">${iconSVG(form.icon)}</span>`).join('')}</span>`;
     $('#cr-cat-wrap').hidden = form.mode === 'one';
     const cats = form.mode === 'one' ? 1 : form.categoryDie;

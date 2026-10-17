@@ -976,6 +976,7 @@ input[type="date"] {
 .pp-kernel .k-puff circle { fill: #fff3d6; stroke: #e8cf96; stroke-width: 1.5; }
 .pp-kernel .k-hull { fill: #c9862b; }
 .pp-kernel.gold { z-index: 2; }
+.pp-kernel.plain { opacity: 0; } /* hidden until its own flight starts (they launch one after another) */
 .pp-kernel.gold .k-puff circle { fill: #f6cf5a; stroke: #c99a1d; }
 .pp-kernel.gold svg { filter: drop-shadow(0 0 10px rgba(246, 207, 90, .8)); }
 .pp-crumb {
@@ -1308,7 +1309,7 @@ input[type="date"] {
 .about-card a { color: var(--accent); }
 
 /* ---------- v3.8 polish: popcorn stage, real ticket cut-outs, festival list ---------- */
-/* Bucket: a dark cartoon outline so it reads on light themes too, sitting on a soft spotlight. */
+/* Bucket: a dark cartoon outline so it reads on light themes too, with a soft shadow under it. */
 .pp-bucket .b-top circle, .pp-bucket .b-body, .pp-bucket .b-stripe, .pp-bucket .b-rim {
   stroke: #3b2416;
   stroke-width: 3;
@@ -1316,23 +1317,11 @@ input[type="date"] {
   paint-order: stroke;
 }
 .pp-bucket .b-stripe { stroke-width: 0; }
-.pp-spot {
-  position: absolute;
-  left: 50%;
-  bottom: 30px;
-  width: 196px;
-  height: 196px;
-  translate: -50% 0;
-  border-radius: 50%;
-  background: radial-gradient(circle at 50% 45%, color-mix(in srgb, var(--accent) 22%, var(--surface-2)) 0%, var(--surface-2) 55%, color-mix(in srgb, var(--surface-2) 60%, transparent) 100%);
-  border: 1px solid var(--line);
-  pointer-events: none;
-}
 .pp-bucket { position: relative; z-index: 1; }
+.pp-bucket svg { filter: drop-shadow(0 8px 10px rgba(0, 0, 0, .35)); }
 
 /* After a pick: the ticket replaces the stage, buttons right under it. */
 #screen-popcorn .pp-stage.has-ticket { height: auto; display: block; margin-top: 4px; }
-.pp-stage.has-ticket .pp-spot { display: none; }
 #popcorn.picked .pp-intro { display: none; }
 .ticket-wrap {
   position: absolute;
@@ -1373,3 +1362,41 @@ input[type="date"] {
 .pair-actions .btn { min-height: 52px; }
 .btn-watch, .pp-watch { background: #d6312b; border-color: #d6312b; color: #fff; }
 .rewatch-link { align-self: center; padding: 6px 0; font-size: 15px; }
+
+/* ---------- v3.11: Save for Later ---------- */
+.pp-actions .pp-save { grid-column: 1 / -1; }
+.pp-actions .pp-save:disabled { opacity: .6; }
+.saved-list { display: flex; flex-direction: column; gap: 8px; }
+.saved-item {
+  width: 100%;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+}
+.saved-item .si-title { flex: 1; min-width: 0; font-weight: 650; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.saved-item .si-year { flex: none; font-size: 13px; color: var(--muted); }
+.swipe-right {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  border-radius: 14px;
+  background: #2f9e55;
+  color: #fff;
+  font-weight: 750;
+  visibility: hidden;
+}
+.swipe-row.to-right .swipe-right { visibility: visible; }
+.swipe-row.to-right .swipe-del { visibility: hidden; }
+
+/* Tab bar: pinned to the screen's bottom edge (iOS home-screen apps can lay it out too high on launch). */
+html, body { min-height: 100%; }
+.tabbar { inset: auto 0 0 0; transform: translateZ(0); }

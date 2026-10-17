@@ -3,9 +3,9 @@
 
 import * as store from '../store.js';
 import * as catalog from '../catalog.js';
-import { posterImg, linksHTML } from '../movieinfo.js';
+import { posterImg, linksHTML, infoBlock, catalogMovie } from '../movieinfo.js';
 import { randInt, wait } from '../dice.js';
-import { $, $$, esc, toast } from '../ui.js';
+import { $, $$, esc, toast, attachSwipe, openSheet, closeSheet } from '../ui.js';
 
 const MOOD_MIN = 10; // only offer moods with at least this many movies
 let moods = new Set(); // empty = any mood. Several = movies with ANY of them (and/or).
@@ -40,7 +40,6 @@ function ticketHTML(m) {
   return `
     <div class="ticket-wrap" id="pp-ticket-wrap"><div class="ticket${m.posterPath ? ' has-poster' : ''}" id="pp-ticket">
       ${posterImg(m, 't-poster')}
-      <p class="t-admit">Admit one · Popcorn Pick</p>
       <p class="t-title">${esc(m.title)}</p>
       <p class="t-meta">${esc(bits.join(' · '))}</p>
       ${m.directors && m.directors.length ? `<p class="t-dir">Directed by ${esc(m.directors.join(', '))}</p>` : ''}
@@ -60,14 +59,16 @@ export async function renderPopcorn() {
     <h2 class="section-title first">Popcorn Pick</h2>
     <div class="pp-moods" id="pp-moods"><p class="hint">Loading the movie list…</p></div>
     <div class="pp-stage" id="pp-stage">
-      <div class="pp-spot" aria-hidden="true"></div>
       <div class="pp-bucket" id="pp-bucket" role="button" tabindex="0" aria-label="Pop some popcorn">${BUCKET}</div>
       <p class="pp-tap" id="pp-tap">Tap the bucket</p>
     </div>
     <div class="pp-actions" id="pp-actions" hidden>
       <button type="button" class="btn big pp-watch" id="pp-watch">Watch it</button>
-      <button type="button" class="btn ghost big" id="pp-again">Pop again</button>
-    </div>`;
+      <button type="button" class="btn ghost big" id="pp-again">Pop Again</button>
+      <button type="button" class="btn ghost big pp-save" id="pp-save">Save for Later</button>
+    </div>
+    <div id="pp-saved"></div>`;
+  drawSaved();
   busy = false;
   if (current) showTicket(root, current, false);
 
@@ -89,7 +90,17 @@ export async function renderPopcorn() {
         current = null;
         renderPopcorn();
         toast(`${entry.title} added to your watched list. Enjoy!`);
+        return;
       }
+      if (e.target.closest('#pp-save') && current) {
+        if (store.savePick(current, currentMoods)) {
+          drawSaveBtn();
+          drawSaved();
+        }
+        return;
+      }
+      const row = e.target.closest('.saved-item');
+      if (row) savedSheet(row.dataset.id);
     });
     root.addEventListener('keydown', (e) => {
       if ((e.key === 'Enter' || e.key === ' ') && e.target.id === 'pp-bucket') { e.preventDefault(); popcorn(root); }
@@ -131,6 +142,67 @@ function showTicket(root, movie, animate) {
     );
   }
   $('#pp-actions', root).hidden = false;
+  drawSaveBtn();
+}
+
+function drawSaveBtn() {
+  const b = $('#pp-save');
+  if (!b || !current) return;
+  const saved = store.isSaved(current.id);
+  const full = !saved && store.savedPicks().length >= store.SAVED_MAX;
+  b.disabled = saved || full;
+  b.textContent = saved ? 'Saved ✓' : full ? 'Saved List Full' : 'Save for Later';
+}
+
+// The Saved for Later list under the buttons. Swipe left to remove, right to mark watched.
+function drawSaved() {
+  const box = $('#pp-saved');
+  if (!box) return;
+  const list = store.savedPicks();
+  if (!list.length) { box.innerHTML = ''; return; }
+  box.innerHTML = `
+    <h2 class="section-title">Saved for Later</h2>
+    <div class="saved-list" id="pp-saved-list">
+      ${list.map((s) => `
+        <div class="swipe-row">
+          <div class="swipe-right" aria-hidden="true">Watched</div>
+          <button type="button" class="swipe-del" tabindex="-1">Delete</button>
+          <button type="button" class="swipe-item saved-item" data-id="${esc(s.movieId)}">
+            <span class="si-title">${esc(s.title)}</span>${s.year ? `<span class="si-year">${esc(String(s.year))}</span>` : ''}
+          </button>
+        </div>`).join('')}
+    </div>`;
+  attachSwipe($('#pp-saved-list'), removeSavedRow, watchSavedRow);
+}
+
+const savedMovie = (id) => {
+  const s = store.savedPicks().find((x) => x.movieId === id);
+  return s ? catalogMovie(id) || { id, title: s.title, releaseYear: s.year } : null;
+};
+function removeSavedRow(id) {
+  store.removeSaved(id);
+  drawSaved();
+  drawSaveBtn();
+}
+function watchSavedRow(id) {
+  const m = savedMovie(id);
+  if (!m) return;
+  const entry = store.watchSaved(m);
+  drawSaved();
+  drawSaveBtn();
+  toast(`${entry.title} added to your watched list. Enjoy!`);
+}
+function savedSheet(id) {
+  const m = savedMovie(id);
+  if (!m) return;
+  openSheet({
+    title: m.releaseYear ? `${m.title} (${m.releaseYear})` : m.title,
+    body: infoBlock(m),
+    actions: [
+      { label: 'Remove', kind: 'ghost', onClick: () => { closeSheet(); removeSavedRow(id); } },
+      { label: 'Watch it', kind: 'primary', onClick: () => { closeSheet(); watchSavedRow(id); } },
+    ],
+  });
 }
 
 async function popcorn(root) {

@@ -73,7 +73,8 @@ function closeOpenRow(except) {
   }
 }
 
-export function attachSwipe(list, onDelete) {
+// onRight (optional): a full swipe to the right calls it (e.g. "move to watched"). Rows then need a .swipe-right underlay.
+export function attachSwipe(list, onDelete, onRight = null) {
   if (list.dataset.swipe) return;
   list.dataset.swipe = '1';
   let item = null, startX = 0, startY = 0, baseX = 0, dx = 0, mode = null; // mode: null | 'swipe' | 'scroll'
@@ -103,7 +104,8 @@ export function attachSwipe(list, onDelete) {
       }
     }
     if (mode !== 'swipe') return;
-    dx = Math.min(0, baseX + mx);
+    dx = onRight && baseX === 0 ? baseX + mx : Math.min(0, baseX + mx);
+    item.closest('.swipe-row').classList.toggle('to-right', dx > 0);
     setX(item, dx, false);
   });
 
@@ -117,7 +119,15 @@ export function attachSwipe(list, onDelete) {
     it.dataset.justSwiped = '1'; // stop the tap that ends a swipe from opening the movie
     setTimeout(() => delete it.dataset.justSwiped, 50);
     const w = it.offsetWidth;
-    if (dx < -w * 0.55) {
+    if (onRight && dx > w * 0.45) {
+      setX(it, w + 20, true);
+      row.classList.add('removing');
+      setTimeout(() => onRight(it.dataset.id), 180);
+      if (openRow === it) openRow = null;
+    } else if (dx > 0) {
+      setX(it, 0, true);
+      setTimeout(() => row.classList.remove('to-right'), 200);
+    } else if (dx < -w * 0.55) {
       setX(it, -w - 20, true);
       row.classList.add('removing');
       setTimeout(() => onDelete(it.dataset.id), 180);
