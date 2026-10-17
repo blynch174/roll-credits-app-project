@@ -11,11 +11,12 @@ const COLLECTIONS = {
   awards: 'data/roll_credits_oscars.json',
   kids: 'data/kids_family_collection.json',
   bucketlist: 'data/bucket_list_collection.json',
+  tearjerkers: 'data/tearjerkers_collection.json',
 };
 
 // Festivals whose sequel offers stay inside their own list (no Aliens after Alien on Bucket List Cinema,
 // no PG-13 sequels the kids list left out).
-const SEQUELS_IN_LIST = new Set(['kids', 'bucketlist']);
+const SEQUELS_IN_LIST = new Set(['kids', 'bucketlist', 'tearjerkers']);
 
 // Titles on the built-in tables (or older saved data) that are spelled differently in the catalog.
 const ALIASES = {

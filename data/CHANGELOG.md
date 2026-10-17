@@ -1,5 +1,21 @@
 # Roll Credits data: cleanup pass
 
+## v3.10 (2026-10-17): Tear Jerkers
+
+Catalog: 2,114 → 2,160 movies. List: `tearjerkers_collection.json` (145 movies; the List Obsession top 100 keep their `ranks`).
+
+- 37 new movies from the package. *Bicycle Thieves* was listed as new but was already in the catalog.
+- *Spoiler Alert* (2022) pointed at the wrong film (tt16969934, "Dana Skvarek II"). Fixed to tt7775720, directed by
+  Michael Showalter. *If I Stay* genres fixed (it isn't a comedy).
+- 9 extra picks added as new movies: Big Fish, A Monster Calls, Where the Red Fern Grows, The Champ (1979), My Dog Skip,
+  Pay It Forward, Deep Impact, Avengers: Endgame, The Iron Claw. 36 movies already in the catalog were tagged into the
+  festival too (The Elephant Man, Philadelphia, Kramer vs. Kramer, Room, Casablanca, Still Alice, Logan, …).
+- New moods: **Bittersweet** and **Heartbreaking**. Real moods for 137 of the festival's movies (replacing the package's
+  lowercase "emotional / bittersweet / heartfelt" and the old generic Awards moods). Scariness/comedy rewritten for the new
+  movies (the package had 3/2 on most of them).
+- Age rating, countries, and languages for the new movies are left for `tools/catalog.py fetch` to fill from TMDB.
+- Oscar fields for the new movies computed from the same Oscar data as the rest of the catalog.
+
 ## v3.7 (2026-10-17)
 
 - The catalog is now built from `data/catalog/` (curation, TMDB facts, Oscars) by `tools/catalog.py`. See CATALOG.md.

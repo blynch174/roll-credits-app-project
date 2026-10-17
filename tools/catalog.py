@@ -30,7 +30,7 @@ API = os.environ.get('TMDB_API_BASE', 'https://api.themoviedb.org/3')
 OSCAR_CSV_URL = os.environ.get('OSCAR_CSV_URL', 'https://raw.githubusercontent.com/DLu/oscar_data/main/oscars.csv')
 COLLECTIONS = {  # festival id -> its list of movie ids (the app ranks these first in search)
     'halloween': 'halloween_collection.json', 'christmas': 'christmas_collection.json', 'awards': 'roll_credits_oscars.json',
-    'kids': 'kids_family_collection.json', 'bucketlist': 'bucket_list_collection.json',
+    'kids': 'kids_family_collection.json', 'bucketlist': 'bucket_list_collection.json', 'tearjerkers': 'tearjerkers_collection.json',
 }
 
 # Field order in data/all_movies.json
@@ -65,7 +65,7 @@ def write_lines(path, obj):
 
 def slug(title, year):
     s = unicodedata.normalize('NFKD', title).encode('ascii', 'ignore').decode().lower()
-    s = re.sub(r'&', ' and ', s)
+    s = s.replace('&', ' ')  # "Marley & Me" -> marley-me, like the rest of the catalog
     s = re.sub(r'[^a-z0-9]+', '-', s).strip('-')
     return f'{s}-{year}'
 

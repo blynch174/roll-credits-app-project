@@ -1,6 +1,6 @@
 # Roll Credits
 
-Roll dice to pick tonight's movie. Each **film festival** (Halloween, Christmas, Awards Season, Kids & Family, Bucket List Cinema, or one you make)
+Roll dice to pick tonight's movie. Each **film festival** (Halloween, Christmas, Awards Season, Kids & Family, Bucket List Cinema, Tear Jerkers, or one you make)
 has its own tables, dice, and rating icon. Colors are one app-wide theme (Settings → Themes). Plain HTML, CSS, and JavaScript. No frameworks, no build step.
 
 ## Run it on your computer
@@ -45,7 +45,7 @@ Then open http://localhost:8000. (The JS loads as modules, which don't run from 
 
 1. Make your changes.
 2. If you added a new file under `js/`, add it to the `FILES` list in `sw.js`.
-3. Bump `CACHE_VERSION` in `sw.js` (`v14` → `v15`).
+3. Bump `CACHE_VERSION` in `sw.js` (`v15` → `v16`).
 4. `git add .`, `git commit -m "what changed"`, `git push`.
 
 `data/` and `vendor/` are deliberately not in `FILES`. They're too big to download at install, and get saved for
@@ -144,8 +144,8 @@ Settings → Export backup saves a copy.
 - An empty category in a two-dice festival acts as the Wild Card.
 - **Keep mode:** watched movies stay in their slot, marked Seen. **Replace mode:** they leave the table.
 - **Sequel switching** (Settings, on by default): rolling a movie already seen at this festival offers the next
-  unseen movie in its franchise (by `seriesOrder`), skipping any that are already on the tables. Kids & Family and
-  Bucket List Cinema only offer sequels that are on their own list (`SEQUELS_IN_LIST` in `catalog.js`).
+  unseen movie in its franchise (by `seriesOrder`), skipping any that are already on the tables. Kids & Family,
+  Bucket List Cinema, and Tear Jerkers only offer sequels that are on their own list (`SEQUELS_IN_LIST` in `catalog.js`).
 - **Log a movie** (Watched tab): add something watched outside the app. If it's on that festival's tables it's
   linked to that slot, like a normal watch.
 - **Editing a festival:** tap the festival name at the top → **Edit**. Tables and everything specific to that festival

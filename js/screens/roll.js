@@ -160,7 +160,7 @@ function renderRollArea() {
 
   let card, actions;
   // Two buttons side by side: the main action, and Reroll (which asks: this movie, or everything).
-  const pair = (main) => `<div class="pair-actions">${main}<button type="button" class="btn ghost big" data-act="reroll">Reroll</button></div>`;
+  const pair = (main) => `<div class="pair-actions">${main}<button type="button" class="btn ghost big" data-act="reroll">Reroll It</button></div>`;
   const cm = movie ? catalogMovie(movie.catalogId) : null;
   if (movie && !seen) {
     card = `

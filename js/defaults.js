@@ -20,7 +20,7 @@ export const SWATCHES = [
 export const swatchHex = (id) => (SWATCHES.find((s) => s.id === id) || SWATCHES[7]).hex;
 
 // Rating icons a festival can use (drawn in icons.js).
-export const RATING_ICONS = ['skull', 'tree', 'trophy', 'star', 'popcorn', 'heart', 'ghost', 'snowflake', 'balloon', 'hourglass'];
+export const RATING_ICONS = ['skull', 'tree', 'trophy', 'star', 'popcorn', 'heart', 'ghost', 'snowflake', 'balloon', 'hourglass', 'teardrop'];
 
 export function uid() {
   if (globalThis.crypto && crypto.randomUUID) return crypto.randomUUID();
@@ -203,12 +203,53 @@ const BUCKET_LIST = [
   ['Wild Card', 'slate', [], 20],
 ];
 
+const TEAR_JERKERS = [
+  ["Love Hurts", 'crimson', [
+    ["The Notebook", 2004], ["The Fault in Our Stars", 2014], ["Love Story", 1970], ["A Walk to Remember", 2002],
+    ["P.S. I Love You", 2007], ["Me Before You", 2016], ["One Day", 2011], ["Romeo + Juliet", 1996],
+    ["Brokeback Mountain", 2005], ["Call Me by Your Name", 2017], ["Past Lives", 2023], ["Eternal Sunshine of the Spotless Mind", 2004],
+    ["The Way We Were", 1973], ["Brief Encounter", 1945], ["Ghost", 1990], ["Atonement", 2007],
+    ["Portrait of a Lady on Fire", 2019], ["The Bridges of Madison County", 1995], ["Casablanca", 1942], ["If Beale Street Could Talk", 2018],
+  ], 20],
+  ["Tiny Tissues", 'teal', [
+    ["Up", 2009], ["Toy Story 3", 2010], ["Coco", 2017], ["Inside Out", 2015],
+    ["Bambi", 1942], ["The Fox and the Hound", 1981], ["The Iron Giant", 1999], ["The Land Before Time", 1988],
+    ["The Lion King", 1994], ["E.T. the Extra-Terrestrial", 1982], ["My Girl", 1991], ["Bridge to Terabithia", 2007],
+    ["Marley & Me", 2008], ["Hachi: A Dog's Tale", 2009], ["Old Yeller", 1957], ["Where the Red Fern Grows", 1974],
+    ["My Dog Skip", 2000], ["Your Name.", 2016], ["The Wild Robot", 2024], ["Dumbo", 1941],
+  ], 20],
+  ["Saying Goodbye", 'violet', [
+    ["Steel Magnolias", 1989], ["Beaches", 1988], ["Terms of Endearment", 1983], ["Stepmom", 1998],
+    ["My Life", 1993], ["My Sister's Keeper", 2009], ["The Farewell", 2019], ["Spoiler Alert", 2022],
+    ["If I Stay", 2014], ["Five Feet Apart", 2019], ["Brian's Song", 1971], ["Manchester by the Sea", 2016],
+    ["Aftersun", 2022], ["Big Fish", 2003], ["A Monster Calls", 2016], ["Still Alice", 2014],
+    ["The Father", 2020], ["Amour", 2012], ["Philadelphia", 1993], ["Shadowlands", 1993],
+  ], 20],
+  ["Life Isn't Fair", 'indigo', [
+    ["The Shawshank Redemption", 1994], ["The Green Mile", 1999], ["Moonlight", 2016], ["Precious", 2009],
+    ["The Pursuit of Happyness", 2006], ["Good Will Hunting", 1997], ["Lion", 2016], ["The Color Purple", 1985],
+    ["Dead Poets Society", 1989], ["Forrest Gump", 1994], ["Room", 2015], ["Kramer vs. Kramer", 1979],
+    ["The Florida Project", 2017], ["Beasts of the Southern Wild", 2012], ["Million Dollar Baby", 2004], ["The Champ", 1979],
+    ["The Iron Claw", 2023], ["Field of Dreams", 1989], ["The Elephant Man", 1980], ["Dancer in the Dark", 2000],
+  ], 20],
+  ["True Stories, Real Tears", 'gold', [
+    ["Schindler's List", 1993], ["The Pianist", 2002], ["Grave of the Fireflies", 1988], ["Hotel Rwanda", 2004],
+    ["Life Is Beautiful", 1997], ["The Impossible", 2012], ["The Boy in the Striped Pajamas", 2008], ["Empire of the Sun", 1987],
+    ["Sophie's Choice", 1982], ["Saving Private Ryan", 1998], ["Fruitvale Station", 2013], ["12 Years a Slave", 2013],
+  ], 12],
+  ["Big Screen, Big Tears", 'moss', [
+    ["Titanic", 1997], ["Armageddon", 1998], ["Deep Impact", 1998], ["Interstellar", 2014],
+    ["Furious 7", 2015], ["Avengers: Endgame", 2019], ["Logan", 2017], ["Train to Busan", 2016],
+  ], 8],
+];
+
 export const BUILT_IN_FESTIVALS = [
   { id: 'halloween', name: 'Halloween', icon: 'skull', categoryDie: 6, movieDie: 12, categories: HALLOWEEN },
   { id: 'christmas', name: 'Christmas', icon: 'tree', categoryDie: 6, movieDie: 12, categories: CHRISTMAS },
   { id: 'awards', name: 'Awards Season', icon: 'trophy', categoryDie: 6, movieDie: 12, categories: AWARDS },
   { id: 'kids', name: 'Kids & Family', icon: 'balloon', categoryDie: 6, movieDie: 20, categories: KIDS },
   { id: 'bucketlist', name: 'Bucket List Cinema', icon: 'hourglass', categoryDie: 6, movieDie: 20, categories: BUCKET_LIST },
+  { id: 'tearjerkers', name: 'Tear Jerkers', icon: 'teardrop', categoryDie: 6, movieDie: 20, categories: TEAR_JERKERS },
 ];
 
 export function makeCategory(name, color, die, movies = []) {
