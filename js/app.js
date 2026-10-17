@@ -117,7 +117,7 @@ if (!store.getState().settings.tutorialSeen) startTutorial();
 catalog.load().then(() => {
   if (!catalog.isReady()) return;
   store.linkCatalog(catalog.match);
-  catalog.loadCollection(store.activeFestival().id);
+  catalog.loadAllCollections();
 });
 
 // 3D dice: start downloading in the background only if they're turned on.

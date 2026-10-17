@@ -25,7 +25,7 @@ const STEPS = [
   {
     icon: () => iconSVG(store.activeFestival().icon),
     title: 'Pick a festival',
-    text: 'Tap the festival name at the top of the screen to switch between <b>Halloween</b>, <b>Christmas</b>, and <b>Awards Season</b>, or create one of your own.',
+    text: 'Tap the festival name at the top of the screen to switch festivals: <b>Halloween</b>, <b>Christmas</b>, <b>Awards Season</b>, <b>Kids &amp; Family</b>, and <b>Bucket List Cinema</b>. Or create one of your own.',
   },
   {
     icon: LIST,

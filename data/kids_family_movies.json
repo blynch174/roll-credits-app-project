@@ -1,0 +1,6701 @@
+[
+  {
+    "id": "back-to-the-future-1985",
+    "imdbId": "tt0088763",
+    "imdbLink": "https://www.imdb.com/title/tt0088763/",
+    "title": "Back to the Future",
+    "originalTitle": null,
+    "releaseYear": 1985,
+    "type": "Feature Film",
+    "runtimeMinutes": 116,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Comedy",
+      "Sci-Fi"
+    ],
+    "directors": [
+      "Robert Zemeckis"
+    ],
+    "moodTone": [
+      "Adventurous",
+      "Witty",
+      "Energetic"
+    ],
+    "scariness": 1,
+    "comedy": 7,
+    "franchise": "Back to the Future",
+    "seriesOrder": 1,
+    "oscarCeremony": 58,
+    "oscarNominationsTotal": 4,
+    "oscarWinsTotal": 1,
+    "oscarNominationCategories": [
+      "MUSIC (Original Song)",
+      "SOUND MIXING",
+      "SOUND EDITING",
+      "WRITING (Original Screenplay)"
+    ],
+    "oscarWinCategories": [
+      "SOUND EDITING"
+    ],
+    "oscarMajorNoms": [
+      "originalScreenplay"
+    ],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "walle-2008",
+    "imdbId": "tt0910970",
+    "imdbLink": "https://www.imdb.com/title/tt0910970/",
+    "title": "WALL·E",
+    "originalTitle": null,
+    "releaseYear": 2008,
+    "type": "Feature Film",
+    "runtimeMinutes": 98,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Animation",
+      "Family"
+    ],
+    "directors": [
+      "Andrew Stanton"
+    ],
+    "moodTone": [
+      "Whimsical",
+      "Reflective",
+      "Romantic"
+    ],
+    "scariness": 1,
+    "comedy": 4,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": 81,
+    "oscarNominationsTotal": 6,
+    "oscarWinsTotal": 1,
+    "oscarNominationCategories": [
+      "ANIMATED FEATURE FILM",
+      "MUSIC (Original Score)",
+      "MUSIC (Original Song)",
+      "SOUND EDITING",
+      "SOUND MIXING",
+      "WRITING (Original Screenplay)"
+    ],
+    "oscarWinCategories": [
+      "ANIMATED FEATURE FILM"
+    ],
+    "oscarMajorNoms": [
+      "originalScreenplay"
+    ],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "the-lion-king-1994",
+    "imdbId": "tt0110357",
+    "imdbLink": "https://www.imdb.com/title/tt0110357/",
+    "title": "The Lion King",
+    "originalTitle": null,
+    "releaseYear": 1994,
+    "type": "Feature Film",
+    "runtimeMinutes": 88,
+    "contentRating": "G",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Animation",
+      "Drama"
+    ],
+    "directors": [
+      "Roger Allers",
+      "Rob Minkoff"
+    ],
+    "moodTone": [
+      "Dramatic",
+      "Adventurous",
+      "Sentimental"
+    ],
+    "scariness": 2,
+    "comedy": 4,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": 67,
+    "oscarNominationsTotal": 4,
+    "oscarWinsTotal": 2,
+    "oscarNominationCategories": [
+      "MUSIC (Original Score)",
+      "MUSIC (Original Song)"
+    ],
+    "oscarWinCategories": [
+      "MUSIC (Original Score)",
+      "MUSIC (Original Song)"
+    ],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "up-2009",
+    "imdbId": "tt1049413",
+    "imdbLink": "https://www.imdb.com/title/tt1049413/",
+    "title": "Up",
+    "originalTitle": null,
+    "releaseYear": 2009,
+    "type": "Feature Film",
+    "runtimeMinutes": 96,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Animation",
+      "Comedy"
+    ],
+    "directors": [
+      "Pete Docter",
+      "Bob Peterson"
+    ],
+    "moodTone": [
+      "Adventurous",
+      "Sentimental",
+      "Warm"
+    ],
+    "scariness": 1,
+    "comedy": 6,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": 82,
+    "oscarNominationsTotal": 5,
+    "oscarWinsTotal": 2,
+    "oscarNominationCategories": [
+      "ANIMATED FEATURE FILM",
+      "MUSIC (Original Score)",
+      "BEST PICTURE",
+      "SOUND EDITING",
+      "WRITING (Original Screenplay)"
+    ],
+    "oscarWinCategories": [
+      "ANIMATED FEATURE FILM",
+      "MUSIC (Original Score)"
+    ],
+    "oscarMajorNoms": [
+      "picture",
+      "originalScreenplay"
+    ],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "finding-nemo-2003",
+    "imdbId": "tt0266543",
+    "imdbLink": "https://www.imdb.com/title/tt0266543/",
+    "title": "Finding Nemo",
+    "originalTitle": null,
+    "releaseYear": 2003,
+    "type": "Feature Film",
+    "runtimeMinutes": 100,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Animation",
+      "Comedy"
+    ],
+    "directors": [
+      "Andrew Stanton",
+      "Lee Unkrich"
+    ],
+    "moodTone": [
+      "Adventurous",
+      "Warm",
+      "Playful"
+    ],
+    "scariness": 2,
+    "comedy": 7,
+    "franchise": "Finding Nemo",
+    "seriesOrder": 1,
+    "oscarCeremony": 76,
+    "oscarNominationsTotal": 4,
+    "oscarWinsTotal": 1,
+    "oscarNominationCategories": [
+      "ANIMATED FEATURE FILM",
+      "MUSIC (Original Score)",
+      "SOUND EDITING",
+      "WRITING (Original Screenplay)"
+    ],
+    "oscarWinCategories": [
+      "ANIMATED FEATURE FILM"
+    ],
+    "oscarMajorNoms": [
+      "originalScreenplay"
+    ],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "toy-story-1995",
+    "imdbId": "tt0114709",
+    "imdbLink": "https://www.imdb.com/title/tt0114709/",
+    "title": "Toy Story",
+    "originalTitle": null,
+    "releaseYear": 1995,
+    "type": "Feature Film",
+    "runtimeMinutes": 81,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Animation",
+      "Comedy"
+    ],
+    "directors": [
+      "John Lasseter"
+    ],
+    "moodTone": [
+      "Playful",
+      "Witty",
+      "Adventurous"
+    ],
+    "scariness": 1,
+    "comedy": 8,
+    "franchise": "Toy Story",
+    "seriesOrder": 1,
+    "oscarCeremony": 68,
+    "oscarNominationsTotal": 4,
+    "oscarWinsTotal": 1,
+    "oscarNominationCategories": [
+      "MUSIC (Original Song Score or Adaptation Score)",
+      "MUSIC (Original Song)",
+      "WRITING (Original Screenplay)",
+      "SPECIAL ACHIEVEMENT AWARD"
+    ],
+    "oscarWinCategories": [
+      "SPECIAL ACHIEVEMENT AWARD"
+    ],
+    "oscarMajorNoms": [
+      "originalScreenplay"
+    ],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "jurassic-park-1993",
+    "imdbId": "tt0107290",
+    "imdbLink": "https://www.imdb.com/title/tt0107290/",
+    "title": "Jurassic Park",
+    "originalTitle": null,
+    "releaseYear": 1993,
+    "type": "Feature Film",
+    "runtimeMinutes": 127,
+    "contentRating": "PG-13",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Sci-Fi"
+    ],
+    "directors": [
+      "Steven Spielberg"
+    ],
+    "moodTone": [
+      "Adventurous",
+      "Tense",
+      "Cinematic"
+    ],
+    "scariness": 5,
+    "comedy": 3,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": 66,
+    "oscarNominationsTotal": 3,
+    "oscarWinsTotal": 3,
+    "oscarNominationCategories": [
+      "SOUND MIXING",
+      "SOUND EDITING",
+      "VISUAL EFFECTS"
+    ],
+    "oscarWinCategories": [
+      "SOUND MIXING",
+      "SOUND EDITING",
+      "VISUAL EFFECTS"
+    ],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "monsters-inc-2001",
+    "imdbId": "tt0198781",
+    "imdbLink": "https://www.imdb.com/title/tt0198781/",
+    "title": "Monsters, Inc.",
+    "originalTitle": null,
+    "releaseYear": 2001,
+    "type": "Feature Film",
+    "runtimeMinutes": 92,
+    "contentRating": "G",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Animation",
+      "Comedy"
+    ],
+    "directors": [
+      "Pete Docter",
+      "David Silverman",
+      "Lee Unkrich"
+    ],
+    "moodTone": [
+      "Playful",
+      "Warm",
+      "Witty"
+    ],
+    "scariness": 1,
+    "comedy": 8,
+    "franchise": "Monsters, Inc.",
+    "seriesOrder": 1,
+    "oscarCeremony": 74,
+    "oscarNominationsTotal": 4,
+    "oscarWinsTotal": 1,
+    "oscarNominationCategories": [
+      "ANIMATED FEATURE FILM",
+      "MUSIC (Original Score)",
+      "MUSIC (Original Song)",
+      "SOUND EDITING"
+    ],
+    "oscarWinCategories": [
+      "MUSIC (Original Song)"
+    ],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "harry-potter-and-the-deathly-hallows-part-2-2011",
+    "imdbId": "tt1201607",
+    "imdbLink": "https://www.imdb.com/title/tt1201607/",
+    "title": "Harry Potter and the Deathly Hallows: Part 2",
+    "originalTitle": null,
+    "releaseYear": 2011,
+    "type": "Feature Film",
+    "runtimeMinutes": 130,
+    "contentRating": "PG-13",
+    "countries": [
+      "United Kingdom",
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Family",
+      "Fantasy"
+    ],
+    "directors": [
+      "David Yates"
+    ],
+    "moodTone": [
+      "Dramatic",
+      "Tense",
+      "Cinematic"
+    ],
+    "scariness": 4,
+    "comedy": 2,
+    "franchise": "Harry Potter",
+    "seriesOrder": 8,
+    "oscarCeremony": 84,
+    "oscarNominationsTotal": 3,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [
+      "ART DIRECTION",
+      "MAKEUP AND HAIRSTYLING",
+      "VISUAL EFFECTS"
+    ],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "spirited-away-2001",
+    "imdbId": "tt0245429",
+    "imdbLink": "https://www.imdb.com/title/tt0245429/",
+    "title": "Spirited Away",
+    "originalTitle": null,
+    "releaseYear": 2001,
+    "type": "Feature Film",
+    "runtimeMinutes": 124,
+    "contentRating": "PG",
+    "countries": [
+      "Japan"
+    ],
+    "languages": [
+      "Japanese"
+    ],
+    "genres": [
+      "Adventure",
+      "Animation",
+      "Family"
+    ],
+    "directors": [
+      "Hayao Miyazaki"
+    ],
+    "moodTone": [
+      "Otherworldly",
+      "Whimsical",
+      "Atmospheric"
+    ],
+    "scariness": 3,
+    "comedy": 2,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": 75,
+    "oscarNominationsTotal": 1,
+    "oscarWinsTotal": 1,
+    "oscarNominationCategories": [
+      "ANIMATED FEATURE FILM"
+    ],
+    "oscarWinCategories": [
+      "ANIMATED FEATURE FILM"
+    ],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "toy-story-3-2010",
+    "imdbId": "tt0435761",
+    "imdbLink": "https://www.imdb.com/title/tt0435761/",
+    "title": "Toy Story 3",
+    "originalTitle": null,
+    "releaseYear": 2010,
+    "type": "Feature Film",
+    "runtimeMinutes": 103,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Animation",
+      "Comedy"
+    ],
+    "directors": [
+      "Lee Unkrich"
+    ],
+    "moodTone": [
+      "Sentimental",
+      "Adventurous",
+      "Playful"
+    ],
+    "scariness": 2,
+    "comedy": 6,
+    "franchise": "Toy Story",
+    "seriesOrder": 3,
+    "oscarCeremony": 83,
+    "oscarNominationsTotal": 5,
+    "oscarWinsTotal": 2,
+    "oscarNominationCategories": [
+      "ANIMATED FEATURE FILM",
+      "MUSIC (Original Song)",
+      "BEST PICTURE",
+      "SOUND EDITING",
+      "WRITING (Adapted Screenplay)"
+    ],
+    "oscarWinCategories": [
+      "ANIMATED FEATURE FILM",
+      "MUSIC (Original Song)"
+    ],
+    "oscarMajorNoms": [
+      "picture",
+      "adaptedScreenplay"
+    ],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "ratatouille-2007",
+    "imdbId": "tt0382932",
+    "imdbLink": "https://www.imdb.com/title/tt0382932/",
+    "title": "Ratatouille",
+    "originalTitle": null,
+    "releaseYear": 2007,
+    "type": "Feature Film",
+    "runtimeMinutes": 111,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Animation",
+      "Comedy"
+    ],
+    "directors": [
+      "Brad Bird",
+      "Jan Pinkava"
+    ],
+    "moodTone": [
+      "Warm",
+      "Witty",
+      "Whimsical"
+    ],
+    "scariness": 1,
+    "comedy": 6,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": 80,
+    "oscarNominationsTotal": 5,
+    "oscarWinsTotal": 1,
+    "oscarNominationCategories": [
+      "ANIMATED FEATURE FILM",
+      "MUSIC (Original Score)",
+      "SOUND EDITING",
+      "SOUND MIXING",
+      "WRITING (Original Screenplay)"
+    ],
+    "oscarWinCategories": [
+      "ANIMATED FEATURE FILM"
+    ],
+    "oscarMajorNoms": [
+      "originalScreenplay"
+    ],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "inside-out-2015",
+    "imdbId": "tt2096673",
+    "imdbLink": "https://www.imdb.com/title/tt2096673/",
+    "title": "Inside Out",
+    "originalTitle": null,
+    "releaseYear": 2015,
+    "type": "Feature Film",
+    "runtimeMinutes": 95,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Animation",
+      "Comedy"
+    ],
+    "directors": [
+      "Pete Docter",
+      "Ronnie Del Carmen"
+    ],
+    "moodTone": [
+      "Whimsical",
+      "Sentimental",
+      "Reflective"
+    ],
+    "scariness": 1,
+    "comedy": 7,
+    "franchise": "Inside Out",
+    "seriesOrder": 1,
+    "oscarCeremony": 88,
+    "oscarNominationsTotal": 2,
+    "oscarWinsTotal": 1,
+    "oscarNominationCategories": [
+      "ANIMATED FEATURE FILM",
+      "WRITING (Original Screenplay)"
+    ],
+    "oscarWinCategories": [
+      "ANIMATED FEATURE FILM"
+    ],
+    "oscarMajorNoms": [
+      "originalScreenplay"
+    ],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "harry-potter-and-the-sorcerer-s-stone-2001",
+    "imdbId": "tt0241527",
+    "imdbLink": "https://www.imdb.com/title/tt0241527/",
+    "title": "Harry Potter and the Sorcerer's Stone",
+    "originalTitle": null,
+    "releaseYear": 2001,
+    "type": "Feature Film",
+    "runtimeMinutes": 152,
+    "contentRating": "PG",
+    "countries": [
+      "United Kingdom",
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Family",
+      "Fantasy"
+    ],
+    "directors": [
+      "Chris Columbus"
+    ],
+    "moodTone": [
+      "Whimsical",
+      "Adventurous",
+      "Warm"
+    ],
+    "scariness": 2,
+    "comedy": 4,
+    "franchise": "Harry Potter",
+    "seriesOrder": 1,
+    "oscarCeremony": 74,
+    "oscarNominationsTotal": 3,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [
+      "ART DIRECTION",
+      "COSTUME DESIGN",
+      "MUSIC (Original Score)"
+    ],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "how-to-train-your-dragon-2010",
+    "imdbId": "tt0892769",
+    "imdbLink": "https://www.imdb.com/title/tt0892769/",
+    "title": "How to Train Your Dragon",
+    "originalTitle": null,
+    "releaseYear": 2010,
+    "type": "Feature Film",
+    "runtimeMinutes": 98,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Action",
+      "Adventure",
+      "Animation"
+    ],
+    "directors": [
+      "Dean DeBlois",
+      "Chris Sanders"
+    ],
+    "moodTone": [
+      "Adventurous",
+      "Warm",
+      "Energetic"
+    ],
+    "scariness": 2,
+    "comedy": 5,
+    "franchise": "How to Train Your Dragon",
+    "seriesOrder": 1,
+    "oscarCeremony": 83,
+    "oscarNominationsTotal": 2,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [
+      "ANIMATED FEATURE FILM",
+      "MUSIC (Original Score)"
+    ],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "the-incredibles-2004",
+    "imdbId": "tt0317705",
+    "imdbLink": "https://www.imdb.com/title/tt0317705/",
+    "title": "The Incredibles",
+    "originalTitle": null,
+    "releaseYear": 2004,
+    "type": "Feature Film",
+    "runtimeMinutes": 115,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Action",
+      "Adventure",
+      "Animation"
+    ],
+    "directors": [
+      "Brad Bird"
+    ],
+    "moodTone": [
+      "Energetic",
+      "Adventurous",
+      "Witty"
+    ],
+    "scariness": 2,
+    "comedy": 6,
+    "franchise": "The Incredibles",
+    "seriesOrder": 1,
+    "oscarCeremony": 77,
+    "oscarNominationsTotal": 4,
+    "oscarWinsTotal": 2,
+    "oscarNominationCategories": [
+      "ANIMATED FEATURE FILM",
+      "SOUND EDITING",
+      "SOUND MIXING",
+      "WRITING (Original Screenplay)"
+    ],
+    "oscarWinCategories": [
+      "ANIMATED FEATURE FILM",
+      "SOUND EDITING"
+    ],
+    "oscarMajorNoms": [
+      "originalScreenplay"
+    ],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "shrek-2001",
+    "imdbId": "tt0126029",
+    "imdbLink": "https://www.imdb.com/title/tt0126029/",
+    "title": "Shrek",
+    "originalTitle": null,
+    "releaseYear": 2001,
+    "type": "Feature Film",
+    "runtimeMinutes": 90,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Animation",
+      "Comedy"
+    ],
+    "directors": [
+      "Andrew Adamson",
+      "Vicky Jenson"
+    ],
+    "moodTone": [
+      "Witty",
+      "Playful",
+      "Adventurous"
+    ],
+    "scariness": 1,
+    "comedy": 9,
+    "franchise": "Shrek",
+    "seriesOrder": 1,
+    "oscarCeremony": 74,
+    "oscarNominationsTotal": 2,
+    "oscarWinsTotal": 1,
+    "oscarNominationCategories": [
+      "ANIMATED FEATURE FILM",
+      "WRITING (Adapted Screenplay)"
+    ],
+    "oscarWinCategories": [
+      "ANIMATED FEATURE FILM"
+    ],
+    "oscarMajorNoms": [
+      "adaptedScreenplay"
+    ],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "harry-potter-and-the-prisoner-of-azkaban-2004",
+    "imdbId": "tt0304141",
+    "imdbLink": "https://www.imdb.com/title/tt0304141/",
+    "title": "Harry Potter and the Prisoner of Azkaban",
+    "originalTitle": null,
+    "releaseYear": 2004,
+    "type": "Feature Film",
+    "runtimeMinutes": 142,
+    "contentRating": "PG",
+    "countries": [
+      "United Kingdom",
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Family",
+      "Fantasy"
+    ],
+    "directors": [
+      "Alfonso Cuarón"
+    ],
+    "moodTone": [
+      "Atmospheric",
+      "Adventurous",
+      "Whimsical"
+    ],
+    "scariness": 3,
+    "comedy": 4,
+    "franchise": "Harry Potter",
+    "seriesOrder": 3,
+    "oscarCeremony": 77,
+    "oscarNominationsTotal": 2,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [
+      "MUSIC (Original Score)",
+      "VISUAL EFFECTS"
+    ],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "coco-2017",
+    "imdbId": "tt2380307",
+    "imdbLink": "https://www.imdb.com/title/tt2380307/",
+    "title": "Coco",
+    "originalTitle": null,
+    "releaseYear": 2017,
+    "type": "Feature Film",
+    "runtimeMinutes": 105,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English",
+      "Spanish"
+    ],
+    "genres": [
+      "Adventure",
+      "Animation",
+      "Drama"
+    ],
+    "directors": [
+      "Lee Unkrich",
+      "Adrian Molina"
+    ],
+    "moodTone": [
+      "Warm",
+      "Sentimental",
+      "Otherworldly"
+    ],
+    "scariness": 2,
+    "comedy": 4,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": 90,
+    "oscarNominationsTotal": 2,
+    "oscarWinsTotal": 2,
+    "oscarNominationCategories": [
+      "ANIMATED FEATURE FILM",
+      "MUSIC (Original Song)"
+    ],
+    "oscarWinCategories": [
+      "ANIMATED FEATURE FILM",
+      "MUSIC (Original Song)"
+    ],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "harry-potter-and-the-goblet-of-fire-2005",
+    "imdbId": "tt0330373",
+    "imdbLink": "https://www.imdb.com/title/tt0330373/",
+    "title": "Harry Potter and the Goblet of Fire",
+    "originalTitle": null,
+    "releaseYear": 2005,
+    "type": "Feature Film",
+    "runtimeMinutes": 157,
+    "contentRating": "PG-13",
+    "countries": [
+      "United Kingdom",
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Family",
+      "Fantasy"
+    ],
+    "directors": [
+      "Mike Newell"
+    ],
+    "moodTone": [
+      "Adventurous",
+      "Tense",
+      "Dramatic"
+    ],
+    "scariness": 4,
+    "comedy": 3,
+    "franchise": "Harry Potter",
+    "seriesOrder": 4,
+    "oscarCeremony": 78,
+    "oscarNominationsTotal": 1,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [
+      "ART DIRECTION"
+    ],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "home-alone-1990",
+    "imdbId": "tt0099785",
+    "imdbLink": "https://www.imdb.com/title/tt0099785/",
+    "title": "Home Alone",
+    "originalTitle": null,
+    "releaseYear": 1990,
+    "type": "Feature Film",
+    "runtimeMinutes": 103,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Comedy",
+      "Family"
+    ],
+    "directors": [
+      "Chris Columbus"
+    ],
+    "moodTone": [
+      "Festive",
+      "Playful",
+      "Energetic",
+      "Warm"
+    ],
+    "scariness": 1,
+    "comedy": 8,
+    "franchise": "Home Alone",
+    "seriesOrder": 1,
+    "oscarCeremony": 63,
+    "oscarNominationsTotal": 2,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [
+      "MUSIC (Original Score)",
+      "MUSIC (Original Song)"
+    ],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "harry-potter-and-the-chamber-of-secrets-2002",
+    "imdbId": "tt0295297",
+    "imdbLink": "https://www.imdb.com/title/tt0295297/",
+    "title": "Harry Potter and the Chamber of Secrets",
+    "originalTitle": null,
+    "releaseYear": 2002,
+    "type": "Feature Film",
+    "runtimeMinutes": 161,
+    "contentRating": "PG",
+    "countries": [
+      "United Kingdom",
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Family",
+      "Fantasy"
+    ],
+    "directors": [
+      "Chris Columbus"
+    ],
+    "moodTone": [
+      "Adventurous",
+      "Whimsical",
+      "Tense"
+    ],
+    "scariness": 3,
+    "comedy": 4,
+    "franchise": "Harry Potter",
+    "seriesOrder": 2,
+    "oscarCeremony": null,
+    "oscarNominationsTotal": 0,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "toy-story-2-1999",
+    "imdbId": "tt0120363",
+    "imdbLink": "https://www.imdb.com/title/tt0120363/",
+    "title": "Toy Story 2",
+    "originalTitle": null,
+    "releaseYear": 1999,
+    "type": "Feature Film",
+    "runtimeMinutes": 92,
+    "contentRating": "G",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Animation",
+      "Comedy"
+    ],
+    "directors": [
+      "John Lasseter",
+      "Ash Brannon",
+      "Lee Unkrich"
+    ],
+    "moodTone": [
+      "Playful",
+      "Adventurous",
+      "Sentimental"
+    ],
+    "scariness": 1,
+    "comedy": 7,
+    "franchise": "Toy Story",
+    "seriesOrder": 2,
+    "oscarCeremony": 72,
+    "oscarNominationsTotal": 1,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [
+      "MUSIC (Original Song)"
+    ],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "harry-potter-and-the-order-of-the-phoenix-2007",
+    "imdbId": "tt0373889",
+    "imdbLink": "https://www.imdb.com/title/tt0373889/",
+    "title": "Harry Potter and the Order of the Phoenix",
+    "originalTitle": null,
+    "releaseYear": 2007,
+    "type": "Feature Film",
+    "runtimeMinutes": 138,
+    "contentRating": "PG-13",
+    "countries": [
+      "United Kingdom",
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Family",
+      "Fantasy"
+    ],
+    "directors": [
+      "David Yates"
+    ],
+    "moodTone": [
+      "Dramatic",
+      "Tense",
+      "Adventurous"
+    ],
+    "scariness": 3,
+    "comedy": 3,
+    "franchise": "Harry Potter",
+    "seriesOrder": 5,
+    "oscarCeremony": null,
+    "oscarNominationsTotal": 0,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "frozen-2013",
+    "imdbId": "tt2294629",
+    "imdbLink": "https://www.imdb.com/title/tt2294629/",
+    "title": "Frozen",
+    "originalTitle": null,
+    "releaseYear": 2013,
+    "type": "Feature Film",
+    "runtimeMinutes": 102,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Animation",
+      "Comedy"
+    ],
+    "directors": [
+      "Chris Buck",
+      "Jennifer Lee"
+    ],
+    "moodTone": [
+      "Festive",
+      "Whimsical",
+      "Adventurous",
+      "Warm"
+    ],
+    "scariness": 1,
+    "comedy": 5,
+    "franchise": "Frozen",
+    "seriesOrder": 1,
+    "oscarCeremony": 86,
+    "oscarNominationsTotal": 2,
+    "oscarWinsTotal": 2,
+    "oscarNominationCategories": [
+      "ANIMATED FEATURE FILM",
+      "MUSIC (Original Song)"
+    ],
+    "oscarWinCategories": [
+      "ANIMATED FEATURE FILM",
+      "MUSIC (Original Song)"
+    ],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "harry-potter-and-the-deathly-hallows-part-1-2010",
+    "imdbId": "tt0926084",
+    "imdbLink": "https://www.imdb.com/title/tt0926084/",
+    "title": "Harry Potter and the Deathly Hallows: Part 1",
+    "originalTitle": null,
+    "releaseYear": 2010,
+    "type": "Feature Film",
+    "runtimeMinutes": 146,
+    "contentRating": "PG-13",
+    "countries": [
+      "United Kingdom",
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Family",
+      "Fantasy"
+    ],
+    "directors": [
+      "David Yates"
+    ],
+    "moodTone": [
+      "Somber",
+      "Tense",
+      "Dramatic"
+    ],
+    "scariness": 4,
+    "comedy": 2,
+    "franchise": "Harry Potter",
+    "seriesOrder": 7,
+    "oscarCeremony": 83,
+    "oscarNominationsTotal": 2,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [
+      "ART DIRECTION",
+      "VISUAL EFFECTS"
+    ],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "zootopia-2016",
+    "imdbId": "tt2948356",
+    "imdbLink": "https://www.imdb.com/title/tt2948356/",
+    "title": "Zootopia",
+    "originalTitle": null,
+    "releaseYear": 2016,
+    "type": "Feature Film",
+    "runtimeMinutes": 108,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Action",
+      "Adventure",
+      "Animation"
+    ],
+    "directors": [
+      "Byron Howard",
+      "Rich Moore",
+      "Jared Bush"
+    ],
+    "moodTone": [
+      "Witty",
+      "Adventurous",
+      "Energetic"
+    ],
+    "scariness": 1,
+    "comedy": 7,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": 89,
+    "oscarNominationsTotal": 1,
+    "oscarWinsTotal": 1,
+    "oscarNominationCategories": [
+      "ANIMATED FEATURE FILM"
+    ],
+    "oscarWinCategories": [
+      "ANIMATED FEATURE FILM"
+    ],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "harry-potter-and-the-half-blood-prince-2009",
+    "imdbId": "tt0417741",
+    "imdbLink": "https://www.imdb.com/title/tt0417741/",
+    "title": "Harry Potter and the Half-Blood Prince",
+    "originalTitle": null,
+    "releaseYear": 2009,
+    "type": "Feature Film",
+    "runtimeMinutes": 153,
+    "contentRating": "PG",
+    "countries": [
+      "United Kingdom",
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Family",
+      "Fantasy"
+    ],
+    "directors": [
+      "David Yates"
+    ],
+    "moodTone": [
+      "Dramatic",
+      "Romantic",
+      "Atmospheric"
+    ],
+    "scariness": 3,
+    "comedy": 4,
+    "franchise": "Harry Potter",
+    "seriesOrder": 6,
+    "oscarCeremony": 82,
+    "oscarNominationsTotal": 1,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [
+      "CINEMATOGRAPHY"
+    ],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "back-to-the-future-part-ii-1989",
+    "imdbId": "tt0096874",
+    "imdbLink": "https://www.imdb.com/title/tt0096874/",
+    "title": "Back to the Future Part II",
+    "originalTitle": null,
+    "releaseYear": 1989,
+    "type": "Feature Film",
+    "runtimeMinutes": 108,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Comedy",
+      "Sci-Fi"
+    ],
+    "directors": [
+      "Robert Zemeckis"
+    ],
+    "moodTone": [
+      "Adventurous",
+      "Energetic",
+      "Witty"
+    ],
+    "scariness": 1,
+    "comedy": 7,
+    "franchise": "Back to the Future",
+    "seriesOrder": 2,
+    "oscarCeremony": 62,
+    "oscarNominationsTotal": 1,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [
+      "VISUAL EFFECTS"
+    ],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "despicable-me-2010",
+    "imdbId": "tt1323594",
+    "imdbLink": "https://www.imdb.com/title/tt1323594/",
+    "title": "Despicable Me",
+    "originalTitle": null,
+    "releaseYear": 2010,
+    "type": "Feature Film",
+    "runtimeMinutes": 95,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Animation",
+      "Comedy"
+    ],
+    "directors": [
+      "Pierre Coffin",
+      "Chris Renaud"
+    ],
+    "moodTone": [
+      "Playful",
+      "Warm",
+      "Witty"
+    ],
+    "scariness": 1,
+    "comedy": 8,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": null,
+    "oscarNominationsTotal": 0,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "kung-fu-panda-2008",
+    "imdbId": "tt0441773",
+    "imdbLink": "https://www.imdb.com/title/tt0441773/",
+    "title": "Kung Fu Panda",
+    "originalTitle": null,
+    "releaseYear": 2008,
+    "type": "Feature Film",
+    "runtimeMinutes": 92,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Action",
+      "Adventure",
+      "Animation"
+    ],
+    "directors": [
+      "Mark Osborne",
+      "John Stevenson"
+    ],
+    "moodTone": [
+      "Energetic",
+      "Witty",
+      "Adventurous"
+    ],
+    "scariness": 1,
+    "comedy": 8,
+    "franchise": "Kung Fu Panda",
+    "seriesOrder": 1,
+    "oscarCeremony": 81,
+    "oscarNominationsTotal": 1,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [
+      "ANIMATED FEATURE FILM"
+    ],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "big-hero-6-2014",
+    "imdbId": "tt2245084",
+    "imdbLink": "https://www.imdb.com/title/tt2245084/",
+    "title": "Big Hero 6",
+    "originalTitle": null,
+    "releaseYear": 2014,
+    "type": "Feature Film",
+    "runtimeMinutes": 102,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Action",
+      "Adventure",
+      "Animation"
+    ],
+    "directors": [
+      "Don Hall",
+      "Chris Williams"
+    ],
+    "moodTone": [
+      "Adventurous",
+      "Energetic",
+      "Warm"
+    ],
+    "scariness": 1,
+    "comedy": 6,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": 87,
+    "oscarNominationsTotal": 1,
+    "oscarWinsTotal": 1,
+    "oscarNominationCategories": [
+      "ANIMATED FEATURE FILM"
+    ],
+    "oscarWinCategories": [
+      "ANIMATED FEATURE FILM"
+    ],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "howl-s-moving-castle-2004",
+    "imdbId": "tt0347149",
+    "imdbLink": "https://www.imdb.com/title/tt0347149/",
+    "title": "Howl's Moving Castle",
+    "originalTitle": null,
+    "releaseYear": 2004,
+    "type": "Feature Film",
+    "runtimeMinutes": 119,
+    "contentRating": "PG",
+    "countries": [
+      "Japan"
+    ],
+    "languages": [
+      "Japanese"
+    ],
+    "genres": [
+      "Adventure",
+      "Animation",
+      "Family"
+    ],
+    "directors": [
+      "Hayao Miyazaki"
+    ],
+    "moodTone": [
+      "Romantic",
+      "Otherworldly",
+      "Whimsical"
+    ],
+    "scariness": 2,
+    "comedy": 3,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": 78,
+    "oscarNominationsTotal": 1,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [
+      "ANIMATED FEATURE FILM"
+    ],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "tangled-2010",
+    "imdbId": "tt0398286",
+    "imdbLink": "https://www.imdb.com/title/tt0398286/",
+    "title": "Tangled",
+    "originalTitle": null,
+    "releaseYear": 2010,
+    "type": "Feature Film",
+    "runtimeMinutes": 100,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Animation",
+      "Comedy"
+    ],
+    "directors": [
+      "Nathan Greno",
+      "Byron Howard"
+    ],
+    "moodTone": [
+      "Adventurous",
+      "Romantic",
+      "Witty"
+    ],
+    "scariness": 1,
+    "comedy": 6,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": 83,
+    "oscarNominationsTotal": 1,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [
+      "MUSIC (Original Song)"
+    ],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "shrek-2-2004",
+    "imdbId": "tt0298148",
+    "imdbLink": "https://www.imdb.com/title/tt0298148/",
+    "title": "Shrek 2",
+    "originalTitle": null,
+    "releaseYear": 2004,
+    "type": "Feature Film",
+    "runtimeMinutes": 93,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Animation",
+      "Comedy"
+    ],
+    "directors": [
+      "Andrew Adamson",
+      "Kelly Asbury",
+      "Conrad Vernon"
+    ],
+    "moodTone": [
+      "Witty",
+      "Playful",
+      "Romantic"
+    ],
+    "scariness": 1,
+    "comedy": 9,
+    "franchise": "Shrek",
+    "seriesOrder": 2,
+    "oscarCeremony": 77,
+    "oscarNominationsTotal": 2,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [
+      "ANIMATED FEATURE FILM",
+      "MUSIC (Original Song)"
+    ],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "beauty-and-the-beast-1991",
+    "imdbId": "tt0101414",
+    "imdbLink": "https://www.imdb.com/title/tt0101414/",
+    "title": "Beauty and the Beast",
+    "originalTitle": null,
+    "releaseYear": 1991,
+    "type": "Feature Film",
+    "runtimeMinutes": 84,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Animation",
+      "Family",
+      "Fantasy"
+    ],
+    "directors": [
+      "Gary Trousdale",
+      "Kirk Wise"
+    ],
+    "moodTone": [
+      "Romantic",
+      "Whimsical",
+      "Warm"
+    ],
+    "scariness": 2,
+    "comedy": 4,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": 64,
+    "oscarNominationsTotal": 6,
+    "oscarWinsTotal": 2,
+    "oscarNominationCategories": [
+      "MUSIC (Original Score)",
+      "MUSIC (Original Song)",
+      "BEST PICTURE",
+      "SOUND MIXING"
+    ],
+    "oscarWinCategories": [
+      "MUSIC (Original Score)",
+      "MUSIC (Original Song)"
+    ],
+    "oscarMajorNoms": [
+      "picture"
+    ],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "aladdin-1992",
+    "imdbId": "tt0103639",
+    "imdbLink": "https://www.imdb.com/title/tt0103639/",
+    "title": "Aladdin",
+    "originalTitle": null,
+    "releaseYear": 1992,
+    "type": "Feature Film",
+    "runtimeMinutes": 90,
+    "contentRating": "G",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Animation",
+      "Comedy"
+    ],
+    "directors": [
+      "Ron Clements",
+      "John Musker"
+    ],
+    "moodTone": [
+      "Adventurous",
+      "Witty",
+      "Energetic"
+    ],
+    "scariness": 1,
+    "comedy": 7,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": 65,
+    "oscarNominationsTotal": 5,
+    "oscarWinsTotal": 2,
+    "oscarNominationCategories": [
+      "MUSIC (Original Score)",
+      "MUSIC (Original Song)",
+      "SOUND MIXING",
+      "SOUND EDITING"
+    ],
+    "oscarWinCategories": [
+      "MUSIC (Original Score)",
+      "MUSIC (Original Song)"
+    ],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "cars-2006",
+    "imdbId": "tt0317219",
+    "imdbLink": "https://www.imdb.com/title/tt0317219/",
+    "title": "Cars",
+    "originalTitle": null,
+    "releaseYear": 2006,
+    "type": "Feature Film",
+    "runtimeMinutes": 116,
+    "contentRating": "G",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Animation",
+      "Comedy"
+    ],
+    "directors": [
+      "John Lasseter",
+      "Joe Ranft"
+    ],
+    "moodTone": [
+      "Energetic",
+      "Warm",
+      "Playful"
+    ],
+    "scariness": 1,
+    "comedy": 6,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": 79,
+    "oscarNominationsTotal": 2,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [
+      "ANIMATED FEATURE FILM",
+      "MUSIC (Original Song)"
+    ],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "back-to-the-future-part-iii-1990",
+    "imdbId": "tt0099088",
+    "imdbLink": "https://www.imdb.com/title/tt0099088/",
+    "title": "Back to the Future Part III",
+    "originalTitle": null,
+    "releaseYear": 1990,
+    "type": "Feature Film",
+    "runtimeMinutes": 118,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Comedy",
+      "Sci-Fi"
+    ],
+    "directors": [
+      "Robert Zemeckis"
+    ],
+    "moodTone": [
+      "Adventurous",
+      "Romantic",
+      "Witty"
+    ],
+    "scariness": 1,
+    "comedy": 7,
+    "franchise": "Back to the Future",
+    "seriesOrder": 3,
+    "oscarCeremony": null,
+    "oscarNominationsTotal": 0,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "the-princess-bride-1987",
+    "imdbId": "tt0093779",
+    "imdbLink": "https://www.imdb.com/title/tt0093779/",
+    "title": "The Princess Bride",
+    "originalTitle": null,
+    "releaseYear": 1987,
+    "type": "Feature Film",
+    "runtimeMinutes": 98,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Comedy",
+      "Family"
+    ],
+    "directors": [
+      "Rob Reiner"
+    ],
+    "moodTone": [
+      "Witty",
+      "Romantic",
+      "Adventurous"
+    ],
+    "scariness": 1,
+    "comedy": 8,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": 60,
+    "oscarNominationsTotal": 1,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [
+      "MUSIC (Original Song)"
+    ],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "wreck-it-ralph-2012",
+    "imdbId": "tt1772341",
+    "imdbLink": "https://www.imdb.com/title/tt1772341/",
+    "title": "Wreck-It Ralph",
+    "originalTitle": null,
+    "releaseYear": 2012,
+    "type": "Feature Film",
+    "runtimeMinutes": 101,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Animation",
+      "Comedy"
+    ],
+    "directors": [
+      "Rich Moore"
+    ],
+    "moodTone": [
+      "Playful",
+      "Energetic",
+      "Witty"
+    ],
+    "scariness": 1,
+    "comedy": 7,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": 85,
+    "oscarNominationsTotal": 1,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [
+      "ANIMATED FEATURE FILM"
+    ],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "charlie-and-the-chocolate-factory-2005",
+    "imdbId": "tt0367594",
+    "imdbLink": "https://www.imdb.com/title/tt0367594/",
+    "title": "Charlie and the Chocolate Factory",
+    "originalTitle": null,
+    "releaseYear": 2005,
+    "type": "Feature Film",
+    "runtimeMinutes": 115,
+    "contentRating": "PG",
+    "countries": [
+      "United States",
+      "United Kingdom"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Comedy",
+      "Family"
+    ],
+    "directors": [
+      "Tim Burton"
+    ],
+    "moodTone": [
+      "Whimsical",
+      "Playful",
+      "Otherworldly"
+    ],
+    "scariness": 2,
+    "comedy": 7,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": 78,
+    "oscarNominationsTotal": 1,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [
+      "COSTUME DESIGN"
+    ],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "the-wizard-of-oz-1939",
+    "imdbId": "tt0032138",
+    "imdbLink": "https://www.imdb.com/title/tt0032138/",
+    "title": "The Wizard of Oz",
+    "originalTitle": null,
+    "releaseYear": 1939,
+    "type": "Feature Film",
+    "runtimeMinutes": 102,
+    "contentRating": "Approved",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Family",
+      "Fantasy"
+    ],
+    "directors": [
+      "Victor Fleming",
+      "George Cukor",
+      "Norman Taurog",
+      "Richard Thorpe",
+      "King Vidor"
+    ],
+    "moodTone": [
+      "Whimsical",
+      "Adventurous",
+      "Nostalgic"
+    ],
+    "scariness": 3,
+    "comedy": 4,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": 12,
+    "oscarNominationsTotal": 6,
+    "oscarWinsTotal": 2,
+    "oscarNominationCategories": [
+      "ART DIRECTION",
+      "CINEMATOGRAPHY (Color)",
+      "MUSIC (Original Score)",
+      "MUSIC (Original Song)",
+      "BEST PICTURE",
+      "VISUAL EFFECTS"
+    ],
+    "oscarWinCategories": [
+      "MUSIC (Original Score)",
+      "MUSIC (Original Song)"
+    ],
+    "oscarMajorNoms": [
+      "picture"
+    ],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "e-t-the-extra-terrestrial-1982",
+    "imdbId": "tt0083866",
+    "imdbLink": "https://www.imdb.com/title/tt0083866/",
+    "title": "E.T. the Extra-Terrestrial",
+    "originalTitle": null,
+    "releaseYear": 1982,
+    "type": "Feature Film",
+    "runtimeMinutes": 115,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Family",
+      "Sci-Fi"
+    ],
+    "directors": [
+      "Steven Spielberg"
+    ],
+    "moodTone": [
+      "Sentimental",
+      "Adventurous",
+      "Nostalgic"
+    ],
+    "scariness": 2,
+    "comedy": 4,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": 55,
+    "oscarNominationsTotal": 9,
+    "oscarWinsTotal": 4,
+    "oscarNominationCategories": [
+      "CINEMATOGRAPHY",
+      "DIRECTING",
+      "FILM EDITING",
+      "MUSIC (Original Score)",
+      "BEST PICTURE",
+      "SOUND MIXING",
+      "SOUND EDITING",
+      "VISUAL EFFECTS",
+      "WRITING (Original Screenplay)"
+    ],
+    "oscarWinCategories": [
+      "MUSIC (Original Score)",
+      "SOUND MIXING",
+      "SOUND EDITING",
+      "VISUAL EFFECTS"
+    ],
+    "oscarMajorNoms": [
+      "director",
+      "picture",
+      "originalScreenplay"
+    ],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "soul-2020",
+    "imdbId": "tt2948372",
+    "imdbLink": "https://www.imdb.com/title/tt2948372/",
+    "title": "Soul",
+    "originalTitle": null,
+    "releaseYear": 2020,
+    "type": "Feature Film",
+    "runtimeMinutes": 100,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Animation",
+      "Comedy"
+    ],
+    "directors": [
+      "Pete Docter",
+      "Kemp Powers"
+    ],
+    "moodTone": [
+      "Reflective",
+      "Whimsical",
+      "Warm"
+    ],
+    "scariness": 1,
+    "comedy": 5,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": 93,
+    "oscarNominationsTotal": 3,
+    "oscarWinsTotal": 2,
+    "oscarNominationCategories": [
+      "ANIMATED FEATURE FILM",
+      "MUSIC (Original Score)",
+      "SOUND MIXING"
+    ],
+    "oscarWinCategories": [
+      "ANIMATED FEATURE FILM",
+      "MUSIC (Original Score)"
+    ],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "my-neighbor-totoro-1988",
+    "imdbId": "tt0096283",
+    "imdbLink": "https://www.imdb.com/title/tt0096283/",
+    "title": "My Neighbor Totoro",
+    "originalTitle": null,
+    "releaseYear": 1988,
+    "type": "Feature Film",
+    "runtimeMinutes": 86,
+    "contentRating": "G",
+    "countries": [
+      "Japan"
+    ],
+    "languages": [
+      "Japanese"
+    ],
+    "genres": [
+      "Adventure",
+      "Animation",
+      "Comedy"
+    ],
+    "directors": [
+      "Hayao Miyazaki"
+    ],
+    "moodTone": [
+      "Cozy",
+      "Whimsical",
+      "Warm"
+    ],
+    "scariness": 1,
+    "comedy": 4,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": null,
+    "oscarNominationsTotal": 0,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "jumanji-welcome-to-the-jungle-2017",
+    "imdbId": "tt2283362",
+    "imdbLink": "https://www.imdb.com/title/tt2283362/",
+    "title": "Jumanji: Welcome to the Jungle",
+    "originalTitle": null,
+    "releaseYear": 2017,
+    "type": "Feature Film",
+    "runtimeMinutes": 119,
+    "contentRating": "PG-13",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Action",
+      "Adventure",
+      "Comedy"
+    ],
+    "directors": [
+      "Jake Kasdan"
+    ],
+    "moodTone": [
+      "Adventurous",
+      "Witty",
+      "Energetic"
+    ],
+    "scariness": 2,
+    "comedy": 8,
+    "franchise": "Jumanji",
+    "seriesOrder": 2,
+    "oscarCeremony": null,
+    "oscarNominationsTotal": 0,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "brave-2012",
+    "imdbId": "tt1217209",
+    "imdbLink": "https://www.imdb.com/title/tt1217209/",
+    "title": "Brave",
+    "originalTitle": null,
+    "releaseYear": 2012,
+    "type": "Feature Film",
+    "runtimeMinutes": 93,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Action",
+      "Adventure",
+      "Animation"
+    ],
+    "directors": [
+      "Mark Andrews",
+      "Brenda Chapman",
+      "Steve Purcell"
+    ],
+    "moodTone": [
+      "Adventurous",
+      "Energetic",
+      "Warm"
+    ],
+    "scariness": 2,
+    "comedy": 5,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": 85,
+    "oscarNominationsTotal": 1,
+    "oscarWinsTotal": 1,
+    "oscarNominationCategories": [
+      "ANIMATED FEATURE FILM"
+    ],
+    "oscarWinCategories": [
+      "ANIMATED FEATURE FILM"
+    ],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "moana-2016",
+    "imdbId": "tt3521164",
+    "imdbLink": "https://www.imdb.com/title/tt3521164/",
+    "title": "Moana",
+    "originalTitle": null,
+    "releaseYear": 2016,
+    "type": "Feature Film",
+    "runtimeMinutes": 107,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Animation",
+      "Comedy"
+    ],
+    "directors": [
+      "Ron Clements",
+      "John Musker",
+      "Don Hall",
+      "Chris Williams"
+    ],
+    "moodTone": [
+      "Adventurous",
+      "Energetic",
+      "Warm"
+    ],
+    "scariness": 1,
+    "comedy": 5,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": 89,
+    "oscarNominationsTotal": 2,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [
+      "ANIMATED FEATURE FILM",
+      "MUSIC (Original Song)"
+    ],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "madagascar-2005",
+    "imdbId": "tt0351283",
+    "imdbLink": "https://www.imdb.com/title/tt0351283/",
+    "title": "Madagascar",
+    "originalTitle": null,
+    "releaseYear": 2005,
+    "type": "Feature Film",
+    "runtimeMinutes": 86,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Animation",
+      "Comedy"
+    ],
+    "directors": [
+      "Eric Darnell",
+      "Tom McGrath"
+    ],
+    "moodTone": [
+      "Playful",
+      "Energetic",
+      "Witty"
+    ],
+    "scariness": 1,
+    "comedy": 8,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": null,
+    "oscarNominationsTotal": 0,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "the-nightmare-before-christmas-1993",
+    "imdbId": "tt0107688",
+    "imdbLink": "https://www.imdb.com/title/tt0107688/",
+    "title": "The Nightmare Before Christmas",
+    "originalTitle": "Tim Burton's the Nightmare Before Christmas",
+    "releaseYear": 1993,
+    "type": "Feature Film",
+    "runtimeMinutes": 76,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Animation",
+      "Family"
+    ],
+    "directors": [
+      "Henry Selick"
+    ],
+    "moodTone": [
+      "Festive",
+      "Macabre",
+      "Whimsical"
+    ],
+    "scariness": 3,
+    "comedy": 5,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": 66,
+    "oscarNominationsTotal": 1,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [
+      "VISUAL EFFECTS"
+    ],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "the-lego-movie-2014",
+    "imdbId": "tt1490017",
+    "imdbLink": "https://www.imdb.com/title/tt1490017/",
+    "title": "The Lego Movie",
+    "originalTitle": null,
+    "releaseYear": 2014,
+    "type": "Feature Film",
+    "runtimeMinutes": 100,
+    "contentRating": "PG",
+    "countries": [
+      "United States",
+      "Australia"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Action",
+      "Adventure",
+      "Animation"
+    ],
+    "directors": [
+      "Phil Lord",
+      "Christopher Miller"
+    ],
+    "moodTone": [
+      "Witty",
+      "Energetic",
+      "Playful"
+    ],
+    "scariness": 1,
+    "comedy": 9,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": 87,
+    "oscarNominationsTotal": 1,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [
+      "MUSIC (Original Song)"
+    ],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "home-alone-2-lost-in-new-york-1992",
+    "imdbId": "tt0104431",
+    "imdbLink": "https://www.imdb.com/title/tt0104431/",
+    "title": "Home Alone 2: Lost in New York",
+    "originalTitle": null,
+    "releaseYear": 1992,
+    "type": "Feature Film",
+    "runtimeMinutes": 120,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Comedy",
+      "Crime"
+    ],
+    "directors": [
+      "Chris Columbus"
+    ],
+    "moodTone": [
+      "Festive",
+      "Tense",
+      "Kinetic",
+      "Witty"
+    ],
+    "scariness": 3,
+    "comedy": 5,
+    "franchise": "Home Alone",
+    "seriesOrder": 2,
+    "oscarCeremony": null,
+    "oscarNominationsTotal": 0,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "the-chronicles-of-narnia-the-lion-the-witch-and-the-wardrobe-2005",
+    "imdbId": "tt0363771",
+    "imdbLink": "https://www.imdb.com/title/tt0363771/",
+    "title": "The Chronicles of Narnia: The Lion, the Witch and the Wardrobe",
+    "originalTitle": null,
+    "releaseYear": 2005,
+    "type": "Feature Film",
+    "runtimeMinutes": 143,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Family",
+      "Fantasy"
+    ],
+    "directors": [
+      "Andrew Adamson"
+    ],
+    "moodTone": [
+      "Adventurous",
+      "Whimsical",
+      "Festive"
+    ],
+    "scariness": 2,
+    "comedy": 3,
+    "franchise": "The Chronicles of Narnia",
+    "seriesOrder": 1,
+    "oscarCeremony": 78,
+    "oscarNominationsTotal": 3,
+    "oscarWinsTotal": 1,
+    "oscarNominationCategories": [
+      "MAKEUP AND HAIRSTYLING",
+      "SOUND MIXING",
+      "VISUAL EFFECTS"
+    ],
+    "oscarWinCategories": [
+      "MAKEUP AND HAIRSTYLING"
+    ],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "how-to-train-your-dragon-2-2014",
+    "imdbId": "tt1646971",
+    "imdbLink": "https://www.imdb.com/title/tt1646971/",
+    "title": "How to Train Your Dragon 2",
+    "originalTitle": null,
+    "releaseYear": 2014,
+    "type": "Feature Film",
+    "runtimeMinutes": 102,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Action",
+      "Adventure",
+      "Animation"
+    ],
+    "directors": [
+      "Dean DeBlois"
+    ],
+    "moodTone": [
+      "Adventurous",
+      "Dramatic",
+      "Energetic"
+    ],
+    "scariness": 2,
+    "comedy": 4,
+    "franchise": "How to Train Your Dragon",
+    "seriesOrder": 2,
+    "oscarCeremony": 87,
+    "oscarNominationsTotal": 1,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [
+      "ANIMATED FEATURE FILM"
+    ],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "beetlejuice-1988",
+    "imdbId": "tt0094721",
+    "imdbLink": "https://www.imdb.com/title/tt0094721/",
+    "title": "Beetlejuice",
+    "originalTitle": null,
+    "releaseYear": 1988,
+    "type": "Feature Film",
+    "runtimeMinutes": 92,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Comedy",
+      "Fantasy"
+    ],
+    "directors": [
+      "Tim Burton"
+    ],
+    "moodTone": [
+      "Macabre",
+      "Playful",
+      "Darkly Comic"
+    ],
+    "scariness": 3,
+    "comedy": 8,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": 61,
+    "oscarNominationsTotal": 1,
+    "oscarWinsTotal": 1,
+    "oscarNominationCategories": [
+      "MAKEUP AND HAIRSTYLING"
+    ],
+    "oscarWinCategories": [
+      "MAKEUP AND HAIRSTYLING"
+    ],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "monsters-university-2013",
+    "imdbId": "tt1453405",
+    "imdbLink": "https://www.imdb.com/title/tt1453405/",
+    "title": "Monsters University",
+    "originalTitle": null,
+    "releaseYear": 2013,
+    "type": "Feature Film",
+    "runtimeMinutes": 104,
+    "contentRating": "G",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Animation",
+      "Comedy"
+    ],
+    "directors": [
+      "Dan Scanlon"
+    ],
+    "moodTone": [
+      "Playful",
+      "Energetic",
+      "Witty"
+    ],
+    "scariness": 1,
+    "comedy": 8,
+    "franchise": "Monsters, Inc.",
+    "seriesOrder": 2,
+    "oscarCeremony": null,
+    "oscarNominationsTotal": 0,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "jumanji-1995",
+    "imdbId": "tt0113497",
+    "imdbLink": "https://www.imdb.com/title/tt0113497/",
+    "title": "Jumanji",
+    "originalTitle": null,
+    "releaseYear": 1995,
+    "type": "Feature Film",
+    "runtimeMinutes": 104,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Comedy",
+      "Family"
+    ],
+    "directors": [
+      "Joe Johnston"
+    ],
+    "moodTone": [
+      "Adventurous",
+      "Tense",
+      "Energetic"
+    ],
+    "scariness": 4,
+    "comedy": 5,
+    "franchise": "Jumanji",
+    "seriesOrder": 1,
+    "oscarCeremony": null,
+    "oscarNominationsTotal": 0,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "incredibles-2-2018",
+    "imdbId": "tt3606756",
+    "imdbLink": "https://www.imdb.com/title/tt3606756/",
+    "title": "Incredibles 2",
+    "originalTitle": null,
+    "releaseYear": 2018,
+    "type": "Feature Film",
+    "runtimeMinutes": 118,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Action",
+      "Adventure",
+      "Animation"
+    ],
+    "directors": [
+      "Brad Bird"
+    ],
+    "moodTone": [
+      "Energetic",
+      "Adventurous",
+      "Witty"
+    ],
+    "scariness": 2,
+    "comedy": 6,
+    "franchise": "The Incredibles",
+    "seriesOrder": 2,
+    "oscarCeremony": 91,
+    "oscarNominationsTotal": 1,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [
+      "ANIMATED FEATURE FILM"
+    ],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "the-secret-life-of-walter-mitty-2013",
+    "imdbId": "tt0359950",
+    "imdbLink": "https://www.imdb.com/title/tt0359950/",
+    "title": "The Secret Life of Walter Mitty",
+    "originalTitle": null,
+    "releaseYear": 2013,
+    "type": "Feature Film",
+    "runtimeMinutes": 114,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Comedy",
+      "Drama"
+    ],
+    "directors": [
+      "Ben Stiller"
+    ],
+    "moodTone": [
+      "Adventurous",
+      "Reflective",
+      "Whimsical"
+    ],
+    "scariness": 1,
+    "comedy": 5,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": null,
+    "oscarNominationsTotal": 0,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "night-at-the-museum-2006",
+    "imdbId": "tt0477347",
+    "imdbLink": "https://www.imdb.com/title/tt0477347/",
+    "title": "Night at the Museum",
+    "originalTitle": null,
+    "releaseYear": 2006,
+    "type": "Feature Film",
+    "runtimeMinutes": 108,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Comedy",
+      "Family"
+    ],
+    "directors": [
+      "Shawn Levy"
+    ],
+    "moodTone": [
+      "Playful",
+      "Energetic",
+      "Adventurous"
+    ],
+    "scariness": 1,
+    "comedy": 8,
+    "franchise": "Night at the Museum",
+    "seriesOrder": 1,
+    "oscarCeremony": null,
+    "oscarNominationsTotal": 0,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "mulan-1998",
+    "imdbId": "tt0120762",
+    "imdbLink": "https://www.imdb.com/title/tt0120762/",
+    "title": "Mulan",
+    "originalTitle": null,
+    "releaseYear": 1998,
+    "type": "Feature Film",
+    "runtimeMinutes": 87,
+    "contentRating": "G",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Animation",
+      "Comedy"
+    ],
+    "directors": [
+      "Tony Bancroft",
+      "Barry Cook"
+    ],
+    "moodTone": [
+      "Adventurous",
+      "Dramatic",
+      "Witty"
+    ],
+    "scariness": 2,
+    "comedy": 5,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": 71,
+    "oscarNominationsTotal": 1,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [
+      "MUSIC (Original Song Score or Adaptation Score)"
+    ],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "kung-fu-panda-2-2011",
+    "imdbId": "tt1302011",
+    "imdbLink": "https://www.imdb.com/title/tt1302011/",
+    "title": "Kung Fu Panda 2",
+    "originalTitle": null,
+    "releaseYear": 2011,
+    "type": "Feature Film",
+    "runtimeMinutes": 90,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Action",
+      "Adventure",
+      "Animation"
+    ],
+    "directors": [
+      "Jennifer Yuh Nelson"
+    ],
+    "moodTone": [
+      "Energetic",
+      "Adventurous",
+      "Witty"
+    ],
+    "scariness": 2,
+    "comedy": 7,
+    "franchise": "Kung Fu Panda",
+    "seriesOrder": 2,
+    "oscarCeremony": 84,
+    "oscarNominationsTotal": 1,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [
+      "ANIMATED FEATURE FILM"
+    ],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "the-greatest-showman-2017",
+    "imdbId": "tt1485796",
+    "imdbLink": "https://www.imdb.com/title/tt1485796/",
+    "title": "The Greatest Showman",
+    "originalTitle": null,
+    "releaseYear": 2017,
+    "type": "Feature Film",
+    "runtimeMinutes": 105,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Biography",
+      "Drama",
+      "Musical"
+    ],
+    "directors": [
+      "Michael Gracey"
+    ],
+    "moodTone": [
+      "Energetic",
+      "Romantic",
+      "Sentimental"
+    ],
+    "scariness": 1,
+    "comedy": 3,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": 90,
+    "oscarNominationsTotal": 1,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [
+      "MUSIC (Original Song)"
+    ],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "hugo-2011",
+    "imdbId": "tt0970179",
+    "imdbLink": "https://www.imdb.com/title/tt0970179/",
+    "title": "Hugo",
+    "originalTitle": null,
+    "releaseYear": 2011,
+    "type": "Feature Film",
+    "runtimeMinutes": 126,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Drama",
+      "Family"
+    ],
+    "directors": [
+      "Martin Scorsese"
+    ],
+    "moodTone": [
+      "Nostalgic",
+      "Whimsical",
+      "Warm"
+    ],
+    "scariness": 1,
+    "comedy": 3,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": 84,
+    "oscarNominationsTotal": 11,
+    "oscarWinsTotal": 5,
+    "oscarNominationCategories": [
+      "ART DIRECTION",
+      "CINEMATOGRAPHY",
+      "COSTUME DESIGN",
+      "DIRECTING",
+      "FILM EDITING",
+      "MUSIC (Original Score)",
+      "BEST PICTURE",
+      "SOUND EDITING",
+      "SOUND MIXING",
+      "VISUAL EFFECTS",
+      "WRITING (Adapted Screenplay)"
+    ],
+    "oscarWinCategories": [
+      "ART DIRECTION",
+      "CINEMATOGRAPHY",
+      "SOUND EDITING",
+      "SOUND MIXING",
+      "VISUAL EFFECTS"
+    ],
+    "oscarMajorNoms": [
+      "director",
+      "picture",
+      "adaptedScreenplay"
+    ],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "the-goonies-1985",
+    "imdbId": "tt0089218",
+    "imdbLink": "https://www.imdb.com/title/tt0089218/",
+    "title": "The Goonies",
+    "originalTitle": null,
+    "releaseYear": 1985,
+    "type": "Feature Film",
+    "runtimeMinutes": 114,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Comedy",
+      "Family"
+    ],
+    "directors": [
+      "Richard Donner"
+    ],
+    "moodTone": [
+      "Adventurous",
+      "Energetic",
+      "Nostalgic"
+    ],
+    "scariness": 2,
+    "comedy": 7,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": null,
+    "oscarNominationsTotal": 0,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "toy-story-4-2019",
+    "imdbId": "tt1979376",
+    "imdbLink": "https://www.imdb.com/title/tt1979376/",
+    "title": "Toy Story 4",
+    "originalTitle": null,
+    "releaseYear": 2019,
+    "type": "Feature Film",
+    "runtimeMinutes": 100,
+    "contentRating": "G",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Animation",
+      "Comedy"
+    ],
+    "directors": [
+      "Josh Cooley"
+    ],
+    "moodTone": [
+      "Playful",
+      "Sentimental",
+      "Adventurous"
+    ],
+    "scariness": 1,
+    "comedy": 7,
+    "franchise": "Toy Story",
+    "seriesOrder": 4,
+    "oscarCeremony": 92,
+    "oscarNominationsTotal": 2,
+    "oscarWinsTotal": 1,
+    "oscarNominationCategories": [
+      "ANIMATED FEATURE FILM",
+      "MUSIC (Original Song)"
+    ],
+    "oscarWinCategories": [
+      "ANIMATED FEATURE FILM"
+    ],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "elf-2003",
+    "imdbId": "tt0319343",
+    "imdbLink": "https://www.imdb.com/title/tt0319343/",
+    "title": "Elf",
+    "originalTitle": null,
+    "releaseYear": 2003,
+    "type": "Feature Film",
+    "runtimeMinutes": 97,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Comedy",
+      "Family"
+    ],
+    "directors": [
+      "Jon Favreau"
+    ],
+    "moodTone": [
+      "Festive",
+      "Whimsical",
+      "Warm",
+      "Nostalgic"
+    ],
+    "scariness": 1,
+    "comedy": 8,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": null,
+    "oscarNominationsTotal": 0,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "a-bug-s-life-1998",
+    "imdbId": "tt0120623",
+    "imdbLink": "https://www.imdb.com/title/tt0120623/",
+    "title": "A Bug's Life",
+    "originalTitle": null,
+    "releaseYear": 1998,
+    "type": "Feature Film",
+    "runtimeMinutes": 95,
+    "contentRating": "G",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Animation",
+      "Comedy"
+    ],
+    "directors": [
+      "John Lasseter",
+      "Andrew Stanton"
+    ],
+    "moodTone": [
+      "Playful",
+      "Adventurous",
+      "Witty"
+    ],
+    "scariness": 1,
+    "comedy": 6,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": 71,
+    "oscarNominationsTotal": 1,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [
+      "MUSIC (Original Song Score or Adaptation Score)"
+    ],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "finding-dory-2016",
+    "imdbId": "tt2277860",
+    "imdbLink": "https://www.imdb.com/title/tt2277860/",
+    "title": "Finding Dory",
+    "originalTitle": null,
+    "releaseYear": 2016,
+    "type": "Feature Film",
+    "runtimeMinutes": 97,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Animation",
+      "Comedy"
+    ],
+    "directors": [
+      "Andrew Stanton",
+      "Angus MacLane"
+    ],
+    "moodTone": [
+      "Adventurous",
+      "Warm",
+      "Playful"
+    ],
+    "scariness": 1,
+    "comedy": 6,
+    "franchise": "Finding Nemo",
+    "seriesOrder": 2,
+    "oscarCeremony": null,
+    "oscarNominationsTotal": 0,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "megamind-2010",
+    "imdbId": "tt1001526",
+    "imdbLink": "https://www.imdb.com/title/tt1001526/",
+    "title": "Megamind",
+    "originalTitle": null,
+    "releaseYear": 2010,
+    "type": "Feature Film",
+    "runtimeMinutes": 95,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Action",
+      "Adventure",
+      "Animation"
+    ],
+    "directors": [
+      "Tom McGrath"
+    ],
+    "moodTone": [
+      "Witty",
+      "Energetic",
+      "Playful"
+    ],
+    "scariness": 1,
+    "comedy": 8,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": null,
+    "oscarNominationsTotal": 0,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "the-little-mermaid-1989",
+    "imdbId": "tt0097757",
+    "imdbLink": "https://www.imdb.com/title/tt0097757/",
+    "title": "The Little Mermaid",
+    "originalTitle": null,
+    "releaseYear": 1989,
+    "type": "Feature Film",
+    "runtimeMinutes": 83,
+    "contentRating": "G",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Animation",
+      "Family"
+    ],
+    "directors": [
+      "Ron Clements",
+      "John Musker"
+    ],
+    "moodTone": [
+      "Romantic",
+      "Whimsical",
+      "Adventurous"
+    ],
+    "scariness": 2,
+    "comedy": 4,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": 62,
+    "oscarNominationsTotal": 3,
+    "oscarWinsTotal": 2,
+    "oscarNominationCategories": [
+      "MUSIC (Original Score)",
+      "MUSIC (Original Song)"
+    ],
+    "oscarWinCategories": [
+      "MUSIC (Original Score)",
+      "MUSIC (Original Song)"
+    ],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "coraline-2009",
+    "imdbId": "tt0327597",
+    "imdbLink": "https://www.imdb.com/title/tt0327597/",
+    "title": "Coraline",
+    "originalTitle": null,
+    "releaseYear": 2009,
+    "type": "Feature Film",
+    "runtimeMinutes": 100,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Animation",
+      "Drama",
+      "Family"
+    ],
+    "directors": [
+      "Henry Selick"
+    ],
+    "moodTone": [
+      "Atmospheric",
+      "Otherworldly",
+      "Unsettling"
+    ],
+    "scariness": 5,
+    "comedy": 2,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": 82,
+    "oscarNominationsTotal": 1,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [
+      "ANIMATED FEATURE FILM"
+    ],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "the-sound-of-music-1965",
+    "imdbId": "tt0059742",
+    "imdbLink": "https://www.imdb.com/title/tt0059742/",
+    "title": "The Sound of Music",
+    "originalTitle": null,
+    "releaseYear": 1965,
+    "type": "Feature Film",
+    "runtimeMinutes": 174,
+    "contentRating": "Approved",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Biography",
+      "Drama",
+      "Family"
+    ],
+    "directors": [
+      "Robert Wise"
+    ],
+    "moodTone": [
+      "Romantic",
+      "Warm",
+      "Nostalgic"
+    ],
+    "scariness": 2,
+    "comedy": 4,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": 38,
+    "oscarNominationsTotal": 10,
+    "oscarWinsTotal": 5,
+    "oscarNominationCategories": [
+      "ACTRESS IN A LEADING ROLE",
+      "ACTRESS IN A SUPPORTING ROLE",
+      "ART DIRECTION (Color)",
+      "CINEMATOGRAPHY (Color)",
+      "COSTUME DESIGN (Color)",
+      "DIRECTING",
+      "FILM EDITING",
+      "MUSIC (Original Song Score or Adaptation Score)",
+      "BEST PICTURE",
+      "SOUND MIXING"
+    ],
+    "oscarWinCategories": [
+      "DIRECTING",
+      "FILM EDITING",
+      "MUSIC (Original Song Score or Adaptation Score)",
+      "BEST PICTURE",
+      "SOUND MIXING"
+    ],
+    "oscarMajorNoms": [
+      "actress",
+      "supportingActress",
+      "director",
+      "picture"
+    ],
+    "oscarMajorWins": [
+      "director",
+      "picture"
+    ]
+  },
+  {
+    "id": "hotel-transylvania-2012",
+    "imdbId": "tt0837562",
+    "imdbLink": "https://www.imdb.com/title/tt0837562/",
+    "title": "Hotel Transylvania",
+    "originalTitle": null,
+    "releaseYear": 2012,
+    "type": "Feature Film",
+    "runtimeMinutes": 91,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Animation",
+      "Comedy",
+      "Family"
+    ],
+    "directors": [
+      "Genndy Tartakovsky"
+    ],
+    "moodTone": [
+      "Playful",
+      "Macabre",
+      "Energetic"
+    ],
+    "scariness": 1,
+    "comedy": 8,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": null,
+    "oscarNominationsTotal": 0,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "encanto-2021",
+    "imdbId": "tt2953050",
+    "imdbLink": "https://www.imdb.com/title/tt2953050/",
+    "title": "Encanto",
+    "originalTitle": null,
+    "releaseYear": 2021,
+    "type": "Feature Film",
+    "runtimeMinutes": 102,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English",
+      "Spanish"
+    ],
+    "genres": [
+      "Animation",
+      "Comedy",
+      "Family"
+    ],
+    "directors": [
+      "Jared Bush",
+      "Byron Howard",
+      "Charise Castro Smith"
+    ],
+    "moodTone": [
+      "Warm",
+      "Playful",
+      "Sentimental"
+    ],
+    "scariness": 1,
+    "comedy": 5,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": 94,
+    "oscarNominationsTotal": 3,
+    "oscarWinsTotal": 1,
+    "oscarNominationCategories": [
+      "ANIMATED FEATURE FILM",
+      "MUSIC (Original Score)",
+      "MUSIC (Original Song)"
+    ],
+    "oscarWinCategories": [
+      "ANIMATED FEATURE FILM"
+    ],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "the-iron-giant-1999",
+    "imdbId": "tt0129167",
+    "imdbLink": "https://www.imdb.com/title/tt0129167/",
+    "title": "The Iron Giant",
+    "originalTitle": null,
+    "releaseYear": 1999,
+    "type": "Feature Film",
+    "runtimeMinutes": 86,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Action",
+      "Adventure",
+      "Animation"
+    ],
+    "directors": [
+      "Brad Bird"
+    ],
+    "moodTone": [
+      "Sentimental",
+      "Adventurous",
+      "Nostalgic"
+    ],
+    "scariness": 2,
+    "comedy": 4,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": null,
+    "oscarNominationsTotal": 0,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "hercules-1997",
+    "imdbId": "tt0119282",
+    "imdbLink": "https://www.imdb.com/title/tt0119282/",
+    "title": "Hercules",
+    "originalTitle": null,
+    "releaseYear": 1997,
+    "type": "Feature Film",
+    "runtimeMinutes": 93,
+    "contentRating": "G",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Action",
+      "Adventure",
+      "Animation"
+    ],
+    "directors": [
+      "Ron Clements",
+      "John Musker"
+    ],
+    "moodTone": [
+      "Adventurous",
+      "Witty",
+      "Energetic"
+    ],
+    "scariness": 2,
+    "comedy": 7,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": 70,
+    "oscarNominationsTotal": 1,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [
+      "MUSIC (Original Song)"
+    ],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "the-karate-kid-1984",
+    "imdbId": "tt0087538",
+    "imdbLink": "https://www.imdb.com/title/tt0087538/",
+    "title": "The Karate Kid",
+    "originalTitle": null,
+    "releaseYear": 1984,
+    "type": "Feature Film",
+    "runtimeMinutes": 126,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Action",
+      "Drama",
+      "Family"
+    ],
+    "directors": [
+      "John G. Avildsen"
+    ],
+    "moodTone": [
+      "Dramatic",
+      "Nostalgic",
+      "Warm"
+    ],
+    "scariness": 1,
+    "comedy": 4,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": 57,
+    "oscarNominationsTotal": 1,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [
+      "ACTOR IN A SUPPORTING ROLE"
+    ],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [
+      "supportingActor"
+    ],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "cloudy-with-a-chance-of-meatballs-2009",
+    "imdbId": "tt0844471",
+    "imdbLink": "https://www.imdb.com/title/tt0844471/",
+    "title": "Cloudy with a Chance of Meatballs",
+    "originalTitle": null,
+    "releaseYear": 2009,
+    "type": "Feature Film",
+    "runtimeMinutes": 90,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Animation",
+      "Comedy"
+    ],
+    "directors": [
+      "Phil Lord",
+      "Christopher Miller"
+    ],
+    "moodTone": [
+      "Playful",
+      "Energetic",
+      "Witty"
+    ],
+    "scariness": 1,
+    "comedy": 8,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": null,
+    "oscarNominationsTotal": 0,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "klaus-2019",
+    "imdbId": "tt4729430",
+    "imdbLink": "https://www.imdb.com/title/tt4729430/",
+    "title": "Klaus",
+    "originalTitle": null,
+    "releaseYear": 2019,
+    "type": "Feature Film",
+    "runtimeMinutes": 96,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Animation",
+      "Comedy"
+    ],
+    "directors": [
+      "Sergio Pablos",
+      "Carlos Martínez López"
+    ],
+    "moodTone": [
+      "Festive",
+      "Warm",
+      "Whimsical",
+      "Playful"
+    ],
+    "scariness": 1,
+    "comedy": 6,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": 92,
+    "oscarNominationsTotal": 1,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [
+      "ANIMATED FEATURE FILM"
+    ],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "tarzan-1999",
+    "imdbId": "tt0120855",
+    "imdbLink": "https://www.imdb.com/title/tt0120855/",
+    "title": "Tarzan",
+    "originalTitle": null,
+    "releaseYear": 1999,
+    "type": "Feature Film",
+    "runtimeMinutes": 88,
+    "contentRating": "G",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Animation",
+      "Comedy"
+    ],
+    "directors": [
+      "Chris Buck",
+      "Kevin Lima"
+    ],
+    "moodTone": [
+      "Adventurous",
+      "Sentimental",
+      "Energetic"
+    ],
+    "scariness": 2,
+    "comedy": 3,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": 72,
+    "oscarNominationsTotal": 1,
+    "oscarWinsTotal": 1,
+    "oscarNominationCategories": [
+      "MUSIC (Original Song)"
+    ],
+    "oscarWinCategories": [
+      "MUSIC (Original Song)"
+    ],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "inside-out-2-2024",
+    "imdbId": "tt22022452",
+    "imdbLink": "https://www.imdb.com/title/tt22022452/",
+    "title": "Inside Out 2",
+    "originalTitle": null,
+    "releaseYear": 2024,
+    "type": "Feature Film",
+    "runtimeMinutes": 96,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Animation",
+      "Comedy"
+    ],
+    "directors": [
+      "Kelsey Mann"
+    ],
+    "moodTone": [
+      "Whimsical",
+      "Sentimental",
+      "Witty"
+    ],
+    "scariness": 1,
+    "comedy": 7,
+    "franchise": "Inside Out",
+    "seriesOrder": 2,
+    "oscarCeremony": 97,
+    "oscarNominationsTotal": 1,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [
+      "ANIMATED FEATURE FILM"
+    ],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "the-wild-robot-2024",
+    "imdbId": "tt29623480",
+    "imdbLink": "https://www.imdb.com/title/tt29623480/",
+    "title": "The Wild Robot",
+    "originalTitle": null,
+    "releaseYear": 2024,
+    "type": "Feature Film",
+    "runtimeMinutes": 102,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Animation",
+      "Family"
+    ],
+    "directors": [
+      "Chris Sanders"
+    ],
+    "moodTone": [
+      "Sentimental",
+      "Adventurous",
+      "Warm"
+    ],
+    "scariness": 2,
+    "comedy": 4,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": 97,
+    "oscarNominationsTotal": 3,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [
+      "ANIMATED FEATURE FILM",
+      "MUSIC (Original Score)",
+      "SOUND MIXING"
+    ],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "willy-wonka-the-chocolate-factory-1971",
+    "imdbId": "tt0067992",
+    "imdbLink": "https://www.imdb.com/title/tt0067992/",
+    "title": "Willy Wonka & the Chocolate Factory",
+    "originalTitle": null,
+    "releaseYear": 1971,
+    "type": "Feature Film",
+    "runtimeMinutes": 100,
+    "contentRating": "G",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Comedy",
+      "Family"
+    ],
+    "directors": [
+      "Mel Stuart"
+    ],
+    "moodTone": [
+      "Whimsical",
+      "Playful",
+      "Otherworldly"
+    ],
+    "scariness": 3,
+    "comedy": 6,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": 44,
+    "oscarNominationsTotal": 1,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [
+      "MUSIC (Original Song Score or Adaptation Score)"
+    ],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "the-adventures-of-tintin-2011",
+    "imdbId": "tt0983193",
+    "imdbLink": "https://www.imdb.com/title/tt0983193/",
+    "title": "The Adventures of Tintin",
+    "originalTitle": null,
+    "releaseYear": 2011,
+    "type": "Feature Film",
+    "runtimeMinutes": 107,
+    "contentRating": "PG",
+    "countries": [
+      "United States",
+      "New Zealand"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Action",
+      "Adventure",
+      "Animation"
+    ],
+    "directors": [
+      "Steven Spielberg"
+    ],
+    "moodTone": [
+      "Adventurous",
+      "Kinetic",
+      "Energetic"
+    ],
+    "scariness": 2,
+    "comedy": 5,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": 84,
+    "oscarNominationsTotal": 1,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [
+      "MUSIC (Original Score)"
+    ],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "the-emperor-s-new-groove-2000",
+    "imdbId": "tt0120917",
+    "imdbLink": "https://www.imdb.com/title/tt0120917/",
+    "title": "The Emperor's New Groove",
+    "originalTitle": null,
+    "releaseYear": 2000,
+    "type": "Feature Film",
+    "runtimeMinutes": 78,
+    "contentRating": "G",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Animation",
+      "Comedy"
+    ],
+    "directors": [
+      "Mark Dindal"
+    ],
+    "moodTone": [
+      "Witty",
+      "Playful",
+      "Energetic"
+    ],
+    "scariness": 1,
+    "comedy": 9,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": 73,
+    "oscarNominationsTotal": 1,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [
+      "MUSIC (Original Song)"
+    ],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "lilo-stitch-2002",
+    "imdbId": "tt0275847",
+    "imdbLink": "https://www.imdb.com/title/tt0275847/",
+    "title": "Lilo & Stitch",
+    "originalTitle": null,
+    "releaseYear": 2002,
+    "type": "Feature Film",
+    "runtimeMinutes": 85,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Animation",
+      "Comedy"
+    ],
+    "directors": [
+      "Dean DeBlois",
+      "Chris Sanders"
+    ],
+    "moodTone": [
+      "Warm",
+      "Playful",
+      "Sentimental"
+    ],
+    "scariness": 1,
+    "comedy": 7,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": 75,
+    "oscarNominationsTotal": 1,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [
+      "ANIMATED FEATURE FILM"
+    ],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "snow-white-and-the-seven-dwarfs-1937",
+    "imdbId": "tt0029583",
+    "imdbLink": "https://www.imdb.com/title/tt0029583/",
+    "title": "Snow White and the Seven Dwarfs",
+    "originalTitle": null,
+    "releaseYear": 1937,
+    "type": "Feature Film",
+    "runtimeMinutes": 83,
+    "contentRating": "G",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Animation",
+      "Family"
+    ],
+    "directors": [
+      "William Cottrell",
+      "David Hand",
+      "Wilfred Jackson",
+      "Larry Morey",
+      "Perce Pearce",
+      "Ben Sharpsteen"
+    ],
+    "moodTone": [
+      "Whimsical",
+      "Nostalgic",
+      "Warm"
+    ],
+    "scariness": 3,
+    "comedy": 4,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": 11,
+    "oscarNominationsTotal": 2,
+    "oscarWinsTotal": 1,
+    "oscarNominationCategories": [
+      "MUSIC (Original Song Score or Adaptation Score)",
+      "SPECIAL AWARD"
+    ],
+    "oscarWinCategories": [
+      "SPECIAL AWARD"
+    ],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "the-polar-express-2004",
+    "imdbId": "tt0338348",
+    "imdbLink": "https://www.imdb.com/title/tt0338348/",
+    "title": "The Polar Express",
+    "originalTitle": null,
+    "releaseYear": 2004,
+    "type": "Feature Film",
+    "runtimeMinutes": 100,
+    "contentRating": "G",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Animation",
+      "Family"
+    ],
+    "directors": [
+      "Robert Zemeckis"
+    ],
+    "moodTone": [
+      "Festive",
+      "Whimsical",
+      "Warm",
+      "Nostalgic"
+    ],
+    "scariness": 1,
+    "comedy": 4,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": 77,
+    "oscarNominationsTotal": 3,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [
+      "MUSIC (Original Song)",
+      "SOUND EDITING",
+      "SOUND MIXING"
+    ],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "luca-2021",
+    "imdbId": "tt12801262",
+    "imdbLink": "https://www.imdb.com/title/tt12801262/",
+    "title": "Luca",
+    "originalTitle": null,
+    "releaseYear": 2021,
+    "type": "Feature Film",
+    "runtimeMinutes": 95,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English",
+      "Italian"
+    ],
+    "genres": [
+      "Adventure",
+      "Animation",
+      "Comedy"
+    ],
+    "directors": [
+      "Enrico Casarosa"
+    ],
+    "moodTone": [
+      "Warm",
+      "Adventurous",
+      "Nostalgic"
+    ],
+    "scariness": 1,
+    "comedy": 5,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": 94,
+    "oscarNominationsTotal": 1,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [
+      "ANIMATED FEATURE FILM"
+    ],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "the-jungle-book-1967",
+    "imdbId": "tt0061852",
+    "imdbLink": "https://www.imdb.com/title/tt0061852/",
+    "title": "The Jungle Book",
+    "originalTitle": null,
+    "releaseYear": 1967,
+    "type": "Feature Film",
+    "runtimeMinutes": 78,
+    "contentRating": "G",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Animation",
+      "Comedy"
+    ],
+    "directors": [
+      "Wolfgang Reitherman"
+    ],
+    "moodTone": [
+      "Playful",
+      "Adventurous",
+      "Energetic"
+    ],
+    "scariness": 1,
+    "comedy": 6,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": 40,
+    "oscarNominationsTotal": 1,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [
+      "MUSIC (Original Song)"
+    ],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "enchanted-2007",
+    "imdbId": "tt0461770",
+    "imdbLink": "https://www.imdb.com/title/tt0461770/",
+    "title": "Enchanted",
+    "originalTitle": null,
+    "releaseYear": 2007,
+    "type": "Feature Film",
+    "runtimeMinutes": 107,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Animation",
+      "Comedy"
+    ],
+    "directors": [
+      "Kevin Lima"
+    ],
+    "moodTone": [
+      "Romantic",
+      "Playful",
+      "Witty"
+    ],
+    "scariness": 1,
+    "comedy": 7,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": 80,
+    "oscarNominationsTotal": 3,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [
+      "MUSIC (Original Song)"
+    ],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "chicken-run-2000",
+    "imdbId": "tt0120630",
+    "imdbLink": "https://www.imdb.com/title/tt0120630/",
+    "title": "Chicken Run",
+    "originalTitle": null,
+    "releaseYear": 2000,
+    "type": "Feature Film",
+    "runtimeMinutes": 84,
+    "contentRating": "G",
+    "countries": [
+      "United Kingdom",
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Animation",
+      "Comedy"
+    ],
+    "directors": [
+      "Peter Lord",
+      "Nick Park"
+    ],
+    "moodTone": [
+      "Witty",
+      "Playful",
+      "Adventurous"
+    ],
+    "scariness": 1,
+    "comedy": 8,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": null,
+    "oscarNominationsTotal": 0,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "castle-in-the-sky-1986",
+    "imdbId": "tt0092067",
+    "imdbLink": "https://www.imdb.com/title/tt0092067/",
+    "title": "Castle in the Sky",
+    "originalTitle": null,
+    "releaseYear": 1986,
+    "type": "Feature Film",
+    "runtimeMinutes": 124,
+    "contentRating": "PG",
+    "countries": [
+      "Japan"
+    ],
+    "languages": [
+      "Japanese"
+    ],
+    "genres": [
+      "Adventure",
+      "Animation",
+      "Family"
+    ],
+    "directors": [
+      "Hayao Miyazaki"
+    ],
+    "moodTone": [
+      "Adventurous",
+      "Otherworldly",
+      "Energetic"
+    ],
+    "scariness": 2,
+    "comedy": 3,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": null,
+    "oscarNominationsTotal": 0,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "kung-fu-panda-3-2016",
+    "imdbId": "tt2267968",
+    "imdbLink": "https://www.imdb.com/title/tt2267968/",
+    "title": "Kung Fu Panda 3",
+    "originalTitle": null,
+    "releaseYear": 2016,
+    "type": "Feature Film",
+    "runtimeMinutes": 95,
+    "contentRating": "PG",
+    "countries": [
+      "United States",
+      "China"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Action",
+      "Adventure",
+      "Animation"
+    ],
+    "directors": [
+      "Alessandro Carloni",
+      "Jennifer Yuh Nelson"
+    ],
+    "moodTone": [
+      "Energetic",
+      "Playful",
+      "Warm"
+    ],
+    "scariness": 1,
+    "comedy": 7,
+    "franchise": "Kung Fu Panda",
+    "seriesOrder": 3,
+    "oscarCeremony": null,
+    "oscarNominationsTotal": 0,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "wonder-2017",
+    "imdbId": "tt2543472",
+    "imdbLink": "https://www.imdb.com/title/tt2543472/",
+    "title": "Wonder",
+    "originalTitle": null,
+    "releaseYear": 2017,
+    "type": "Feature Film",
+    "runtimeMinutes": 113,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Drama",
+      "Family"
+    ],
+    "directors": [
+      "Stephen Chbosky"
+    ],
+    "moodTone": [
+      "Warm",
+      "Sentimental",
+      "Reflective"
+    ],
+    "scariness": 1,
+    "comedy": 4,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": 90,
+    "oscarNominationsTotal": 1,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [
+      "MAKEUP AND HAIRSTYLING"
+    ],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "the-chronicles-of-narnia-prince-caspian-2008",
+    "imdbId": "tt0499448",
+    "imdbLink": "https://www.imdb.com/title/tt0499448/",
+    "title": "The Chronicles of Narnia: Prince Caspian",
+    "originalTitle": null,
+    "releaseYear": 2008,
+    "type": "Feature Film",
+    "runtimeMinutes": 150,
+    "contentRating": "PG",
+    "countries": [
+      "United States",
+      "United Kingdom"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Action",
+      "Adventure",
+      "Family"
+    ],
+    "directors": [
+      "Andrew Adamson"
+    ],
+    "moodTone": [
+      "Adventurous",
+      "Dramatic",
+      "Cinematic"
+    ],
+    "scariness": 3,
+    "comedy": 3,
+    "franchise": "The Chronicles of Narnia",
+    "seriesOrder": 2,
+    "oscarCeremony": null,
+    "oscarNominationsTotal": 0,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "mary-poppins-1964",
+    "imdbId": "tt0058331",
+    "imdbLink": "https://www.imdb.com/title/tt0058331/",
+    "title": "Mary Poppins",
+    "originalTitle": null,
+    "releaseYear": 1964,
+    "type": "Feature Film",
+    "runtimeMinutes": 139,
+    "contentRating": "Approved",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Comedy",
+      "Family",
+      "Fantasy"
+    ],
+    "directors": [
+      "Robert Stevenson"
+    ],
+    "moodTone": [
+      "Whimsical",
+      "Playful",
+      "Warm"
+    ],
+    "scariness": 1,
+    "comedy": 7,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": 37,
+    "oscarNominationsTotal": 13,
+    "oscarWinsTotal": 5,
+    "oscarNominationCategories": [
+      "ACTRESS IN A LEADING ROLE",
+      "ART DIRECTION (Color)",
+      "CINEMATOGRAPHY (Color)",
+      "COSTUME DESIGN (Color)",
+      "DIRECTING",
+      "FILM EDITING",
+      "MUSIC (Original Score)",
+      "MUSIC (Original Song Score or Adaptation Score)",
+      "MUSIC (Original Song)",
+      "BEST PICTURE",
+      "SOUND MIXING",
+      "VISUAL EFFECTS",
+      "WRITING (Adapted Screenplay)"
+    ],
+    "oscarWinCategories": [
+      "ACTRESS IN A LEADING ROLE",
+      "FILM EDITING",
+      "MUSIC (Original Score)",
+      "MUSIC (Original Song)",
+      "VISUAL EFFECTS"
+    ],
+    "oscarMajorNoms": [
+      "actress",
+      "director",
+      "picture",
+      "adaptedScreenplay"
+    ],
+    "oscarMajorWins": [
+      "actress"
+    ]
+  },
+  {
+    "id": "the-secret-life-of-pets-2016",
+    "imdbId": "tt2709768",
+    "imdbLink": "https://www.imdb.com/title/tt2709768/",
+    "title": "The Secret Life of Pets",
+    "originalTitle": null,
+    "releaseYear": 2016,
+    "type": "Feature Film",
+    "runtimeMinutes": 86,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Animation",
+      "Comedy"
+    ],
+    "directors": [
+      "Chris Renaud"
+    ],
+    "moodTone": [
+      "Playful",
+      "Energetic",
+      "Warm"
+    ],
+    "scariness": 1,
+    "comedy": 8,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": null,
+    "oscarNominationsTotal": 0,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "sing-2016",
+    "imdbId": "tt3470600",
+    "imdbLink": "https://www.imdb.com/title/tt3470600/",
+    "title": "Sing",
+    "originalTitle": null,
+    "releaseYear": 2016,
+    "type": "Feature Film",
+    "runtimeMinutes": 108,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Animation",
+      "Comedy",
+      "Family"
+    ],
+    "directors": [
+      "Garth Jennings",
+      "Christophe Lourdelet"
+    ],
+    "moodTone": [
+      "Energetic",
+      "Warm",
+      "Playful"
+    ],
+    "scariness": 1,
+    "comedy": 7,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": null,
+    "oscarNominationsTotal": 0,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "kiki-s-delivery-service-1989",
+    "imdbId": "tt0097814",
+    "imdbLink": "https://www.imdb.com/title/tt0097814/",
+    "title": "Kiki's Delivery Service",
+    "originalTitle": null,
+    "releaseYear": 1989,
+    "type": "Feature Film",
+    "runtimeMinutes": 103,
+    "contentRating": "G",
+    "countries": [
+      "Japan"
+    ],
+    "languages": [
+      "Japanese"
+    ],
+    "genres": [
+      "Animation",
+      "Family",
+      "Fantasy"
+    ],
+    "directors": [
+      "Hayao Miyazaki"
+    ],
+    "moodTone": [
+      "Cozy",
+      "Whimsical",
+      "Warm"
+    ],
+    "scariness": 1,
+    "comedy": 4,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": null,
+    "oscarNominationsTotal": 0,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "pocahontas-1995",
+    "imdbId": "tt0114148",
+    "imdbLink": "https://www.imdb.com/title/tt0114148/",
+    "title": "Pocahontas",
+    "originalTitle": null,
+    "releaseYear": 1995,
+    "type": "Feature Film",
+    "runtimeMinutes": 81,
+    "contentRating": "G",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Animation",
+      "Drama"
+    ],
+    "directors": [
+      "Mike Gabriel",
+      "Eric Goldberg"
+    ],
+    "moodTone": [
+      "Romantic",
+      "Reflective",
+      "Dramatic"
+    ],
+    "scariness": 1,
+    "comedy": 2,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": 68,
+    "oscarNominationsTotal": 2,
+    "oscarWinsTotal": 2,
+    "oscarNominationCategories": [
+      "MUSIC (Original Song Score or Adaptation Score)",
+      "MUSIC (Original Song)"
+    ],
+    "oscarWinCategories": [
+      "MUSIC (Original Song Score or Adaptation Score)",
+      "MUSIC (Original Song)"
+    ],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "one-hundred-and-one-dalmatians-1961",
+    "imdbId": "tt0055254",
+    "imdbLink": "https://www.imdb.com/title/tt0055254/",
+    "title": "One Hundred and One Dalmatians",
+    "originalTitle": null,
+    "releaseYear": 1961,
+    "type": "Feature Film",
+    "runtimeMinutes": 79,
+    "contentRating": "G",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Animation",
+      "Comedy"
+    ],
+    "directors": [
+      "Clyde Geronimi",
+      "Hamilton Luske",
+      "Wolfgang Reitherman"
+    ],
+    "moodTone": [
+      "Playful",
+      "Adventurous",
+      "Warm"
+    ],
+    "scariness": 2,
+    "comedy": 5,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": null,
+    "oscarNominationsTotal": 0,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "ponyo-2008",
+    "imdbId": "tt0876563",
+    "imdbLink": "https://www.imdb.com/title/tt0876563/",
+    "title": "Ponyo",
+    "originalTitle": null,
+    "releaseYear": 2008,
+    "type": "Feature Film",
+    "runtimeMinutes": 101,
+    "contentRating": "G",
+    "countries": [
+      "Japan"
+    ],
+    "languages": [
+      "Japanese"
+    ],
+    "genres": [
+      "Adventure",
+      "Animation",
+      "Comedy"
+    ],
+    "directors": [
+      "Hayao Miyazaki"
+    ],
+    "moodTone": [
+      "Whimsical",
+      "Playful",
+      "Warm"
+    ],
+    "scariness": 1,
+    "comedy": 4,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": null,
+    "oscarNominationsTotal": 0,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "the-addams-family-1991",
+    "imdbId": "tt0101272",
+    "imdbLink": "https://www.imdb.com/title/tt0101272/",
+    "title": "The Addams Family",
+    "originalTitle": null,
+    "releaseYear": 1991,
+    "type": "Feature Film",
+    "runtimeMinutes": 99,
+    "contentRating": "PG-13",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Comedy",
+      "Fantasy"
+    ],
+    "directors": [
+      "Barry Sonnenfeld"
+    ],
+    "moodTone": [
+      "Macabre",
+      "Darkly Comic",
+      "Playful"
+    ],
+    "scariness": 1,
+    "comedy": 8,
+    "franchise": "Addams Family",
+    "seriesOrder": 1,
+    "oscarCeremony": 64,
+    "oscarNominationsTotal": 1,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [
+      "COSTUME DESIGN"
+    ],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "puss-in-boots-2011",
+    "imdbId": "tt0448694",
+    "imdbLink": "https://www.imdb.com/title/tt0448694/",
+    "title": "Puss in Boots",
+    "originalTitle": null,
+    "releaseYear": 2011,
+    "type": "Feature Film",
+    "runtimeMinutes": 90,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Action",
+      "Adventure",
+      "Animation"
+    ],
+    "directors": [
+      "Chris Miller"
+    ],
+    "moodTone": [
+      "Adventurous",
+      "Witty",
+      "Energetic"
+    ],
+    "scariness": 1,
+    "comedy": 7,
+    "franchise": "Shrek",
+    "seriesOrder": 3,
+    "oscarCeremony": 84,
+    "oscarNominationsTotal": 1,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [
+      "ANIMATED FEATURE FILM"
+    ],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "bridge-to-terabithia-2007",
+    "imdbId": "tt0398808",
+    "imdbLink": "https://www.imdb.com/title/tt0398808/",
+    "title": "Bridge to Terabithia",
+    "originalTitle": null,
+    "releaseYear": 2007,
+    "type": "Feature Film",
+    "runtimeMinutes": 96,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Drama",
+      "Family",
+      "Fantasy"
+    ],
+    "directors": [
+      "Gabor Csupo"
+    ],
+    "moodTone": [
+      "Whimsical",
+      "Sentimental",
+      "Somber"
+    ],
+    "scariness": 1,
+    "comedy": 3,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": null,
+    "oscarNominationsTotal": 0,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "night-at-the-museum-battle-of-the-smithsonian-2009",
+    "imdbId": "tt1078912",
+    "imdbLink": "https://www.imdb.com/title/tt1078912/",
+    "title": "Night at the Museum: Battle of the Smithsonian",
+    "originalTitle": null,
+    "releaseYear": 2009,
+    "type": "Feature Film",
+    "runtimeMinutes": 105,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Comedy",
+      "Family"
+    ],
+    "directors": [
+      "Shawn Levy"
+    ],
+    "moodTone": [
+      "Playful",
+      "Energetic",
+      "Adventurous"
+    ],
+    "scariness": 1,
+    "comedy": 7,
+    "franchise": "Night at the Museum",
+    "seriesOrder": 2,
+    "oscarCeremony": null,
+    "oscarNominationsTotal": 0,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "matilda-1996",
+    "imdbId": "tt0117008",
+    "imdbLink": "https://www.imdb.com/title/tt0117008/",
+    "title": "Matilda",
+    "originalTitle": null,
+    "releaseYear": 1996,
+    "type": "Feature Film",
+    "runtimeMinutes": 98,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Comedy",
+      "Family",
+      "Fantasy"
+    ],
+    "directors": [
+      "Danny DeVito"
+    ],
+    "moodTone": [
+      "Whimsical",
+      "Playful",
+      "Witty"
+    ],
+    "scariness": 2,
+    "comedy": 7,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": null,
+    "oscarNominationsTotal": 0,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "cinderella-1950",
+    "imdbId": "tt0042332",
+    "imdbLink": "https://www.imdb.com/title/tt0042332/",
+    "title": "Cinderella",
+    "originalTitle": null,
+    "releaseYear": 1950,
+    "type": "Feature Film",
+    "runtimeMinutes": 74,
+    "contentRating": "G",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Animation",
+      "Family",
+      "Fantasy"
+    ],
+    "directors": [
+      "Clyde Geronimi",
+      "Wilfred Jackson",
+      "Hamilton Luske"
+    ],
+    "moodTone": [
+      "Whimsical",
+      "Romantic",
+      "Nostalgic"
+    ],
+    "scariness": 1,
+    "comedy": 3,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": 23,
+    "oscarNominationsTotal": 3,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [
+      "MUSIC (Original Song Score or Adaptation Score)",
+      "MUSIC (Original Song)",
+      "SOUND RECORDING"
+    ],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "the-princess-and-the-frog-2009",
+    "imdbId": "tt0780521",
+    "imdbLink": "https://www.imdb.com/title/tt0780521/",
+    "title": "The Princess and the Frog",
+    "originalTitle": null,
+    "releaseYear": 2009,
+    "type": "Feature Film",
+    "runtimeMinutes": 97,
+    "contentRating": "G",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Animation",
+      "Comedy"
+    ],
+    "directors": [
+      "Ron Clements",
+      "John Musker"
+    ],
+    "moodTone": [
+      "Romantic",
+      "Whimsical",
+      "Playful"
+    ],
+    "scariness": 2,
+    "comedy": 5,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": 82,
+    "oscarNominationsTotal": 3,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [
+      "ANIMATED FEATURE FILM",
+      "MUSIC (Original Song)"
+    ],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "how-to-train-your-dragon-the-hidden-world-2019",
+    "imdbId": "tt2386490",
+    "imdbLink": "https://www.imdb.com/title/tt2386490/",
+    "title": "How to Train Your Dragon: The Hidden World",
+    "originalTitle": null,
+    "releaseYear": 2019,
+    "type": "Feature Film",
+    "runtimeMinutes": 104,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Action",
+      "Adventure",
+      "Animation"
+    ],
+    "directors": [
+      "Dean DeBlois"
+    ],
+    "moodTone": [
+      "Adventurous",
+      "Sentimental",
+      "Cinematic"
+    ],
+    "scariness": 2,
+    "comedy": 4,
+    "franchise": "How to Train Your Dragon",
+    "seriesOrder": 3,
+    "oscarCeremony": 92,
+    "oscarNominationsTotal": 1,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [
+      "ANIMATED FEATURE FILM"
+    ],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "teenage-mutant-ninja-turtles-2014",
+    "imdbId": "tt1291150",
+    "imdbLink": "https://www.imdb.com/title/tt1291150/",
+    "title": "Teenage Mutant Ninja Turtles",
+    "originalTitle": null,
+    "releaseYear": 2014,
+    "type": "Feature Film",
+    "runtimeMinutes": 101,
+    "contentRating": "PG-13",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Action",
+      "Adventure",
+      "Comedy"
+    ],
+    "directors": [
+      "Jonathan Liebesman"
+    ],
+    "moodTone": [
+      "Kinetic",
+      "Energetic",
+      "Playful"
+    ],
+    "scariness": 3,
+    "comedy": 6,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": null,
+    "oscarNominationsTotal": 0,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "the-hunchback-of-notre-dame-1996",
+    "imdbId": "tt0116583",
+    "imdbLink": "https://www.imdb.com/title/tt0116583/",
+    "title": "The Hunchback of Notre Dame",
+    "originalTitle": null,
+    "releaseYear": 1996,
+    "type": "Feature Film",
+    "runtimeMinutes": 91,
+    "contentRating": "G",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Animation",
+      "Drama",
+      "Family"
+    ],
+    "directors": [
+      "Gary Trousdale",
+      "Kirk Wise"
+    ],
+    "moodTone": [
+      "Dramatic",
+      "Atmospheric",
+      "Somber"
+    ],
+    "scariness": 3,
+    "comedy": 3,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": 69,
+    "oscarNominationsTotal": 1,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [
+      "MUSIC (Original Song Score or Adaptation Score)"
+    ],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "pinocchio-1940",
+    "imdbId": "tt0032910",
+    "imdbLink": "https://www.imdb.com/title/tt0032910/",
+    "title": "Pinocchio",
+    "originalTitle": null,
+    "releaseYear": 1940,
+    "type": "Feature Film",
+    "runtimeMinutes": 88,
+    "contentRating": "G",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Animation",
+      "Comedy"
+    ],
+    "directors": [
+      "Norman Ferguson",
+      "T. Hee",
+      "Wilfred Jackson",
+      "Jack Kinney",
+      "Hamilton Luske",
+      "Bill Roberts",
+      "Ben Sharpsteen"
+    ],
+    "moodTone": [
+      "Whimsical",
+      "Adventurous",
+      "Nostalgic"
+    ],
+    "scariness": 4,
+    "comedy": 3,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": 13,
+    "oscarNominationsTotal": 2,
+    "oscarWinsTotal": 2,
+    "oscarNominationCategories": [
+      "MUSIC (Original Score)",
+      "MUSIC (Original Song)"
+    ],
+    "oscarWinCategories": [
+      "MUSIC (Original Score)",
+      "MUSIC (Original Song)"
+    ],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "percy-jackson-the-olympians-the-lightning-thief-2010",
+    "imdbId": "tt0814255",
+    "imdbLink": "https://www.imdb.com/title/tt0814255/",
+    "title": "Percy Jackson & the Olympians: The Lightning Thief",
+    "originalTitle": null,
+    "releaseYear": 2010,
+    "type": "Feature Film",
+    "runtimeMinutes": 118,
+    "contentRating": "PG",
+    "countries": [
+      "United States",
+      "Canada"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Family",
+      "Fantasy"
+    ],
+    "directors": [
+      "Chris Columbus"
+    ],
+    "moodTone": [
+      "Adventurous",
+      "Energetic",
+      "Kinetic"
+    ],
+    "scariness": 3,
+    "comedy": 4,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": null,
+    "oscarNominationsTotal": 0,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "the-neverending-story-1984",
+    "imdbId": "tt0088323",
+    "imdbLink": "https://www.imdb.com/title/tt0088323/",
+    "title": "The NeverEnding Story",
+    "originalTitle": null,
+    "releaseYear": 1984,
+    "type": "Feature Film",
+    "runtimeMinutes": 102,
+    "contentRating": "PG",
+    "countries": [
+      "West Germany",
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Drama",
+      "Family"
+    ],
+    "directors": [
+      "Wolfgang Petersen"
+    ],
+    "moodTone": [
+      "Otherworldly",
+      "Adventurous",
+      "Somber"
+    ],
+    "scariness": 3,
+    "comedy": 2,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": null,
+    "oscarNominationsTotal": 0,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "sleeping-beauty-1959",
+    "imdbId": "tt0053285",
+    "imdbLink": "https://www.imdb.com/title/tt0053285/",
+    "title": "Sleeping Beauty",
+    "originalTitle": null,
+    "releaseYear": 1959,
+    "type": "Feature Film",
+    "runtimeMinutes": 75,
+    "contentRating": "G",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Animation",
+      "Family"
+    ],
+    "directors": [
+      "Les Clark",
+      "Clyde Geronimi",
+      "Eric Larson",
+      "Wolfgang Reitherman",
+      "Hamilton Luske"
+    ],
+    "moodTone": [
+      "Romantic",
+      "Atmospheric",
+      "Nostalgic"
+    ],
+    "scariness": 3,
+    "comedy": 2,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": 32,
+    "oscarNominationsTotal": 1,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [
+      "MUSIC (Original Song Score or Adaptation Score)"
+    ],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "alice-in-wonderland-1951",
+    "imdbId": "tt0043274",
+    "imdbLink": "https://www.imdb.com/title/tt0043274/",
+    "title": "Alice in Wonderland",
+    "originalTitle": null,
+    "releaseYear": 1951,
+    "type": "Feature Film",
+    "runtimeMinutes": 75,
+    "contentRating": "G",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Animation",
+      "Comedy"
+    ],
+    "directors": [
+      "Clyde Geronimi",
+      "Wilfred Jackson",
+      "Hamilton Luske",
+      "Jack Kinney"
+    ],
+    "moodTone": [
+      "Whimsical",
+      "Playful",
+      "Otherworldly"
+    ],
+    "scariness": 2,
+    "comedy": 5,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": 24,
+    "oscarNominationsTotal": 1,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [
+      "MUSIC (Original Song Score or Adaptation Score)"
+    ],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "labyrinth-1986",
+    "imdbId": "tt0091369",
+    "imdbLink": "https://www.imdb.com/title/tt0091369/",
+    "title": "Labyrinth",
+    "originalTitle": null,
+    "releaseYear": 1986,
+    "type": "Feature Film",
+    "runtimeMinutes": 101,
+    "contentRating": "PG",
+    "countries": [
+      "United Kingdom",
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Family",
+      "Fantasy"
+    ],
+    "directors": [
+      "Jim Henson"
+    ],
+    "moodTone": [
+      "Otherworldly",
+      "Whimsical",
+      "Adventurous"
+    ],
+    "scariness": 2,
+    "comedy": 4,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": null,
+    "oscarNominationsTotal": 0,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "bambi-1942",
+    "imdbId": "tt0034492",
+    "imdbLink": "https://www.imdb.com/title/tt0034492/",
+    "title": "Bambi",
+    "originalTitle": null,
+    "releaseYear": 1942,
+    "type": "Feature Film",
+    "runtimeMinutes": 69,
+    "contentRating": "G",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Animation",
+      "Drama"
+    ],
+    "directors": [
+      "James Algar",
+      "Samuel Armstrong",
+      "David Hand",
+      "Graham Heid",
+      "Bill Roberts",
+      "Paul Satterfield",
+      "Norman Wright",
+      "Arthur Davis",
+      "Clyde Geronimi"
+    ],
+    "moodTone": [
+      "Sentimental",
+      "Nostalgic",
+      "Reflective"
+    ],
+    "scariness": 3,
+    "comedy": 2,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": 15,
+    "oscarNominationsTotal": 3,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [
+      "MUSIC (Original Score)",
+      "MUSIC (Original Song)",
+      "SOUND RECORDING"
+    ],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "peter-pan-1953",
+    "imdbId": "tt0046183",
+    "imdbLink": "https://www.imdb.com/title/tt0046183/",
+    "title": "Peter Pan",
+    "originalTitle": null,
+    "releaseYear": 1953,
+    "type": "Feature Film",
+    "runtimeMinutes": 77,
+    "contentRating": "G",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Animation",
+      "Family"
+    ],
+    "directors": [
+      "Clyde Geronimi",
+      "Wilfred Jackson",
+      "Hamilton Luske",
+      "Jack Kinney"
+    ],
+    "moodTone": [
+      "Adventurous",
+      "Playful",
+      "Whimsical"
+    ],
+    "scariness": 1,
+    "comedy": 5,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": null,
+    "oscarNominationsTotal": 0,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "hocus-pocus-1993",
+    "imdbId": "tt0107120",
+    "imdbLink": "https://www.imdb.com/title/tt0107120/",
+    "title": "Hocus Pocus",
+    "originalTitle": null,
+    "releaseYear": 1993,
+    "type": "Feature Film",
+    "runtimeMinutes": 96,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Comedy",
+      "Family",
+      "Fantasy"
+    ],
+    "directors": [
+      "Kenny Ortega"
+    ],
+    "moodTone": [
+      "Playful",
+      "Whimsical"
+    ],
+    "scariness": 2,
+    "comedy": 9,
+    "franchise": "Hocus Pocus",
+    "seriesOrder": 1,
+    "oscarCeremony": null,
+    "oscarNominationsTotal": 0,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "the-prince-of-egypt-1998",
+    "imdbId": "tt0120794",
+    "imdbLink": "https://www.imdb.com/title/tt0120794/",
+    "title": "The Prince of Egypt",
+    "originalTitle": null,
+    "releaseYear": 1998,
+    "type": "Feature Film",
+    "runtimeMinutes": 99,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Animation",
+      "Drama"
+    ],
+    "directors": [
+      "Brenda Chapman",
+      "Steve Hickner",
+      "Simon Wells"
+    ],
+    "moodTone": [
+      "Dramatic",
+      "Cinematic",
+      "Reflective"
+    ],
+    "scariness": 2,
+    "comedy": 2,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": 71,
+    "oscarNominationsTotal": 2,
+    "oscarWinsTotal": 1,
+    "oscarNominationCategories": [
+      "MUSIC (Original Song Score or Adaptation Score)",
+      "MUSIC (Original Song)"
+    ],
+    "oscarWinCategories": [
+      "MUSIC (Original Song)"
+    ],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "lady-and-the-tramp-1955",
+    "imdbId": "tt0048280",
+    "imdbLink": "https://www.imdb.com/title/tt0048280/",
+    "title": "Lady and the Tramp",
+    "originalTitle": null,
+    "releaseYear": 1955,
+    "type": "Feature Film",
+    "runtimeMinutes": 76,
+    "contentRating": "G",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Animation",
+      "Comedy"
+    ],
+    "directors": [
+      "Clyde Geronimi",
+      "Wilfred Jackson",
+      "Hamilton Luske",
+      "Jack Cutting"
+    ],
+    "moodTone": [
+      "Romantic",
+      "Warm",
+      "Nostalgic"
+    ],
+    "scariness": 1,
+    "comedy": 4,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": null,
+    "oscarNominationsTotal": 0,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "the-princess-diaries-2001",
+    "imdbId": "tt0247638",
+    "imdbLink": "https://www.imdb.com/title/tt0247638/",
+    "title": "The Princess Diaries",
+    "originalTitle": null,
+    "releaseYear": 2001,
+    "type": "Feature Film",
+    "runtimeMinutes": 115,
+    "contentRating": "G",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Comedy",
+      "Family",
+      "Romance"
+    ],
+    "directors": [
+      "Garry Marshall"
+    ],
+    "moodTone": [
+      "Romantic",
+      "Playful",
+      "Warm"
+    ],
+    "scariness": 1,
+    "comedy": 7,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": null,
+    "oscarNominationsTotal": 0,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "wallace-gromit-the-curse-of-the-were-rabbit-2005",
+    "imdbId": "tt0312004",
+    "imdbLink": "https://www.imdb.com/title/tt0312004/",
+    "title": "Wallace & Gromit: The Curse of the Were-Rabbit",
+    "originalTitle": null,
+    "releaseYear": 2005,
+    "type": "Feature Film",
+    "runtimeMinutes": 85,
+    "contentRating": "G",
+    "countries": [
+      "United Kingdom"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Animation",
+      "Comedy"
+    ],
+    "directors": [
+      "Steve Box",
+      "Nick Park"
+    ],
+    "moodTone": [
+      "Witty",
+      "Playful",
+      "Cozy"
+    ],
+    "scariness": 2,
+    "comedy": 8,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": 78,
+    "oscarNominationsTotal": 1,
+    "oscarWinsTotal": 1,
+    "oscarNominationCategories": [
+      "ANIMATED FEATURE FILM"
+    ],
+    "oscarWinCategories": [
+      "ANIMATED FEATURE FILM"
+    ],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "elemental-2023",
+    "imdbId": "tt15789038",
+    "imdbLink": "https://www.imdb.com/title/tt15789038/",
+    "title": "Elemental",
+    "originalTitle": null,
+    "releaseYear": 2023,
+    "type": "Feature Film",
+    "runtimeMinutes": 101,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Animation",
+      "Comedy"
+    ],
+    "directors": [
+      "Peter Sohn"
+    ],
+    "moodTone": [
+      "Romantic",
+      "Warm",
+      "Whimsical"
+    ],
+    "scariness": 1,
+    "comedy": 4,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": 96,
+    "oscarNominationsTotal": 1,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [
+      "ANIMATED FEATURE FILM"
+    ],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "the-parent-trap-1998",
+    "imdbId": "tt0120783",
+    "imdbLink": "https://www.imdb.com/title/tt0120783/",
+    "title": "The Parent Trap",
+    "originalTitle": null,
+    "releaseYear": 1998,
+    "type": "Feature Film",
+    "runtimeMinutes": 128,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Comedy",
+      "Drama"
+    ],
+    "directors": [
+      "Nancy Meyers"
+    ],
+    "moodTone": [
+      "Warm",
+      "Playful",
+      "Romantic"
+    ],
+    "scariness": 1,
+    "comedy": 7,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": null,
+    "oscarNominationsTotal": 0,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "paddington-2014",
+    "imdbId": "tt1109624",
+    "imdbLink": "https://www.imdb.com/title/tt1109624/",
+    "title": "Paddington",
+    "originalTitle": null,
+    "releaseYear": 2014,
+    "type": "Feature Film",
+    "runtimeMinutes": 95,
+    "contentRating": "PG",
+    "countries": [
+      "United Kingdom",
+      "France"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Comedy",
+      "Family"
+    ],
+    "directors": [
+      "Paul King"
+    ],
+    "moodTone": [
+      "Warm",
+      "Playful",
+      "Cozy"
+    ],
+    "scariness": 1,
+    "comedy": 8,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": null,
+    "oscarNominationsTotal": 0,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "the-land-before-time-1988",
+    "imdbId": "tt0095489",
+    "imdbLink": "https://www.imdb.com/title/tt0095489/",
+    "title": "The Land Before Time",
+    "originalTitle": null,
+    "releaseYear": 1988,
+    "type": "Feature Film",
+    "runtimeMinutes": 69,
+    "contentRating": "G",
+    "countries": [
+      "United States",
+      "Ireland"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Animation",
+      "Drama"
+    ],
+    "directors": [
+      "Don Bluth"
+    ],
+    "moodTone": [
+      "Sentimental",
+      "Adventurous",
+      "Somber"
+    ],
+    "scariness": 2,
+    "comedy": 2,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": null,
+    "oscarNominationsTotal": 0,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "the-sandlot-1993",
+    "imdbId": "tt0108037",
+    "imdbLink": "https://www.imdb.com/title/tt0108037/",
+    "title": "The Sandlot",
+    "originalTitle": null,
+    "releaseYear": 1993,
+    "type": "Feature Film",
+    "runtimeMinutes": 101,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Comedy",
+      "Drama",
+      "Family"
+    ],
+    "directors": [
+      "David Mickey Evans"
+    ],
+    "moodTone": [
+      "Nostalgic",
+      "Warm",
+      "Playful"
+    ],
+    "scariness": 1,
+    "comedy": 7,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": null,
+    "oscarNominationsTotal": 0,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "babe-1995",
+    "imdbId": "tt0112431",
+    "imdbLink": "https://www.imdb.com/title/tt0112431/",
+    "title": "Babe",
+    "originalTitle": null,
+    "releaseYear": 1995,
+    "type": "Feature Film",
+    "runtimeMinutes": 91,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Comedy",
+      "Drama",
+      "Family"
+    ],
+    "directors": [
+      "Chris Noonan"
+    ],
+    "moodTone": [
+      "Warm",
+      "Whimsical",
+      "Sentimental"
+    ],
+    "scariness": 1,
+    "comedy": 5,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": 68,
+    "oscarNominationsTotal": 7,
+    "oscarWinsTotal": 1,
+    "oscarNominationCategories": [
+      "ACTOR IN A SUPPORTING ROLE",
+      "ART DIRECTION",
+      "DIRECTING",
+      "FILM EDITING",
+      "BEST PICTURE",
+      "VISUAL EFFECTS",
+      "WRITING (Adapted Screenplay)"
+    ],
+    "oscarWinCategories": [
+      "VISUAL EFFECTS"
+    ],
+    "oscarMajorNoms": [
+      "supportingActor",
+      "director",
+      "picture",
+      "adaptedScreenplay"
+    ],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "the-aristocats-1970",
+    "imdbId": "tt0065421",
+    "imdbLink": "https://www.imdb.com/title/tt0065421/",
+    "title": "The Aristocats",
+    "originalTitle": null,
+    "releaseYear": 1970,
+    "type": "Feature Film",
+    "runtimeMinutes": 78,
+    "contentRating": "G",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Animation",
+      "Comedy"
+    ],
+    "directors": [
+      "Wolfgang Reitherman"
+    ],
+    "moodTone": [
+      "Playful",
+      "Warm",
+      "Whimsical"
+    ],
+    "scariness": 1,
+    "comedy": 6,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": null,
+    "oscarNominationsTotal": 0,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "dumbo-1941",
+    "imdbId": "tt0033563",
+    "imdbLink": "https://www.imdb.com/title/tt0033563/",
+    "title": "Dumbo",
+    "originalTitle": null,
+    "releaseYear": 1941,
+    "type": "Feature Film",
+    "runtimeMinutes": 64,
+    "contentRating": "G",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Animation",
+      "Drama"
+    ],
+    "directors": [
+      "Samuel Armstrong",
+      "Norman Ferguson",
+      "Wilfred Jackson",
+      "Jack Kinney",
+      "Bill Roberts",
+      "Ben Sharpsteen"
+    ],
+    "moodTone": [
+      "Sentimental",
+      "Whimsical",
+      "Warm"
+    ],
+    "scariness": 2,
+    "comedy": 3,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": 14,
+    "oscarNominationsTotal": 2,
+    "oscarWinsTotal": 1,
+    "oscarNominationCategories": [
+      "MUSIC (Original Song Score or Adaptation Score)",
+      "MUSIC (Original Song)"
+    ],
+    "oscarWinCategories": [
+      "MUSIC (Original Song Score or Adaptation Score)"
+    ],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "the-fox-and-the-hound-1981",
+    "imdbId": "tt0082406",
+    "imdbLink": "https://www.imdb.com/title/tt0082406/",
+    "title": "The Fox and the Hound",
+    "originalTitle": null,
+    "releaseYear": 1981,
+    "type": "Feature Film",
+    "runtimeMinutes": 83,
+    "contentRating": "G",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Animation",
+      "Drama"
+    ],
+    "directors": [
+      "Ted Berman",
+      "Richard Rich",
+      "Art Stevens",
+      "David Hand",
+      "Wolfgang Reitherman"
+    ],
+    "moodTone": [
+      "Sentimental",
+      "Warm",
+      "Somber"
+    ],
+    "scariness": 2,
+    "comedy": 3,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": null,
+    "oscarNominationsTotal": 0,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "holes-2003",
+    "imdbId": "tt0311289",
+    "imdbLink": "https://www.imdb.com/title/tt0311289/",
+    "title": "Holes",
+    "originalTitle": null,
+    "releaseYear": 2003,
+    "type": "Feature Film",
+    "runtimeMinutes": 117,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Comedy",
+      "Drama"
+    ],
+    "directors": [
+      "Andrew Davis"
+    ],
+    "moodTone": [
+      "Adventurous",
+      "Witty",
+      "Warm"
+    ],
+    "scariness": 1,
+    "comedy": 6,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": null,
+    "oscarNominationsTotal": 0,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "spy-kids-2001",
+    "imdbId": "tt0227538",
+    "imdbLink": "https://www.imdb.com/title/tt0227538/",
+    "title": "Spy Kids",
+    "originalTitle": null,
+    "releaseYear": 2001,
+    "type": "Feature Film",
+    "runtimeMinutes": 88,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English",
+      "Spanish"
+    ],
+    "genres": [
+      "Action",
+      "Adventure",
+      "Comedy"
+    ],
+    "directors": [
+      "Robert Rodriguez"
+    ],
+    "moodTone": [
+      "Kinetic",
+      "Playful",
+      "Energetic"
+    ],
+    "scariness": 1,
+    "comedy": 7,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": null,
+    "oscarNominationsTotal": 0,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "cool-runnings-1993",
+    "imdbId": "tt0106611",
+    "imdbLink": "https://www.imdb.com/title/tt0106611/",
+    "title": "Cool Runnings",
+    "originalTitle": null,
+    "releaseYear": 1993,
+    "type": "Feature Film",
+    "runtimeMinutes": 98,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Comedy",
+      "Family"
+    ],
+    "directors": [
+      "Jon Turteltaub"
+    ],
+    "moodTone": [
+      "Energetic",
+      "Warm",
+      "Witty"
+    ],
+    "scariness": 1,
+    "comedy": 7,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": null,
+    "oscarNominationsTotal": 0,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "the-muppet-christmas-carol-1992",
+    "imdbId": "tt0104940",
+    "imdbLink": "https://www.imdb.com/title/tt0104940/",
+    "title": "The Muppet Christmas Carol",
+    "originalTitle": null,
+    "releaseYear": 1992,
+    "type": "Feature Film",
+    "runtimeMinutes": 85,
+    "contentRating": "G",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Comedy",
+      "Drama",
+      "Family"
+    ],
+    "directors": [
+      "Brian Henson"
+    ],
+    "moodTone": [
+      "Festive",
+      "Whimsical",
+      "Warm",
+      "Nostalgic"
+    ],
+    "scariness": 1,
+    "comedy": 6,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": null,
+    "oscarNominationsTotal": 0,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "the-muppets-2011",
+    "imdbId": "tt1204342",
+    "imdbLink": "https://www.imdb.com/title/tt1204342/",
+    "title": "The Muppets",
+    "originalTitle": null,
+    "releaseYear": 2011,
+    "type": "Feature Film",
+    "runtimeMinutes": 103,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Comedy",
+      "Family"
+    ],
+    "directors": [
+      "James Bobin"
+    ],
+    "moodTone": [
+      "Playful",
+      "Nostalgic",
+      "Witty"
+    ],
+    "scariness": 1,
+    "comedy": 9,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": 84,
+    "oscarNominationsTotal": 1,
+    "oscarWinsTotal": 1,
+    "oscarNominationCategories": [
+      "MUSIC (Original Song)"
+    ],
+    "oscarWinCategories": [
+      "MUSIC (Original Song)"
+    ],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "stuart-little-1999",
+    "imdbId": "tt0164912",
+    "imdbLink": "https://www.imdb.com/title/tt0164912/",
+    "title": "Stuart Little",
+    "originalTitle": null,
+    "releaseYear": 1999,
+    "type": "Feature Film",
+    "runtimeMinutes": 84,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Comedy",
+      "Family"
+    ],
+    "directors": [
+      "Rob Minkoff"
+    ],
+    "moodTone": [
+      "Warm",
+      "Playful",
+      "Whimsical"
+    ],
+    "scariness": 1,
+    "comedy": 6,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": 72,
+    "oscarNominationsTotal": 1,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [
+      "VISUAL EFFECTS"
+    ],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "the-secret-world-of-arrietty-2010",
+    "imdbId": "tt1568921",
+    "imdbLink": "https://www.imdb.com/title/tt1568921/",
+    "title": "The Secret World of Arrietty",
+    "originalTitle": null,
+    "releaseYear": 2010,
+    "type": "Feature Film",
+    "runtimeMinutes": 94,
+    "contentRating": "G",
+    "countries": [
+      "Japan"
+    ],
+    "languages": [
+      "Japanese"
+    ],
+    "genres": [
+      "Adventure",
+      "Animation",
+      "Drama"
+    ],
+    "directors": [
+      "Hiromasa Yonebayashi"
+    ],
+    "moodTone": [
+      "Cozy",
+      "Whimsical",
+      "Reflective"
+    ],
+    "scariness": 1,
+    "comedy": 2,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": null,
+    "oscarNominationsTotal": 0,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "fantasia-1940",
+    "imdbId": "tt0032455",
+    "imdbLink": "https://www.imdb.com/title/tt0032455/",
+    "title": "Fantasia",
+    "originalTitle": null,
+    "releaseYear": 1940,
+    "type": "Feature Film",
+    "runtimeMinutes": 124,
+    "contentRating": "G",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Animation",
+      "Family",
+      "Fantasy"
+    ],
+    "directors": [
+      "James Algar",
+      "Samuel Armstrong",
+      "Ford Beebe Jr.",
+      "Norman Ferguson",
+      "David Hand",
+      "Jim Handley",
+      "T. Hee",
+      "Wilfred Jackson",
+      "Hamilton Luske",
+      "Bill Roberts",
+      "Paul Satterfield",
+      "Ben Sharpsteen"
+    ],
+    "moodTone": [
+      "Whimsical",
+      "Otherworldly",
+      "Atmospheric"
+    ],
+    "scariness": 3,
+    "comedy": 2,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": 14,
+    "oscarNominationsTotal": 2,
+    "oscarWinsTotal": 2,
+    "oscarNominationCategories": [
+      "SPECIAL AWARD"
+    ],
+    "oscarWinCategories": [
+      "SPECIAL AWARD"
+    ],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "the-sword-in-the-stone-1963",
+    "imdbId": "tt0057546",
+    "imdbLink": "https://www.imdb.com/title/tt0057546/",
+    "title": "The Sword in the Stone",
+    "originalTitle": null,
+    "releaseYear": 1963,
+    "type": "Feature Film",
+    "runtimeMinutes": 79,
+    "contentRating": "G",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Adventure",
+      "Animation",
+      "Comedy"
+    ],
+    "directors": [
+      "Wolfgang Reitherman",
+      "Clyde Geronimi",
+      "David Hand"
+    ],
+    "moodTone": [
+      "Whimsical",
+      "Playful",
+      "Adventurous"
+    ],
+    "scariness": 1,
+    "comedy": 5,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": 36,
+    "oscarNominationsTotal": 1,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [
+      "MUSIC (Original Song Score or Adaptation Score)"
+    ],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "zathura-a-space-adventure-2005",
+    "imdbId": "tt0406375",
+    "imdbLink": "https://www.imdb.com/title/tt0406375/",
+    "title": "Zathura: A Space Adventure",
+    "originalTitle": null,
+    "releaseYear": 2005,
+    "type": "Feature Film",
+    "runtimeMinutes": 101,
+    "contentRating": "PG",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Action",
+      "Adventure",
+      "Comedy"
+    ],
+    "directors": [
+      "Jon Favreau"
+    ],
+    "moodTone": [
+      "Adventurous",
+      "Energetic",
+      "Tense"
+    ],
+    "scariness": 3,
+    "comedy": 5,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": null,
+    "oscarNominationsTotal": 0,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  },
+  {
+    "id": "the-parent-trap-1961",
+    "imdbId": "tt0055277",
+    "imdbLink": "https://www.imdb.com/title/tt0055277/",
+    "title": "The Parent Trap",
+    "originalTitle": null,
+    "releaseYear": 1961,
+    "type": "Feature Film",
+    "runtimeMinutes": 129,
+    "contentRating": "G",
+    "countries": [
+      "United States"
+    ],
+    "languages": [
+      "English"
+    ],
+    "genres": [
+      "Comedy",
+      "Family",
+      "Romance"
+    ],
+    "directors": [
+      "David Swift"
+    ],
+    "moodTone": [
+      "Playful",
+      "Warm",
+      "Romantic"
+    ],
+    "scariness": 1,
+    "comedy": 7,
+    "franchise": null,
+    "seriesOrder": null,
+    "oscarCeremony": 34,
+    "oscarNominationsTotal": 2,
+    "oscarWinsTotal": 0,
+    "oscarNominationCategories": [
+      "FILM EDITING",
+      "SOUND MIXING"
+    ],
+    "oscarWinCategories": [],
+    "oscarMajorNoms": [],
+    "oscarMajorWins": []
+  }
+]

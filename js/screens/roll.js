@@ -152,7 +152,7 @@ function renderRollArea() {
   let sequel = null;
   if (seen && store.getState().settings.sequels && movie.catalogId && catalog.isReady()) {
     sequel = catalog.nextInFranchise(movie.catalogId,
-      (x) => !store.isCatalogSeen(fest, x.id) && !store.onTables(fest, x.id));
+      (x) => !store.isCatalogSeen(fest, x.id) && !store.onTables(fest, x.id), fest.id);
   }
   const color = swatchHex(cat.color);
   const label = `${esc(cat.name)} · ${esc(faceLabel(cat.die, r.movieRoll))}`;

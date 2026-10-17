@@ -9,7 +9,13 @@ const COLLECTIONS = {
   halloween: 'data/halloween_collection.json',
   christmas: 'data/christmas_collection.json',
   awards: 'data/roll_credits_oscars.json',
+  kids: 'data/kids_family_collection.json',
+  bucketlist: 'data/bucket_list_collection.json',
 };
+
+// Festivals whose sequel offers stay inside their own list (no Aliens after Alien on Bucket List Cinema,
+// no PG-13 sequels the kids list left out).
+const SEQUELS_IN_LIST = new Set(['kids', 'bucketlist']);
 
 // Titles on the built-in tables (or older saved data) that are spelled differently in the catalog.
 const ALIASES = {
@@ -88,6 +94,11 @@ export function loadCollection(festivalId) {
     .catch(() => collections.delete(festivalId));
 }
 
+// Every built-in festival's list (small id files). Needed for list-only sequel offers.
+export function loadAllCollections() {
+  return Promise.all(Object.keys(COLLECTIONS).map(loadCollection));
+}
+
 // Exact match on title + year (or a known alias). Returns a catalog movie or null.
 export function match(title, year) {
   if (status !== 'ready' || !title) return null;
@@ -126,12 +137,19 @@ export function search(query, festivalId, limit = 6) {
 }
 
 // Next entry in a movie's franchise that passes `isOpen` (unseen and not already on the tables).
-export function nextInFranchise(catalogId, isOpen) {
+// For festivals in SEQUELS_IN_LIST, only movies in that festival's collection count.
+export function nextInFranchise(catalogId, isOpen, festivalId = null) {
   const m = byId.get(catalogId);
   if (!m || !m.franchise) return null;
   const arr = franchises.get(m.franchise) || [];
   const start = m.seriesOrder || 0;
-  return arr.find((x) => (x.seriesOrder || 0) > start && isOpen(x)) || null;
+  let ok = isOpen;
+  if (festivalId && SEQUELS_IN_LIST.has(festivalId)) {
+    const coll = collections.get(festivalId);
+    if (!coll || !coll.size) return null; // list not loaded yet: offer nothing rather than something off-list
+    ok = (x) => coll.has(x.id) && isOpen(x);
+  }
+  return arr.find((x) => (x.seriesOrder || 0) > start && ok(x)) || null;
 }
 
 // Every catalog movie (for Popcorn Pick).

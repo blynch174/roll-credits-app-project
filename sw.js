@@ -5,7 +5,7 @@
 // The data/ and vendor/ files are not listed here on purpose (too big to download at install).
 // They get saved for offline use the first time the app loads them.
 
-const CACHE_VERSION = 'v8';
+const CACHE_VERSION = 'v9';
 const CACHE_NAME = 'roll-credits-' + CACHE_VERSION;
 
 const FILES = [

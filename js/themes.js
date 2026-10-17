@@ -27,6 +27,18 @@ export const THEME_SETS = {
     t('blacktie', 'Black Tie', 'Ivory on black', '#0e0e10', '#19191c', '#222226', '#313136', '#ecebe7', '#9a9993', '#ebe6d9', '#111111', '#ff6b5e'),
     t('matinee', 'Matinee', 'Light mode', '#f7f3ea', '#ffffff', '#efe9dc', '#dfd6c4', '#1f1b14', '#6d6455', '#8a6d1c', '#ffffff', '#b3261e'),
   ],
+  kids: [
+    t('saturday', 'Saturday Morning', 'Cartoon blue and sunshine', '#0d1424', '#16203a', '#1e2a4a', '#2b3a60', '#eef3ff', '#97a3c4', '#ffc83d', '#1f1500', '#ff6b5e'),
+    t('bubblegum', 'Bubblegum', 'Pink and purple', '#160d1a', '#24142b', '#2f1b38', '#43284f', '#fbeefc', '#b89cbf', '#ff7ac8', '#2a0820', '#ffb0a8'),
+    t('junglegym', 'Jungle Gym', 'Leafy green', '#0c140e', '#152218', '#1d2d21', '#2a3e2e', '#ecf5ea', '#95a898', '#7ddc6a', '#0a1a06', '#ff6b5e'),
+    t('crayonbox', 'Crayon Box', 'Light mode', '#fbf7ef', '#ffffff', '#f2ecdf', '#e2d9c6', '#1e1a14', '#6b6254', '#2f6fe4', '#ffffff', '#b3261e'),
+  ],
+  bucketlist: [
+    t('sands', 'Sands of Time', 'Black and amber', '#100e0a', '#1b1812', '#252118', '#363022', '#f3eee2', '#a69d88', '#e0a94a', '#1b1205', '#ff6b5e'),
+    t('silverscreen', 'Silver Screen', 'Black and white', '#0d0d0d', '#181818', '#212121', '#303030', '#ededed', '#9a9a9a', '#f2f2f2', '#111111', '#ff6b5e'),
+    t('arthouse', 'Art House', 'Deep teal', '#0a1214', '#121e21', '#1a292d', '#26393e', '#e6f0f0', '#8fa4a6', '#5fd0c4', '#04201c', '#ff8a7a'),
+    t('linernotes', 'Liner Notes', 'Light mode', '#f5f2ec', '#ffffff', '#ece7dd', '#dbd3c4', '#1c1a17', '#66605a', '#8a4b14', '#ffffff', '#b3261e'),
+  ],
 };
 
 // Custom festival theme, built from dark/light + an accent swatch.

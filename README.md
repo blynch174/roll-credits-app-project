@@ -1,6 +1,6 @@
 # Roll Credits
 
-Roll dice to pick tonight's movie. Each **film festival** (Halloween, Christmas, Awards Season, or one you make)
+Roll dice to pick tonight's movie. Each **film festival** (Halloween, Christmas, Awards Season, Kids & Family, Bucket List Cinema, or one you make)
 has its own tables, dice, theme, and rating icon. Plain HTML, CSS, and JavaScript. No frameworks, no build step.
 
 ## Run it on your computer
@@ -37,7 +37,7 @@ Then open http://localhost:8000. (The JS loads as modules, which don't run from 
 
 1. Make your changes.
 2. If you added a new file under `js/`, add it to the `FILES` list in `sw.js`.
-3. Bump `CACHE_VERSION` in `sw.js` (`v8` → `v9`).
+3. Bump `CACHE_VERSION` in `sw.js` (`v9` → `v10`).
 4. `git add .`, `git commit -m "what changed"`, `git push`.
 
 `data/` and `vendor/` are deliberately not in `FILES`. They're too big to download at install, and get saved for
@@ -46,12 +46,15 @@ offline use the first time the app loads them.
 ## Editing the movie data
 
 Edit `data/all_movies.json` (the master copy). The app reads it directly; no build step. The per-festival
-`*_movies.json` files are reference copies and aren't used by the app.
+`*_movies.json` files are reference copies and aren't used by the app. The `*_collection.json` files list which
+catalog movies belong to each built-in festival (`bucket_list_collection.json` also has each movie's rank).
 
 ## Adding a built-in festival
 
 Add an entry to `BUILT_IN_FESTIVALS` in `js/defaults.js`, and a theme set in `js/themes.js` under the same
-`themeSet` name. Existing users get it automatically next time they open the app.
+`themeSet` name. Existing users get it automatically next time they open the app. A category can have its own
+movie die as a 4th item (`[name, color, movies, 8]`); otherwise it uses the festival's `movieDie`. To give it a
+movie list for search and sequels, add its collection file to `COLLECTIONS` in `js/catalog.js`.
 
 ## Saved data (version 3)
 
@@ -90,7 +93,8 @@ Stored in localStorage under `roll-credits:data`, on this device only. Settings 
 - An empty category in a two-dice festival acts as the Wild Card.
 - **Keep mode:** watched movies stay in their slot, marked Seen. **Replace mode:** they leave the table.
 - **Sequel switching** (Settings, on by default): rolling a movie already seen at this festival offers the next
-  unseen movie in its franchise (by `seriesOrder`), skipping any that are already on the tables.
+  unseen movie in its franchise (by `seriesOrder`), skipping any that are already on the tables. Kids & Family and
+  Bucket List Cinema only offer sequels that are on their own list (`SEQUELS_IN_LIST` in `catalog.js`).
 - **Log a movie** (Watched tab): add something watched outside the app. If it's on that festival's tables it's
   linked to that slot, like a normal watch.
 - **Editing a festival:** tap the festival name at the top → **Edit**. Tables and everything specific to that festival
@@ -101,3 +105,6 @@ Stored in localStorage under `roll-credits:data`, on this device only. Settings 
 - **Swipe a watched movie left** to delete it (same as *Rolled by mistake*), with Undo in the toast.
 - Removing from history: *Didn't finish* goes back to its slot and keeps the note, *Hated it* is removed
   from the table, *Rolled by mistake* is undone.
+- **Kids & Family** has a different movie die per table (d20, d12, d8). **Bucket List Cinema** is Time Out's 100 best
+  movies (2026 edition) in rank order, 20 per table, with 6 = Wild Card. Rank 64, the Apu Trilogy, is three films:
+  *Pather Panchali* is on the table and the other two follow through sequel switching.

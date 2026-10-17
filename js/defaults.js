@@ -20,7 +20,7 @@ export const SWATCHES = [
 export const swatchHex = (id) => (SWATCHES.find((s) => s.id === id) || SWATCHES[7]).hex;
 
 // Rating icons a festival can use (drawn in icons.js).
-export const RATING_ICONS = ['skull', 'tree', 'trophy', 'star', 'popcorn', 'heart', 'ghost', 'snowflake'];
+export const RATING_ICONS = ['skull', 'tree', 'trophy', 'star', 'popcorn', 'heart', 'ghost', 'snowflake', 'balloon', 'hourglass'];
 
 export function uid() {
   if (globalThis.crypto && crypto.randomUUID) return crypto.randomUUID();
@@ -32,7 +32,8 @@ export function makeMovie(title, year, catalogId = null) {
   return { id: uid(), title, year: year || null, catalogId };
 }
 
-// [name, color, [[title, year], ...]]  — an empty movie list makes a Wild Card slot.
+// [name, color, [[title, year], ...], die?]  — an empty movie list makes a Wild Card slot.
+// die is optional; without it the category uses the festival's movieDie.
 const WILD = ['Wild Card', 'slate', []];
 
 const HALLOWEEN = [
@@ -122,10 +123,92 @@ const AWARDS = [
   WILD,
 ];
 
+const KIDS = [
+  ["Disney Animation", 'crimson', [
+    ["Snow White and the Seven Dwarfs", 1937], ["Pinocchio", 1940], ["Dumbo", 1941], ["Cinderella", 1950],
+    ["Alice in Wonderland", 1951], ["Peter Pan", 1953], ["Lady and the Tramp", 1955], ["One Hundred and One Dalmatians", 1961],
+    ["The Jungle Book", 1967], ["The Little Mermaid", 1989], ["Beauty and the Beast", 1991], ["Aladdin", 1992],
+    ["The Lion King", 1994], ["Mulan", 1998], ["Lilo & Stitch", 2002], ["Tangled", 2010],
+    ["Frozen", 2013], ["Zootopia", 2016], ["Moana", 2016], ["Encanto", 2021],
+  ], 20],
+  ["Pixar Picks", 'indigo', [
+    ["Toy Story", 1995], ["Monsters, Inc.", 2001], ["Finding Nemo", 2003], ["The Incredibles", 2004],
+    ["Cars", 2006], ["Ratatouille", 2007], ["WALL·E", 2008], ["Up", 2009],
+    ["Inside Out", 2015], ["Coco", 2017], ["Soul", 2020], ["Luca", 2021],
+  ], 12],
+  ["More Animation", 'pumpkin', [
+    ["The Land Before Time", 1988], ["The Nightmare Before Christmas", 1993], ["The Prince of Egypt", 1998], ["The Iron Giant", 1999],
+    ["Chicken Run", 2000], ["Shrek", 2001], ["Madagascar", 2005], ["Wallace & Gromit: The Curse of the Were-Rabbit", 2005],
+    ["Kung Fu Panda", 2008], ["Coraline", 2009], ["Cloudy with a Chance of Meatballs", 2009], ["How to Train Your Dragon", 2010],
+    ["Despicable Me", 2010], ["Megamind", 2010], ["The Adventures of Tintin", 2011], ["Hotel Transylvania", 2012],
+    ["The Lego Movie", 2014], ["The Secret Life of Pets", 2016], ["Sing", 2016], ["The Wild Robot", 2024],
+  ], 20],
+  ["Ghibli & Beyond", 'teal', [
+    ["Castle in the Sky", 1986], ["My Neighbor Totoro", 1988], ["Kiki's Delivery Service", 1989], ["Spirited Away", 2001],
+    ["Howl's Moving Castle", 2004], ["Ponyo", 2008], ["The Secret World of Arrietty", 2010], ["Klaus", 2019],
+  ], 8],
+  ["Timeless Classics", 'gold', [
+    ["The Wizard of Oz", 1939], ["The Parent Trap", 1961], ["Mary Poppins", 1964], ["The Sound of Music", 1965],
+    ["Willy Wonka & the Chocolate Factory", 1971], ["E.T. the Extra-Terrestrial", 1982], ["The Karate Kid", 1984], ["The NeverEnding Story", 1984],
+    ["Back to the Future", 1985], ["The Goonies", 1985], ["Labyrinth", 1986], ["The Princess Bride", 1987],
+    ["Beetlejuice", 1988], ["Home Alone", 1990], ["The Addams Family", 1991], ["Jurassic Park", 1993],
+    ["The Sandlot", 1993], ["Cool Runnings", 1993], ["Babe", 1995], ["Jumanji", 1995],
+  ], 20],
+  ["Big Adventures", 'moss', [
+    ["Matilda", 1996], ["The Parent Trap", 1998], ["Stuart Little", 1999], ["Spy Kids", 2001],
+    ["Harry Potter and the Sorcerer's Stone", 2001], ["The Princess Diaries", 2001], ["Holes", 2003], ["Charlie and the Chocolate Factory", 2005],
+    ["Zathura: A Space Adventure", 2005], ["The Chronicles of Narnia: The Lion, the Witch and the Wardrobe", 2005], ["Night at the Museum", 2006], ["Bridge to Terabithia", 2007],
+    ["Enchanted", 2007], ["Percy Jackson & the Olympians: The Lightning Thief", 2010], ["Hugo", 2011], ["The Muppets", 2011],
+    ["The Secret Life of Walter Mitty", 2013], ["Paddington", 2014], ["Teenage Mutant Ninja Turtles", 2014], ["The Greatest Showman", 2017],
+  ], 20],
+];
+
+// Ranked by Time Out's 100 best movies of all time (2026). Each table is 20 ranks, in order.
+const BUCKET_LIST = [
+  ["The Summit (1–20)", 'gold', [
+    ["2001: A Space Odyssey", 1968], ["The Godfather", 1972], ["Citizen Kane", 1941], ["Jeanne Dielman, 23, quai du Commerce, 1080 Bruxelles", 1975],
+    ["Raiders of the Lost Ark", 1981], ["La Dolce Vita", 1960], ["Seven Samurai", 1954], ["In the Mood for Love", 2000],
+    ["There Will Be Blood", 2007], ["Singin' in the Rain", 1952], ["GoodFellas", 1990], ["North by Northwest", 1959],
+    ["Mulholland Drive", 2001], ["Bicycle Thieves", 1948], ["The Dark Knight", 2008], ["City Lights", 1931],
+    ["Grand Illusion", 1937], ["His Girl Friday", 1940], ["The Red Shoes", 1948], ["Vertigo", 1958],
+  ], 20],
+  ["The Canon (21–40)", 'crimson', [
+    ["Beau Travail", 1999], ["The Searchers", 1956], ["Persona", 1966], ["Do the Right Thing", 1989],
+    ["Rashomon", 1950], ["The Rules of the Game", 1939], ["Jaws", 1975], ["Double Indemnity", 1944],
+    ["The 400 Blows", 1959], ["Star Wars: Episode IV - A New Hope", 1977], ["The Passion of Joan of Arc", 1928], ["Once Upon a Time in the West", 1968],
+    ["Alien", 1979], ["Tokyo Story", 1953], ["Pulp Fiction", 1994], ["The Truman Show", 1998],
+    ["Lawrence of Arabia", 1962], ["Psycho", 1960], ["Sansho the Bailiff", 1954], ["Andrei Rublev", 1966],
+  ], 20],
+  ["Essentials (41–60)", 'indigo', [
+    ["The Umbrellas of Cherbourg", 1964], ["Chinatown", 1974], ["The Seventh Seal", 1957], ["Lost in Translation", 2003],
+    ["Taxi Driver", 1976], ["Spirited Away", 2001], ["Night of the Living Dead", 1968], ["Battleship Potemkin", 1925],
+    ["Modern Times", 1936], ["Breathless", 1960], ["Dr. Strangelove or: How I Learned to Stop Worrying and Love the Bomb", 1964], ["M", 1931],
+    ["Blade Runner", 1982], ["The Bitter Tears of Petra von Kant", 1972], ["Rome, Open City", 1945], ["Nosferatu", 1922],
+    ["Airplane!", 1980], ["Mad Max: Fury Road", 2015], ["Apocalypse Now", 1979], ["Brokeback Mountain", 2005],
+  ], 20],
+  ["Deep Cuts (61–80)", 'teal', [
+    ["Duck Soup", 1933], ["The Blair Witch Project", 1999], ["All the President's Men", 1976], ["Pather Panchali", 1955],
+    ["Eternal Sunshine of the Spotless Mind", 2004], ["The General", 1926], ["The Texas Chain Saw Massacre", 1974], ["Come and See", 1985],
+    ["Heat", 1995], ["The Shining", 1980], ["Toy Story", 1995], ["Killer of Sheep", 1978],
+    ["A Woman Under the Influence", 1974], ["Annie Hall", 1977], ["Some Like It Hot", 1959], ["Metropolis", 1927],
+    ["The Maltese Falcon", 1941], ["This Is Spinal Tap", 1984], ["It Happened One Night", 1934], ["Die Hard", 1988],
+  ], 20],
+  ["The Last Reel (81–100)", 'violet', [
+    ["The Conformist", 1970], ["The Thing", 1982], ["The Zone of Interest", 2023], ["Daughters of the Dust", 1991],
+    ["Barry Lyndon", 1975], ["Raging Bull", 1980], ["Se7en", 1995], ["Aguirre, the Wrath of God", 1972],
+    ["The Battle of Algiers", 1966], ["No Country for Old Men", 2007], ["Women on the Verge of a Nervous Breakdown", 1988], ["The Discreet Charm of the Bourgeoisie", 1972],
+    ["Paths of Glory", 1957], ["Secrets & Lies", 1996], ["Sweet Smell of Success", 1957], ["The Cabinet of Dr. Caligari", 1920],
+    ["Nashville", 1975], ["Don't Look Now", 1973], ["Bonnie and Clyde", 1967], ["Get Out", 2017],
+  ], 20],
+  ['Wild Card', 'slate', [], 20],
+];
+
 export const BUILT_IN_FESTIVALS = [
   { id: 'halloween', name: 'Halloween', icon: 'skull', themeSet: 'halloween', categoryDie: 6, movieDie: 12, categories: HALLOWEEN },
   { id: 'christmas', name: 'Christmas', icon: 'tree', themeSet: 'christmas', categoryDie: 6, movieDie: 12, categories: CHRISTMAS },
   { id: 'awards', name: 'Awards Season', icon: 'trophy', themeSet: 'awards', categoryDie: 6, movieDie: 12, categories: AWARDS },
+  { id: 'kids', name: 'Kids & Family', icon: 'balloon', themeSet: 'kids', categoryDie: 6, movieDie: 20, categories: KIDS },
+  { id: 'bucketlist', name: 'Bucket List Cinema', icon: 'hourglass', themeSet: 'bucketlist', categoryDie: 6, movieDie: 20, categories: BUCKET_LIST },
 ];
 
 export function makeCategory(name, color, die, movies = []) {
@@ -140,7 +223,7 @@ export function makeCategory(name, color, die, movies = []) {
 
 // Fresh copy of a built-in festival's tables.
 export function builtInCategories(def) {
-  return def.categories.map(([name, color, movies]) => makeCategory(name, color, def.movieDie, movies));
+  return def.categories.map(([name, color, movies, die]) => makeCategory(name, color, die || def.movieDie, movies));
 }
 
 export function buildBuiltInFestival(def) {

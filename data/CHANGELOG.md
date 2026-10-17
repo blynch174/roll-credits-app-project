@@ -1,5 +1,29 @@
 # Roll Credits data: cleanup pass
 
+## v3.4 (2026-10-16)
+
+Catalog: 1,952 → 2,114 movies.
+
+**Kids & Family** (`kids_family_movies.json`, `kids_family_collection.json`, 148 movies)
+- Dropped *Matilda* (1978), an unrelated film (the real *Matilda* 1996 is on the list), and *Kiki's Delivery Service*
+  (2014), the Japanese live-action remake (the 1989 Ghibli film is on the list).
+- 117 new to the catalog; 31 were already in it and kept their facts.
+- Filled in the blank age ratings, countries, and languages for the 117 new movies.
+- Replaced the copied-across moods and scariness/comedy scores with per-movie ones (also for the 31 overlaps; holiday
+  movies keep Festive). New mood word: Adventurous.
+- *Teenage Mutant Ninja Turtles* (2014) was tagged Animation; it's live action.
+- *Back to the Future* rating PG-13 → PG.
+- Oscar fields for the new movies rebuilt from the same Oscar data as the rest of the catalog.
+- Franchises linked: Toy Story, Harry Potter, Shrek (with Puss in Boots), Back to the Future, Kung Fu Panda,
+  How to Train Your Dragon, The Incredibles, Monsters, Inc., Finding Nemo, Inside Out, Jumanji, Night at the Museum,
+  The Chronicles of Narnia.
+
+**Bucket List Cinema** (`bucket_list_movies.json`, `bucket_list_collection.json`, 102 movies)
+- Source: Time Out, *The 100 best movies of all time*, 2026-09-02 edition. `ranks` in the collection file.
+- 57 were already in the catalog. 45 new records (42 films plus the 3 Apu Trilogy films, linked as a franchise).
+- IMDb ids filled in for the 52 that had none. Two corrections versus common listings: *Daughters of the Dust* is
+  tt0104057, *Killer of Sheep* is tt0076263 and listed under 1978 (its IMDb year; Time Out says 1977).
+
 ## Files
 
 | File | Movies | Notes |
