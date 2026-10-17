@@ -3,6 +3,7 @@
 import * as store from '../store.js';
 import { swatchHex } from '../defaults.js';
 import { $, $$, esc, nav, openSheet, closeSheet, swapSheet, toast, ratingIcons, movieLabel, fmtDate, attachSwipe } from '../ui.js';
+import { infoBlock, catalogMovie } from '../movieinfo.js';
 import { autofindBox, attachAutofind } from '../autofind.js';
 
 const blank = () => ({ q: '', festival: 'all', category: 'all', rating: 'any', year: 'all' });
@@ -137,6 +138,7 @@ export function entrySheet(entryId, after) {
     title: e.title + (e.year ? ` (${e.year})` : ''),
     body: `
       <p class="sheet-sub">${esc(fest ? fest.name : e.festivalName)} · ${esc(e.categoryName)} · ${fmtDate(e.date)}</p>
+      ${infoBlock(catalogMovie(e.catalogId))}
       <div class="field">
         <span class="label">Rating</span>
         <div class="rating-row" id="rating-row">${ratingIcons(e.icon, e.rating, true)}</div>

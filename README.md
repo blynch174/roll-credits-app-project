@@ -33,7 +33,9 @@ Then open http://localhost:8000. (The JS loads as modules, which don't run from 
 | `js/tutorial.js` | First-run tour (shows on a fresh install; Settings → Show the tutorial replays it) |
 | `js/ui.js` | Shared helpers: sheets (with swipe-down to close), toasts, the type-DELETE confirm, dice and coin markup |
 | `js/screens/*.js` | One file per screen. `editor.js` is Edit festival (tables + festival settings), `tables.js` draws the tables inside it, `popcorn.js` is the Popcorn tab, `account.js` is the Account section, sign-in sheets, and Admin tools, `admin-official.js` is editing and publishing official festivals, `updates.js` is the update banner and Review sheet, `theme-picker.js` is Settings → Themes |
-| `data/` | The movie catalog. `all_movies.json` is the master copy the app reads; the collection files list each built-in festival's movies |
+| `data/` | `all_movies.json` is what the app reads (built, don't hand-edit). `data/catalog/` holds its sources. The collection files list each built-in festival's movies |
+| `tools/catalog.py` | Catalog tool: TMDB details and posters, adding movies, Oscar data, building `all_movies.json`. See `CATALOG.md` |
+| `js/movieinfo.js` | Posters, the movie details sheet, and IMDb/TMDB links |
 | `vendor/firebase/` | Firebase JS SDK 12.19.0 (Apache 2.0): app, auth, firestore-lite. Only downloaded when accounts are set up |
 | `firestore.rules` | Database security rules. Paste into the Firebase console (Firestore → Rules) after any change |
 | `vendor/dice-box/` | [dice-box](https://github.com/3d-dice/dice-box) v1.1.4 (MIT), copied unmodified from npm. About 3 MB, only downloaded when 3D dice are used |
@@ -43,7 +45,7 @@ Then open http://localhost:8000. (The JS loads as modules, which don't run from 
 
 1. Make your changes.
 2. If you added a new file under `js/`, add it to the `FILES` list in `sw.js`.
-3. Bump `CACHE_VERSION` in `sw.js` (`v11` → `v12`).
+3. Bump `CACHE_VERSION` in `sw.js` (`v12` → `v13`).
 4. `git add .`, `git commit -m "what changed"`, `git push`.
 
 `data/` and `vendor/` are deliberately not in `FILES`. They're too big to download at install, and get saved for
@@ -51,9 +53,10 @@ offline use the first time the app loads them.
 
 ## Editing the movie data
 
-Edit `data/all_movies.json` (the master copy). The app reads it directly; no build step. The per-festival
-`*_movies.json` files are reference copies and aren't used by the app. The `*_collection.json` files list which
-catalog movies belong to each built-in festival (`bucket_list_collection.json` also has each movie's rank).
+See `CATALOG.md`. In short: `data/catalog/curation.json` is yours (moods, franchises, overrides); `tools/catalog.py`
+fetches details and posters from TMDB and builds `data/all_movies.json`, the only file the app reads. The
+`*_collection.json` files list which catalog movies belong to each built-in festival
+(`bucket_list_collection.json` also has each movie's rank).
 
 ## Adding a built-in festival
 

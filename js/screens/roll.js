@@ -8,6 +8,7 @@ import * as dice3d from '../dice3d.js';
 import { $, $$, esc, toast, nav, dieHTML, movieLabel, syncSeg, attachSwipe } from '../ui.js';
 import { editSlotSheet } from './tables.js';
 import { entrySheet, entryRow, swipeDelete } from './watched.js';
+import { posterImg, metaLine, catalogMovie, movieInfoSheet } from '../movieinfo.js';
 
 const idle = () => ({ phase: 'idle', catRoll: null, movieRoll: null, catId: null, wild: false });
 let r = idle();
@@ -163,12 +164,18 @@ function renderRollArea() {
       <button type="button" class="btn ghost" data-act="reroll-movie">Reroll movie</button>
       ${fest.mode === 'two' ? '<button type="button" class="btn ghost" data-act="reroll-all">Reroll all</button>' : ''}
     </div>`;
+  const cm = movie ? catalogMovie(movie.catalogId) : null;
   if (movie && !seen) {
     card = `
-      <div class="pick-card" style="--cat:${color}">
-        <p class="pick-cat">${label}</p>
-        <p class="pick-title">${movieLabel(movie)}</p>
-        ${movie.note ? `<p class="pick-note">Last time: ${esc(movie.note)}</p>` : ''}
+      <div class="pick-card${cm && cm.posterPath ? ' has-poster' : ''}" style="--cat:${color}">
+        ${posterImg(cm, 'pick-poster')}
+        <div class="pick-body">
+          <p class="pick-cat">${label}</p>
+          <p class="pick-title">${movieLabel(movie)}</p>
+          ${cm ? `<p class="pick-meta">${esc(metaLine(cm))}</p>` : ''}
+          ${movie.note ? `<p class="pick-note">Last time: ${esc(movie.note)}</p>` : ''}
+          ${cm ? '<button type="button" class="link pick-info" data-act="info">Details, IMDb &amp; TMDB</button>' : ''}
+        </div>
       </div>
       <p class="roll-q">Watching it tonight?</p>`;
     actions = `<button type="button" class="btn primary big" data-act="watch">Yes, watch it</button>${rerolls}`;
@@ -210,6 +217,8 @@ function renderRollArea() {
     ${card}
     <div class="roll-actions">${actions}</div>`;
   if (mode === 'virtual' && r.wild) setWild();
+  const info = area.querySelector('.pick-info');
+  if (info) info.addEventListener('click', () => movieInfoSheet(cm));
 
   area.querySelector('.roll-actions').addEventListener('click', (e) => {
     const b = e.target.closest('button');

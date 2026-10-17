@@ -1,5 +1,15 @@
 # Roll Credits data: cleanup pass
 
+## v3.7 (2026-10-17)
+
+- The catalog is now built from `data/catalog/` (curation, TMDB facts, Oscars) by `tools/catalog.py`. See CATALOG.md.
+  The split itself changed no values: the rebuilt `all_movies.json` matches the old one field for field.
+- `all_movies.json` is written one movie per line (smaller, cleaner git diffs). New fields once fetched:
+  `tmdbId`, `tmdbType`, `posterPath`, `overview`.
+- Removed the per-festival reference copies (`halloween_movies.json`, `christmas_movies.json`,
+  `kids_family_movies.json`, `bucket_list_movies.json`, `roll_credits_movies_oscars_complete.json`). They duplicated
+  `all_movies.json` and would drift. The `*_collection.json` lists stay.
+
 ## v3.4 (2026-10-16)
 
 Catalog: 1,952 → 2,114 movies.

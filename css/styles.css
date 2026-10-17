@@ -1257,3 +1257,51 @@ input[type="date"] {
 .admin-soon .btn { margin-top: 10px; }
 .theme-group-desc { margin: -4px 2px 10px; }
 #themes .section-title:not(.first) { margin-top: 26px; }
+
+/* ---------- Posters, details, links (v3.7, TMDB) ---------- */
+.pick-card.has-poster { display: flex; gap: 14px; align-items: flex-start; text-align: left; }
+.pick-poster { width: 92px; aspect-ratio: 2 / 3; flex: none; border-radius: 10px; object-fit: cover; background: var(--surface); box-shadow: 0 4px 14px rgba(0, 0, 0, .3); }
+.pick-body { flex: 1; min-width: 0; }
+.pick-card.has-poster .pick-title { font-size: 23px; }
+.pick-meta { margin: 6px 0 0; font-size: 14px; color: var(--muted); }
+.pick-info { margin-top: 8px; padding: 4px 0; font-size: 14px; }
+
+.t-poster { display: block; width: 74px; aspect-ratio: 2 / 3; margin: 6px auto 4px; border-radius: 8px; object-fit: cover; box-shadow: 0 3px 10px rgba(42, 29, 5, .35); }
+.ticket.has-poster .t-admit { margin-top: 4px; }
+.ticket.has-poster .t-title { margin-top: 4px; font-size: 22px; }
+.t-overview {
+  display: -webkit-box;
+  margin: 8px 0 0;
+  overflow: hidden;
+  font-size: 12.5px;
+  line-height: 1.35;
+  opacity: .8;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+.ticket .movie-links { justify-content: center; margin-top: 10px; }
+.ticket .mlink { position: relative; z-index: 1; border-color: rgba(42, 29, 5, .35); color: #2a1d05; }
+
+.movie-links { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 0; }
+.mlink {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 4px 12px;
+  border: 1px solid var(--line);
+  border-radius: 99px;
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 750;
+  text-decoration: none;
+}
+.movie-info { display: flex; gap: 14px; align-items: flex-start; margin: 12px 0 0; }
+.mi-poster { width: 96px; aspect-ratio: 2 / 3; flex: none; border-radius: 10px; object-fit: cover; background: var(--surface-2); }
+.mi-text { flex: 1; min-width: 0; }
+.mi-meta { margin: 0; font-weight: 700; }
+.mi-dir { margin: 4px 0 0; font-size: 14px; color: var(--muted); }
+.mi-text .movie-links { margin-top: 10px; }
+.mi-overview { margin: 12px 0 4px; font-size: 15px; line-height: 1.45; color: var(--muted); }
+.about-card { padding: 12px 14px; }
+.about-card .sheet-text { margin: 0; font-size: 14px; }
+.about-card a { color: var(--accent); }

@@ -7,6 +7,7 @@ import {
   $, $$, esc, toast, openSheet, closeSheet, confirmSheet, movieLabel, dieChips, wireChips,
 } from '../ui.js';
 import { autofindBox, attachAutofind } from '../autofind.js';
+import { linksHTML, catalogMovie } from '../movieinfo.js';
 
 let currentCat = null;
 
@@ -109,6 +110,7 @@ export function editSlotSheet(fId, catId, index, after) {
           <input id="f-year" type="number" inputmode="numeric" min="1888" max="2999" value="${m && m.year ? m.year : ''}" placeholder="Optional"></label>
       </div>
       ${autofindBox()}
+      ${m ? linksHTML(catalogMovie(m.catalogId)) : ''}
       ${m && store.isSeen(f, m) ? '<p class="hint">Changing the title swaps in a new movie. Your watch history is not affected.</p>' : ''}`,
     actions,
   });

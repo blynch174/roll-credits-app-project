@@ -3,6 +3,7 @@
 
 import * as store from '../store.js';
 import * as catalog from '../catalog.js';
+import { posterImg, linksHTML } from '../movieinfo.js';
 import { randInt, wait } from '../dice.js';
 import { $, $$, esc, toast } from '../ui.js';
 
@@ -37,12 +38,15 @@ function pickMovie() {
 function ticketHTML(m) {
   const bits = [m.releaseYear, m.runtimeMinutes ? `${m.runtimeMinutes} min` : '', m.contentRating].filter(Boolean);
   return `
-    <div class="ticket" id="pp-ticket">
+    <div class="ticket${m.posterPath ? ' has-poster' : ''}" id="pp-ticket">
+      ${posterImg(m, 't-poster')}
       <p class="t-admit">Admit one · Popcorn Pick</p>
       <p class="t-title">${esc(m.title)}</p>
       <p class="t-meta">${esc(bits.join(' · '))}</p>
       ${m.directors && m.directors.length ? `<p class="t-dir">Directed by ${esc(m.directors.join(', '))}</p>` : ''}
       ${m.moodTone && m.moodTone.length ? `<p class="t-moods">${[...new Set([...moods, ...m.moodTone].filter((t) => m.moodTone.includes(t)))].slice(0, 3).map((t) => `<span>${esc(t)}</span>`).join('')}</p>` : ''}
+      ${m.overview ? `<p class="t-overview">${esc(m.overview)}</p>` : ''}
+      ${linksHTML(m)}
     </div>`;
 }
 
