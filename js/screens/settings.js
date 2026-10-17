@@ -15,18 +15,14 @@ export function renderSettings() {
 
   syncSeg($('#slot-mode'), s.slotMode);
   $('#slot-mode-hint').textContent = s.slotMode === 'keep'
-    ? 'Watched movies stay in their slot, marked Seen. Rolling one offers a reroll.'
-    : 'Watched movies leave the table. Their slot shows up under "slots to fill" on the Roll screen.';
+    ? 'Watched movies stay on the table, marked Seen.'
+    : 'Watched movies leave the table.';
   syncSeg($('#dice-style'), s.diceStyle === 'flat' ? 'flat' : '3d');
-  $('#dice-style-hint').textContent = s.diceStyle === 'flat'
-    ? 'Flat dice tumble in place. Light and quick. Coin flips always use the 3D coin.'
-    : dice3d.hasFailed()
-      ? "3D dice couldn't start on this device, so rolls use flat dice."
-      : 'Real 3D dice get thrown across the screen. Still in testing, so they may not work on every device. Downloads about 1 MB the first time.';
+  $('#dice-style-hint').textContent = s.diceStyle !== 'flat' && dice3d.hasFailed()
+    ? "3D dice couldn't start on this device, so rolls use flat dice."
+    : '';
   syncSeg($('#sequel-mode'), s.sequels === false ? 'off' : 'on');
-  $('#sequel-hint').textContent = s.sequels === false
-    ? 'Rolling a movie you already watched just offers a reroll.'
-    : 'Rolling a movie you already watched here offers the next unseen movie in its series, like Scream → Scream 2. Start fresh puts the originals back.';
+  $('#sequel-hint').textContent = s.sequels === false ? '' : 'Seen Scream? Rolling it offers Scream 2.';
   $('#storage-warning').hidden = store.canSave();
   $('#theme-current').textContent = themeById(store.themeId()).name;
   renderAccountSection();

@@ -5,7 +5,7 @@ import * as catalog from '../catalog.js';
 import { swatchHex, dieName } from '../defaults.js';
 import { randInt, tumble, showFace, wait, faceLabel } from '../dice.js';
 import * as dice3d from '../dice3d.js';
-import { $, $$, esc, toast, nav, dieHTML, movieLabel, syncSeg, attachSwipe } from '../ui.js';
+import { $, $$, esc, toast, nav, dieHTML, movieLabel, syncSeg, attachSwipe, openSheet, closeSheet } from '../ui.js';
 import { editSlotSheet } from './tables.js';
 import { entrySheet, entryRow, swipeDelete } from './watched.js';
 import { posterImg, metaLine, catalogMovie, movieInfoSheet } from '../movieinfo.js';
@@ -159,11 +159,8 @@ function renderRollArea() {
   const label = `${esc(cat.name)} · ${esc(faceLabel(cat.die, r.movieRoll))}`;
 
   let card, actions;
-  const rerolls = `
-    <div class="btn-row">
-      <button type="button" class="btn ghost" data-act="reroll-movie">Reroll movie</button>
-      ${fest.mode === 'two' ? '<button type="button" class="btn ghost" data-act="reroll-all">Reroll all</button>' : ''}
-    </div>`;
+  // Two buttons side by side: the main action, and Reroll (which asks: this movie, or everything).
+  const pair = (main) => `<div class="pair-actions">${main}<button type="button" class="btn ghost big" data-act="reroll">Reroll</button></div>`;
   const cm = movie ? catalogMovie(movie.catalogId) : null;
   if (movie && !seen) {
     card = `
@@ -178,7 +175,7 @@ function renderRollArea() {
         </div>
       </div>
       <p class="roll-q">Watching it tonight?</p>`;
-    actions = `<button type="button" class="btn primary big" data-act="watch">Yes, watch it</button>${rerolls}`;
+    actions = pair('<button type="button" class="btn big btn-watch" data-act="watch">Watch it</button>');
   } else if (movie && sequel) {
     card = `
       <div class="pick-card" style="--cat:${color}">
@@ -188,10 +185,8 @@ function renderRollArea() {
         <p class="pick-flag">Next in the ${esc(sequel.franchise)} series</p>
       </div>
       <p class="roll-q">Watch the sequel instead?</p>`;
-    actions = `
-      <button type="button" class="btn primary big" data-act="sequel">Watch ${esc(sequel.title)}</button>
-      <button type="button" class="btn ghost" data-act="watch">Rewatch ${esc(movie.title)}</button>
-      ${rerolls}`;
+    actions = `${pair('<button type="button" class="btn big btn-watch" data-act="sequel">Watch it</button>')}
+      <button type="button" class="link rewatch-link" data-act="watch">Rewatch ${esc(movie.title)} instead</button>`;
   } else if (movie) {
     card = `
       <div class="pick-card seen" style="--cat:${color}">
@@ -199,7 +194,7 @@ function renderRollArea() {
         <p class="pick-title">${movieLabel(movie)}</p>
         <p class="pick-flag">Already watched at this festival</p>
       </div>`;
-    actions = `${rerolls}<button type="button" class="btn ghost" data-act="watch">Rewatch anyway</button>`;
+    actions = pair('<button type="button" class="btn big btn-watch" data-act="watch">Rewatch</button>');
   } else {
     card = `
       <div class="pick-card empty" style="--cat:${color}">
@@ -207,7 +202,7 @@ function renderRollArea() {
         <p class="pick-title">Slot open</p>
         <p class="pick-flag">Fill it with a movie, or reroll.</p>
       </div>`;
-    actions = `<button type="button" class="btn primary big" data-act="fill">Fill this slot</button>${rerolls}`;
+    actions = pair('<button type="button" class="btn primary big" data-act="fill">Fill slot</button>');
   }
 
   area.innerHTML = `
@@ -230,12 +225,18 @@ function renderRollArea() {
       resetRoll();
       renderRoll();
       if (entry) toast(`${entry.title} added to your watched list. Enjoy!`);
-    } else if (act === 'reroll-movie') {
-      if (mode === 'virtual') rollMovie();
-      else { r.phase = 'movieInput'; renderRollArea(); }
-    } else if (act === 'reroll-all') {
-      if (mode === 'virtual') rollAll();
-      else { resetRoll(); renderRollArea(); }
+    } else if (act === 'reroll') {
+      const rerollMovie = () => { if (mode === 'virtual') rollMovie(); else { r.phase = 'movieInput'; renderRollArea(); } };
+      const rerollAll = () => { if (mode === 'virtual') rollAll(); else { resetRoll(); renderRollArea(); } };
+      if (fest.mode !== 'two') return rerollMovie(); // one die: nothing to choose between
+      openSheet({
+        title: 'Reroll',
+        actions: [
+          { label: 'Reroll movie', kind: 'primary', onClick: () => { closeSheet(); rerollMovie(); } },
+          { label: 'Reroll all', kind: 'primary', onClick: () => { closeSheet(); rerollAll(); } },
+          { label: 'Cancel', kind: 'ghost', onClick: closeSheet },
+        ],
+      });
     } else if (act === 'fill') {
       editSlotSheet(fest.id, cat.id, idx, () => renderRollArea());
     }
@@ -359,7 +360,7 @@ function renderRecent() {
       ${list.length ? `<button type="button" class="link" id="see-all">See all ${list.length} ›</button>` : ''}
     </div>
     <ul class="watched-list">
-      ${items.length ? items.map((e) => entryRow(e, false)).join('') : '<li class="empty-state">Nothing yet. Roll something and hit "Yes, watch it."</li>'}
+      ${items.length ? items.map((e) => entryRow(e, false)).join('') : '<li class="empty-state">Nothing yet. Roll something and hit Watch it.</li>'}
     </ul>`;
   const all = $('#see-all', box);
   if (all) all.addEventListener('click', () => {

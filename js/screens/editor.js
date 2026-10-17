@@ -51,12 +51,11 @@ function renderFestivalSettings() {
   const upd = official.updateFor(f);
   $('#fest-card').innerHTML = `${head}
     ${upd ? `<button type="button" class="row-btn accent" id="btn-update"><span>Update available</span><small>${esc(upd.message || (upd.kind === 'fix' ? 'Small fixes to the official tables' : 'A new version of this festival'))}</small></button>` : ''}
-    ${f.builtIn ? '' : `<button type="button" class="row-btn" id="btn-look"><span>Name &amp; rating icon</span><small>Rename it or change its rating icon</small></button>`}
-    <button type="button" class="row-btn" id="btn-dice"><span>Festival dice</span><small>One die or two, and how many categories</small></button>
-    <button type="button" class="row-btn" id="btn-fresh"><span>Start fresh</span><small>Clears the Seen marks on this festival's tables. History stays.</small></button>
-    ${f.builtIn
-      ? `<button type="button" class="row-btn" id="btn-restore"><span>Restore default tables</span><small>Puts the official categories and movies back</small></button>`
-      : `<button type="button" class="row-btn danger" id="btn-delete-fest"><span>Delete festival</span><small>Removes it and its tables. Your watch history stays.</small></button>`}`;
+    ${f.builtIn ? '' : '<button type="button" class="row-btn" id="btn-look"><span>Name &amp; rating icon</span></button>'}
+    <button type="button" class="row-btn" id="btn-dice"><span>Festival dice</span></button>
+    <button type="button" class="row-btn" id="btn-fresh"><span>Start fresh</span></button>
+    ${f.builtIn ? '<button type="button" class="row-btn" id="btn-restore"><span>Restore default tables</span></button>' : ''}
+    ${store.festivals().length > 1 ? '<button type="button" class="row-btn danger" id="btn-delete-fest"><span>Delete festival</span></button>' : ''}`;
 
   const ub = $('#btn-update');
   if (ub) ub.addEventListener('click', () => reviewSheet(f.id));
@@ -81,12 +80,14 @@ function renderFestivalSettings() {
   const del = $('#btn-delete-fest');
   if (del) del.addEventListener('click', () => confirmSheet(
     `Delete ${f.name}?`,
-    'The festival and its tables are removed. Movies you watched stay in your watch history.',
+    f.builtIn
+      ? 'Movies you watched stay in your watch history. You can add it back from the festival menu.'
+      : 'Its tables are deleted. Movies you watched stay in your watch history.',
     'Delete festival',
     () => {
       store.deleteFestival(f.id);
       nav.go('home');
-      toast('Festival deleted.');
+      toast(`${f.name} deleted.`);
     },
     true
   ));
@@ -101,7 +102,6 @@ function lookSheet(fId) {
       <label class="field"><span class="label">Name</span><input id="l-name" type="text" maxlength="40" value="${esc(f.name)}"></label>
       <div class="field"><span class="label">Rating icon</span>
         <div class="icon-grid" id="l-icon">${RATING_ICONS.map((n) => `<button type="button" class="icon-pick ${n === icon ? 'on' : ''}" data-i="${n}" aria-label="${n}">${iconSVG(n)}</button>`).join('')}</div>
-        <p class="hint">Movies you already rated keep the icon they were rated with.</p>
       </div>`,
     actions: [
       { label: 'Cancel', kind: 'ghost', onClick: closeSheet },
@@ -140,7 +140,7 @@ function diceSheet(fId) {
         ${dieChips(DIE_OPTIONS, catDie, 'cat')}
       </div>
       <p class="hint" id="d-hint"></p>
-      <p class="hint">Each category's movie die is set from its Edit button under Tables.</p>`,
+`,
     actions: [
       { label: 'Cancel', kind: 'ghost', onClick: closeSheet },
       {

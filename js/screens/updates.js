@@ -45,14 +45,14 @@ export function reviewSheet(fId) {
     body: `
       ${pub.message ? `<p class="sheet-text ub-msg">${esc(pub.message)}</p>` : ''}
       <ul class="diff-list">${lines.map((l) => `<li>${esc(l)}</li>`).join('')}</ul>
-      <p class="sheet-text">Updating replaces this festival's tables and dice with the new version${edited ? ', including changes you made to them' : ''}. Your watch history and Seen marks stay.</p>`,
+      <p class="sheet-text">Replaces its tables and dice${edited ? ', including your changes' : ''}. History and Seen marks stay.</p>`,
     actions: [
       {
         label: 'Keep mine', kind: 'ghost', onClick: () => {
           store.keepMine(f.id, pub.rev);
           closeSheet();
           nav.render();
-          toast(`Kept your ${f.name}. You can update later from Edit → Festival settings.`);
+          toast(`Kept your ${f.name}.`);
         },
       },
       {

@@ -18,7 +18,7 @@ export function entryRow(e, showFestival) {
   return `
     <li class="swipe-row">
       <button type="button" class="swipe-del" tabindex="-1">Delete</button>
-      <button type="button" class="watched-item" data-id="${esc(e.id)}" style="--cat:${color}">
+      <button type="button" class="watched-item swipe-item" data-id="${esc(e.id)}" style="--cat:${color}">
         <span class="wi-main">
           <span class="wi-title">${movieLabel(e)}</span>
           <span class="wi-meta">${where}${esc(cat ? cat.name : e.categoryName)} · ${fmtDate(e.date)}</span>
@@ -118,7 +118,7 @@ function renderList() {
 
   const ul = $('#history-list');
   if (!all.length) {
-    ul.innerHTML = '<li class="empty-state">Your watch history starts with your first "Yes, watch it."</li>';
+    ul.innerHTML = '<li class="empty-state">Nothing watched yet.</li>';
     return;
   }
   ul.innerHTML = list.length

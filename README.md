@@ -45,7 +45,7 @@ Then open http://localhost:8000. (The JS loads as modules, which don't run from 
 
 1. Make your changes.
 2. If you added a new file under `js/`, add it to the `FILES` list in `sw.js`.
-3. Bump `CACHE_VERSION` in `sw.js` (`v12` → `v13`).
+3. Bump `CACHE_VERSION` in `sw.js` (`v14` → `v15`).
 4. `git add .`, `git commit -m "what changed"`, `git push`.
 
 `data/` and `vendor/` are deliberately not in `FILES`. They're too big to download at install, and get saved for

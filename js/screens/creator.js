@@ -50,14 +50,13 @@ export function renderCreator() {
         <button type="button" data-value="two">Two dice</button>
         <button type="button" data-value="one">One die</button>
       </div>
-      <p class="hint" id="cr-mode-hint"></p>
       <div class="field" id="cr-cat-wrap"><span class="label">Category die</span>${dieChips(DIE_OPTIONS, form.categoryDie, 'cat')}</div>
       <div class="field"><span class="label">Movie die</span>${dieChips(DIE_OPTIONS, form.movieDie, 'movie')}</div>
       <p class="summary" id="cr-summary"></p>
     </div>
 
     <button type="button" class="btn primary big" id="cr-create">Create festival</button>
-    <p class="hint center">Next, you'll fill in the tables. Each category's die can be changed later.</p>`;
+`;
 
   const refresh = () => {
     syncSeg($('#cr-mode'), form.mode);
@@ -66,9 +65,6 @@ export function renderCreator() {
       <span class="pv-btn">Roll for tonight</span>
       <span class="pv-icons">${[1, 2, 3, 4, 5].map((i) => `<span class="ricon ${i <= 3 ? 'on' : ''}">${iconSVG(form.icon)}</span>`).join('')}</span>`;
     $('#cr-cat-wrap').hidden = form.mode === 'one';
-    $('#cr-mode-hint').textContent = form.mode === 'two'
-      ? 'The first die picks a category, the second picks a movie in it.'
-      : 'No categories: one die picks straight from a single list.';
     const cats = form.mode === 'one' ? 1 : form.categoryDie;
     $('#cr-summary').textContent = form.mode === 'one'
       ? `1 list × ${form.movieDie} movies (${dieName(form.movieDie)})`

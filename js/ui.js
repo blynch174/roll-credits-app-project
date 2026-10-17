@@ -79,7 +79,7 @@ export function attachSwipe(list, onDelete) {
   let item = null, startX = 0, startY = 0, baseX = 0, dx = 0, mode = null; // mode: null | 'swipe' | 'scroll'
 
   list.addEventListener('pointerdown', (e) => {
-    const it = e.target.closest('.watched-item');
+    const it = e.target.closest('.swipe-item');
     if (!it || (e.pointerType === 'mouse' && e.button !== 0)) return;
     closeOpenRow(it);
     item = it;
@@ -139,12 +139,12 @@ export function attachSwipe(list, onDelete) {
   list.addEventListener('click', (e) => {
     const del = e.target.closest('.swipe-del');
     if (del) {
-      const it = del.closest('.swipe-row').querySelector('.watched-item');
+      const it = del.closest('.swipe-row').querySelector('.swipe-item');
       openRow = null;
       onDelete(it.dataset.id);
       return;
     }
-    const it = e.target.closest('.watched-item');
+    const it = e.target.closest('.swipe-item');
     if (!it) return;
     if (it.dataset.justSwiped) {
       e.stopImmediatePropagation(); // the click that ends a swipe isn't a tap

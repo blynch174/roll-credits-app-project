@@ -19,18 +19,18 @@ const STEPS = [
   {
     icon: DIE,
     title: 'Roll for tonight',
-    text: 'On the Roll tab, tap <b>Roll for tonight</b>. The first die picks a category, the second picks a movie in it. Like it? Tap <b>Yes, watch it</b>. Not feeling it? Reroll as many times as you want.',
+    text: 'On the Roll tab, tap <b>Roll for tonight</b>. The first die picks a category, the second picks a movie in it. Like it? Tap <b>Watch it</b>. Not feeling it? <b>Reroll</b> as many times as you want.',
     tip: 'Have real dice? Switch to <b>Physical dice</b> and type in what you rolled.',
   },
   {
     icon: () => iconSVG(store.activeFestival().icon),
     title: 'Pick a festival',
-    text: 'Tap the festival name at the top of the screen to switch festivals: <b>Halloween</b>, <b>Christmas</b>, <b>Awards Season</b>, <b>Kids &amp; Family</b>, and <b>Bucket List Cinema</b>. Or create one of your own.',
+    text: 'Tap the festival name at the top of the Roll screen to pick one of the ready-made festivals, or create your own.',
   },
   {
     icon: LIST,
     title: 'Make it yours',
-    text: "In that same menu, tap <b>Edit</b> next to a festival. You can swap any movie for one you'd rather watch (start typing and it'll suggest titles), and change its dice. Colors for the whole app are in <b>Settings → Themes</b>.",
+    text: "In that same menu, tap <b>Edit</b> next to a festival to swap in movies you'd rather watch and change its dice. Pick your colors in <b>Settings → Themes</b>.",
   },
   {
     icon: TICKET,

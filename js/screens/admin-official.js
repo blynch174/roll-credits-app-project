@@ -97,7 +97,6 @@ function newFestivalSheet() {
   const sheet = openSheet({
     title: 'New official festival',
     body: `
-      <p class="sheet-text">It starts as a draft with six empty categories. Nobody sees it until you publish.</p>
       <label class="field"><span class="label">Name</span><input id="nf-name" type="text" maxlength="40" placeholder="Thanksgiving, Summer Blockbusters…"></label>
       <div class="field"><span class="label">Rating icon</span>
         <div class="icon-grid" id="nf-icon">${RATING_ICONS.map((n) => `<button type="button" class="icon-pick ${n === icon ? 'on' : ''}" data-i="${n}" aria-label="${n}">${iconSVG(n)}</button>`).join('')}</div>
@@ -216,11 +215,11 @@ export function draftSettingsHTML(f) {
   const info = f.draftInfo;
   return `
     <p class="draft-status" id="draft-status">${esc(draftStatus)}</p>
-    <button type="button" class="row-btn" id="btn-look"><span>Name &amp; rating icon</span><small>What everyone sees in their festival list</small></button>
-    <button type="button" class="row-btn" id="btn-dice"><span>Festival dice</span><small>One die or two, and how many categories</small></button>
-    <button type="button" class="row-btn accent" id="btn-publish"><span>Publish…</span><small>${info.published ? 'Send this version to everyone' : 'Add this festival for everyone'}</small></button>
-    ${info.published ? `<button type="button" class="row-btn" id="btn-hide"><span>${info.hidden ? 'Unhide' : 'Hide from new users'}</span><small>${info.hidden ? 'New users get it again' : 'People who have it keep it; nobody new gets it'}</small></button>` : ''}
-    ${info.hasDraft ? `<button type="button" class="row-btn danger" id="btn-discard"><span>Discard draft</span><small>${info.published ? 'Back to the published version' : 'Deletes this unpublished festival'}</small></button>` : ''}`;
+    <button type="button" class="row-btn" id="btn-look"><span>Name &amp; rating icon</span></button>
+    <button type="button" class="row-btn" id="btn-dice"><span>Festival dice</span></button>
+    <button type="button" class="row-btn accent" id="btn-publish"><span>Publish…</span></button>
+    ${info.published ? `<button type="button" class="row-btn" id="btn-hide"><span>${info.hidden ? 'Unhide' : 'Hide from new users'}</span></button>` : ''}
+    ${info.hasDraft ? '<button type="button" class="row-btn danger" id="btn-discard"><span>Discard draft</span></button>' : ''}`;
 }
 
 export function wireDraftSettings(f) {
@@ -273,7 +272,7 @@ function publishSheet(f) {
             <button type="button" data-value="fix">Quick fix</button>
           </div>
           <p class="hint" id="p-hint"></p>
-        </div>` : '<p class="sheet-text">This adds the festival to everyone’s list with a New badge.</p>'}
+        </div>` : ''}
       <label class="field" id="p-msg-wrap"><span class="label">Message <em>(optional)</em></span>
         <textarea id="p-msg" maxlength="200" placeholder="${esc(f.name)} just dropped some new picks!"></textarea></label>`,
     actions: [
@@ -285,9 +284,7 @@ function publishSheet(f) {
     const seg = $('#p-kind', sheet);
     if (!seg) return;
     syncSeg(seg, kind);
-    $('#p-hint', sheet).textContent = kind === 'version'
-      ? 'Announced with your message. People who haven’t changed this festival get it right away; people who have get a Review prompt.'
-      : 'No announcement. People who haven’t changed this festival get it quietly; anyone else sees “Update available” in its settings.';
+    $('#p-hint', sheet).textContent = kind === 'version' ? 'Announced with your message.' : 'No announcement.';
     $('#p-msg-wrap', sheet).hidden = kind === 'fix';
   };
   const seg = $('#p-kind', sheet);

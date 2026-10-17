@@ -38,7 +38,7 @@ function pickMovie() {
 function ticketHTML(m) {
   const bits = [m.releaseYear, m.runtimeMinutes ? `${m.runtimeMinutes} min` : '', m.contentRating].filter(Boolean);
   return `
-    <div class="ticket${m.posterPath ? ' has-poster' : ''}" id="pp-ticket">
+    <div class="ticket-wrap" id="pp-ticket-wrap"><div class="ticket${m.posterPath ? ' has-poster' : ''}" id="pp-ticket">
       ${posterImg(m, 't-poster')}
       <p class="t-admit">Admit one · Popcorn Pick</p>
       <p class="t-title">${esc(m.title)}</p>
@@ -47,7 +47,7 @@ function ticketHTML(m) {
       ${m.moodTone && m.moodTone.length ? `<p class="t-moods">${[...new Set([...moods, ...m.moodTone].filter((t) => m.moodTone.includes(t)))].slice(0, 3).map((t) => `<span>${esc(t)}</span>`).join('')}</p>` : ''}
       ${m.overview ? `<p class="t-overview">${esc(m.overview)}</p>` : ''}
       ${linksHTML(m)}
-    </div>`;
+    </div></div>`;
 }
 
 let wired = false;
@@ -55,17 +55,18 @@ let wired = false;
 // Renders the Popcorn tab. Keeps the last ticket on screen if there is one.
 export async function renderPopcorn() {
   const root = $('#popcorn');
+  root.classList.remove('picked');
   root.innerHTML = `
     <h2 class="section-title first">Popcorn Pick</h2>
-    <p class="pp-intro">One random movie from the whole catalog. Pick one or more moods, or don't.</p>
     <div class="pp-moods" id="pp-moods"><p class="hint">Loading the movie list…</p></div>
     <div class="pp-stage" id="pp-stage">
+      <div class="pp-spot" aria-hidden="true"></div>
       <div class="pp-bucket" id="pp-bucket" role="button" tabindex="0" aria-label="Pop some popcorn">${BUCKET}</div>
       <p class="pp-tap" id="pp-tap">Tap the bucket</p>
     </div>
     <div class="pp-actions" id="pp-actions" hidden>
-      <button type="button" class="btn primary big" id="pp-watch">Watch it</button>
-      <button type="button" class="btn ghost" id="pp-again">Pop again</button>
+      <button type="button" class="btn big pp-watch" id="pp-watch">Watch it</button>
+      <button type="button" class="btn ghost big" id="pp-again">Pop again</button>
     </div>`;
   busy = false;
   if (current) showTicket(root, current, false);
@@ -119,6 +120,8 @@ function showTicket(root, movie, animate) {
   const stage = $('#pp-stage', root);
   $('#pp-bucket', root).hidden = true;
   $('#pp-tap', root).hidden = true;
+  stage.classList.add('has-ticket'); // the ticket takes the stage's place so the buttons sit right under it
+  root.classList.add('picked');
   stage.insertAdjacentHTML('beforeend', ticketHTML(movie));
   const ticket = $('#pp-ticket', root);
   if (animate && !reducedMotion() && ticket.animate) {
@@ -140,8 +143,10 @@ async function popcorn(root) {
   currentMoods = [...moods].sort();
   const stage = $('#pp-stage', root);
   $('#pp-actions', root).hidden = true;
-  const old = $('#pp-ticket', root);
+  const old = $('#pp-ticket-wrap', root);
   if (old) old.remove();
+  stage.classList.remove('has-ticket');
+  root.classList.remove('picked');
   $$('.pp-kernel, .pp-crumb', stage).forEach((k) => k.remove());
   const bucket = $('#pp-bucket', root);
   bucket.hidden = false;

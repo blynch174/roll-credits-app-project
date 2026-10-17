@@ -165,7 +165,9 @@ function migrateV2toV3(d) {
 
 // New built-in festivals shipped in an update appear for existing users too.
 function ensureBuiltIns(d) {
+  const removed = d.removedOfficial || [];
   for (const def of BUILT_IN_FESTIVALS) {
+    if (removed.includes(def.id)) continue; // the user deleted it
     if (!d.festivals.some((f) => f.id === def.id)) d.festivals.push(buildBuiltInFestival(def));
   }
 }
@@ -447,7 +449,7 @@ export function reconcileOfficial(list) {
   for (const pub of list) {
     const f = state.festivals.find((x) => x.id === pub.id);
     if (!f) {
-      if (pub.hidden) continue;
+      if (pub.hidden || removedOfficial().includes(pub.id)) continue;
       const nf = festivalFromOfficial(pub);
       if (!freshInstall) nf.isNew = true;
       state.festivals.push(nf);
@@ -480,12 +482,29 @@ export function closeDraft() {
 }
 export const currentDraft = () => (draft ? draft.fest : null);
 
+// Any festival can be deleted except the last one. Official festivals are remembered as removed, so updates
+// don't bring them back; the festival menu can add them again (restoreOfficialFestival).
 export function deleteFestival(fId) {
-  const f = festival(fId);
-  if (!f || f.builtIn) return;
+  const f = state.festivals.find((x) => x.id === fId);
+  if (!f || state.festivals.length <= 1) return false;
   state.festivals = state.festivals.filter((x) => x.id !== fId);
+  if (f.builtIn) state.removedOfficial = [...new Set([...(state.removedOfficial || []), fId])];
   if (state.activeFestival === fId) state.activeFestival = state.festivals[0].id;
   save();
+  return true;
+}
+
+export const removedOfficial = () => state.removedOfficial || [];
+
+// Adds a deleted official festival back: the latest published version if we have it, otherwise the bundled one.
+export function restoreOfficialFestival(id, pub = null) {
+  const def = BUILT_IN_FESTIVALS.find((d) => d.id === id);
+  if (!pub && !def) return null;
+  const f = pub ? festivalFromOfficial(pub) : buildBuiltInFestival(def);
+  state.festivals.push(f);
+  state.removedOfficial = removedOfficial().filter((x) => x !== id);
+  save();
+  return f;
 }
 
 // opts: { name, icon, mode, categoryDie, movieDie, copyFrom }

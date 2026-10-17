@@ -49,7 +49,7 @@ export function renderAccountSection() {
       <small class="${warn ? 'warn' : ''}">${esc(statusText(st))}</small>
     </button>
     ${st.admin ? `<button type="button" class="row-btn" id="btn-admin">
-      <span>Admin tools</span><small>Official festivals and the invite list (only admins see this)</small></button>` : ''}`;
+      <span>Admin tools</span></button>` : ''}`;
   $('#btn-account').addEventListener('click', () => (sync.isSignedIn() ? accountSheet() : signInSheet()));
   const ab = $('#btn-admin');
   if (ab) ab.addEventListener('click', () => nav.go('admin'));
@@ -74,7 +74,6 @@ export function signInSheet(email = '') {
   const sheet = swapSheet({
     title: 'Sign in',
     body: `
-      <p class="sheet-text">Your festivals, tables, and watch history get backed up to your account and show up on any device you sign in on.</p>
       ${field('a-email', 'Email', 'email', 'username', email)}
       ${field('a-pass', 'Password', 'password', 'current-password')}
       <p class="sheet-error" hidden></p>
@@ -112,7 +111,7 @@ function createSheet(email = '') {
   const sheet = swapSheet({
     title: 'Create an account',
     body: `
-      <p class="sheet-text">Roll Credits is invite-only while it's being tested. Use the email ${esc(INVITE_CONTACT)} added to the invite list. You'll get an email to confirm it's yours.</p>
+      <p class="sheet-text">Roll Credits is invite-only for now. Use the email you were invited with.</p>
       ${field('a-email', 'Email', 'email', 'username', email)}
       ${field('a-pass', 'Password (8 or more characters)', 'password', 'new-password')}
       ${field('a-pass2', 'Password again', 'password', 'new-password')}
@@ -167,7 +166,6 @@ function resetSheet(email = '') {
   const sheet = swapSheet({
     title: 'Reset your password',
     body: `
-      <p class="sheet-text">We'll email you a link to set a new password.</p>
       ${field('a-email', 'Email', 'email', 'username', email)}
       <p class="sheet-error" hidden></p>`,
     actions: [
@@ -219,8 +217,8 @@ function accountSheet() {
       <div class="acct-head"><b>${esc(st.email)}</b><small>${esc(statusText(st))}</small></div>
       ${note}
       <div class="settings-list card acct-list">
-        <button type="button" class="row-btn" id="a-pw"><span>Change password</span><small>Emails you a link to set a new one</small></button>
-        <button type="button" class="row-btn danger" id="a-out"><span>Sign out</span><small>Your data stays on this device</small></button>
+        <button type="button" class="row-btn" id="a-pw"><span>Change password</span></button>
+        <button type="button" class="row-btn danger" id="a-out"><span>Sign out</span></button>
       </div>
       <p class="fine acct-uid">User ID <code>${esc(st.uid)}</code> <button type="button" class="link" id="a-copy">Copy</button></p>`,
     actions: [{ label: 'Close', kind: 'ghost', onClick: closeSheet }, ...actions],
@@ -293,7 +291,6 @@ export async function renderAdmin() {
   }
   root.innerHTML = `
     <h2 class="section-title first">Invite list</h2>
-    <p class="hint">People on this list can create an account and back up their data. They sign up in Settings with this exact email and confirm it.</p>
     <form class="invite-add" id="invite-form" autocomplete="off">
       <input id="invite-email" type="email" placeholder="friend@example.com" autocapitalize="off" spellcheck="false" aria-label="Email to invite">
       <button type="submit" class="btn primary small" id="invite-go">Add</button>
@@ -301,7 +298,6 @@ export async function renderAdmin() {
     <ul class="invite-list" id="invite-list"><li class="hint">Loading…</li></ul>
 
     <h2 class="section-title">Official festivals</h2>
-    <p class="hint">The festivals everyone gets. Edits stay in a draft until you publish.</p>
     <div id="official-admin"></div>
 
     <h2 class="section-title">Admins</h2>

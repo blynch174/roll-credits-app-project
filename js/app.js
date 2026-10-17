@@ -1,10 +1,10 @@
 // Boot, navigation, and the festival switcher.
 
 import * as store from './store.js';
-import { dieName } from './defaults.js';
+import { dieName, BUILT_IN_FESTIVALS } from './defaults.js';
 import { applyTheme } from './themes.js';
 import { iconSVG } from './icons.js';
-import { $, $$, esc, nav, openSheet, closeSheet, initSheets, toast } from './ui.js';
+import { $, $$, esc, nav, openSheet, swapSheet, closeSheet, initSheets, toast, attachSwipe } from './ui.js';
 import { renderRoll, initRoll, resetRoll } from './screens/roll.js';
 import { renderWatched, initWatched } from './screens/watched.js';
 import * as catalog from './catalog.js';
@@ -35,6 +35,7 @@ function go(name, opts = {}) {
   screen = name;
   screenOpts = opts;
   for (const s of SCREENS) $('#screen-' + s).hidden = s !== name;
+  $('#fest-btn').hidden = name !== 'home'; // the festival only matters on the Roll screen
   $$('.tabbar button').forEach((b) => {
     if (b.dataset.screen === name) b.setAttribute('aria-current', 'page');
     else b.removeAttribute('aria-current');
@@ -66,21 +67,29 @@ nav.render = render;
 
 function festivalSheet() {
   const cur = store.activeFestival().id;
+  const canDelete = store.festivals().length > 1;
+  const removed = store.removedOfficial()
+    .map((id) => official.get(id) || BUILT_IN_FESTIVALS.find((d) => d.id === id))
+    .filter(Boolean);
   const sheet = openSheet({
     title: 'Film festivals',
     body: `
-      <ul class="fest-list">
+      <ul class="fest-list" id="fest-list">
         ${store.festivals().map((f) => `
-          <li class="fest-row ${f.id === cur ? 'on' : ''}">
-            <button type="button" class="fr-pick" data-id="${f.id}">
-              <span class="fest-icon">${iconSVG(f.icon)}</span>
-              <span class="fr-main"><span class="fr-name">${esc(f.name)}${f.isNew ? '<span class="new-badge">New</span>' : ''}${f.announce ? '<span class="update-dot" aria-label="Has an update"></span>' : ''}</span>
-                <span class="fr-sub">${f.id === cur ? 'Now showing · ' : ''}${f.mode === 'one' ? `One ${dieName(f.categories[0].die)} list` : `${f.categories.length} categories`}${f.builtIn ? '' : ' · Custom'}</span></span>
-            </button>
-            <button type="button" class="btn ghost small fr-edit" data-edit="${f.id}" aria-label="Edit ${esc(f.name)}">Edit</button>
+          <li class="${canDelete ? 'swipe-row' : ''}">
+            ${canDelete ? '<button type="button" class="swipe-del" tabindex="-1">Delete</button>' : ''}
+            <div class="fest-row swipe-item ${f.id === cur ? 'on' : ''}" data-id="${f.id}">
+              <button type="button" class="fr-pick" data-id="${f.id}">
+                <span class="fest-icon">${iconSVG(f.icon)}</span>
+                <span class="fr-main"><span class="fr-name">${esc(f.name)}${f.isNew ? '<span class="new-badge">New</span>' : ''}${f.announce ? '<span class="update-dot" aria-label="Has an update"></span>' : ''}</span>
+                  <span class="fr-sub">${f.id === cur ? 'Now showing · ' : ''}${f.mode === 'one' ? `One ${dieName(f.categories[0].die)} list` : `${f.categories.length} categories`}${f.builtIn ? '' : ' · Custom'}</span></span>
+              </button>
+              <button type="button" class="btn ghost small fr-edit" data-edit="${f.id}" aria-label="Edit ${esc(f.name)}">Edit</button>
+            </div>
           </li>`).join('')}
       </ul>
-      <button type="button" class="btn ghost big" id="btn-new-fest">+ Create a festival</button>`,
+      <button type="button" class="btn ghost big" id="btn-new-fest">+ Create a festival</button>
+      ${removed.length ? '<button type="button" class="btn ghost big" id="btn-add-official">+ Add an official festival</button>' : ''}`,
     actions: [{ label: 'Close', kind: 'ghost', onClick: closeSheet }],
   });
   const switchTo = (id) => {
@@ -102,6 +111,42 @@ function festivalSheet() {
     go('edit', { part: 'tables' });
   }));
   $('#btn-new-fest', sheet).addEventListener('click', () => { closeSheet(); openCreator(); });
+  const addOff = $('#btn-add-official', sheet);
+  if (addOff) addOff.addEventListener('click', () => addOfficialSheet(removed));
+  // Swipe a festival left to delete it (Undo in the toast).
+  if (canDelete) attachSwipe($('#fest-list', sheet), (id) => {
+    const f = store.festival(id);
+    const snap = store.snapshot();
+    const wasActive = store.activeFestival().id === id;
+    if (!store.deleteFestival(id)) return;
+    if (wasActive) resetRoll();
+    render();
+    festivalSheet();
+    toast(`${f.name} deleted.`, {
+      action: 'Undo',
+      onAction: () => { store.restore(snap); resetRoll(); render(); },
+    });
+  });
+}
+
+function addOfficialSheet(list) {
+  const sheet = swapSheet({
+    title: 'Add an official festival',
+    body: `<ul class="fest-list">${list.map((p) => `
+      <li><button type="button" class="fest-row add-off" data-id="${p.id}">
+        <span class="fest-icon">${iconSVG(p.icon)}</span>
+        <span class="fr-main"><span class="fr-name">${esc(p.name)}</span></span>
+        <span class="or-go">Add</span>
+      </button></li>`).join('')}</ul>`,
+    actions: [{ label: 'Back', kind: 'ghost', onClick: festivalSheet }],
+  });
+  $$('.add-off', sheet).forEach((b) => b.addEventListener('click', () => {
+    const f = store.restoreOfficialFestival(b.dataset.id, official.get(b.dataset.id));
+    if (!f) return;
+    render();
+    festivalSheet();
+    toast(`${f.name} added.`);
+  }));
 }
 
 // ---------- Boot ----------

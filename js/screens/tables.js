@@ -111,7 +111,7 @@ export function editSlotSheet(fId, catId, index, after) {
       </div>
       ${autofindBox()}
       ${m ? linksHTML(catalogMovie(m.catalogId)) : ''}
-      ${m && store.isSeen(f, m) ? '<p class="hint">Changing the title swaps in a new movie. Your watch history is not affected.</p>' : ''}`,
+`,
     actions,
   });
   getCatalogId = attachAutofind(sheet, { festivalId: fId });

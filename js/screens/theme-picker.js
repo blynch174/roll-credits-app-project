@@ -8,7 +8,6 @@ export function renderThemePicker() {
   const cur = store.themeId();
   $('#themes').innerHTML = THEME_GROUPS.map((g, i) => `
     <h2 class="section-title${i === 0 ? ' first' : ''}">${esc(g.name)}</h2>
-    <p class="hint theme-group-desc">${esc(g.desc)}</p>
     <div class="theme-grid">
       ${g.themes.map((t) => `
         <button type="button" class="theme-card ${t.id === cur ? 'on' : ''}" data-theme-id="${t.id}" style="${themeStyle(t)}" aria-pressed="${t.id === cur}">
