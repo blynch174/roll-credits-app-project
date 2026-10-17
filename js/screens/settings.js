@@ -2,7 +2,7 @@
 // Anything about a single festival lives in the Edit festival screen (editor.js).
 
 import * as store from '../store.js';
-import { applyTheme } from '../themes.js';
+import { applyTheme, themeById } from '../themes.js';
 import * as dice3d from '../dice3d.js';
 import * as sync from '../sync.js';
 import { renderAccountSection } from './account.js';
@@ -28,6 +28,7 @@ export function renderSettings() {
     ? 'Rolling a movie you already watched just offers a reroll.'
     : 'Rolling a movie you already watched here offers the next unseen movie in its series, like Scream → Scream 2. Start fresh puts the originals back.';
   $('#storage-warning').hidden = store.canSave();
+  $('#theme-current').textContent = themeById(store.themeId()).name;
   renderAccountSection();
 
 }
@@ -113,6 +114,7 @@ export function initSettings() {
     renderSettings();
   });
   $('#btn-clear-history').addEventListener('click', clearHistorySheet);
+  $('#btn-themes').addEventListener('click', () => nav.go('themes'));
   $('#btn-export').addEventListener('click', async () => { if (await exportBackup()) toast('Backup saved.'); });
   $('#btn-import').addEventListener('click', () => $('#import-file').click());
   $('#import-file').addEventListener('change', async (e) => {
@@ -122,7 +124,7 @@ export function initSettings() {
     const text = await file.text();
     confirmSheet('Import this backup?', 'Everything currently in the app will be replaced with the backup.', 'Import', () => {
       if (store.importJSON(text)) {
-        applyTheme(store.activeFestival());
+        applyTheme(store.themeId());
         nav.render();
         toast('Backup loaded.');
       } else toast("That file isn't a Roll Credits backup.");
@@ -137,7 +139,7 @@ export function initSettings() {
       'Continue',
       () => typedConfirm('Really reset everything?', "This can't be undone. Export a backup first if you want to keep anything.", () => {
         store.resetAll();
-        applyTheme(store.activeFestival());
+        applyTheme(store.themeId());
         nav.render();
         toast('Back to a fresh install.');
       }),

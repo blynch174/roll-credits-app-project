@@ -1,15 +1,14 @@
-// FESTIVAL CREATOR: name, look, rating icon, dice. Tables get filled in afterward.
+// FESTIVAL CREATOR: name, rating icon, dice. Tables get filled in afterward. (Colors are app-wide: Settings → Themes.)
 
 import * as store from '../store.js';
-import { SWATCHES, RATING_ICONS, DIE_OPTIONS, dieName } from '../defaults.js';
-import { customThemes, themeStyle, applyTheme } from '../themes.js';
+import { RATING_ICONS, DIE_OPTIONS, dieName } from '../defaults.js';
 import { iconSVG } from '../icons.js';
 import { $, $$, esc, toast, nav, syncSeg, dieChips, wireChips } from '../ui.js';
 
 let form;
 
 function blankForm() {
-  return { copyFrom: '', name: '', base: 'dark', accent: 'teal', icon: 'star', mode: 'two', categoryDie: 6, movieDie: 12 };
+  return { copyFrom: '', name: '', icon: 'star', mode: 'two', categoryDie: 6, movieDie: 12 };
 }
 
 export function openCreator() {
@@ -37,20 +36,9 @@ export function renderCreator() {
         <input id="cr-name" type="text" maxlength="40" placeholder="Summer Blockbusters, Bond Marathon…" value="${esc(form.name)}"></label>
     </div>
 
-    <h3 class="section-title">Look</h3>
-    <div class="card form-card">
-      <div class="seg" id="cr-base">
-        <button type="button" data-value="dark">Dark</button>
-        <button type="button" data-value="light">Light</button>
-      </div>
-      <div class="swatches" id="cr-accent">
-        ${SWATCHES.map((s) => `<button type="button" class="swatch ${s.id === form.accent ? 'on' : ''}" data-c="${s.id}" style="--sw:${s.hex}" aria-label="${s.id}"></button>`).join('')}
-      </div>
-      <div class="preview" id="cr-preview"></div>
-    </div>
-
     <h3 class="section-title">Rating icon</h3>
     <div class="card form-card">
+      <div class="preview" id="cr-preview"></div>
       <div class="icon-grid" id="cr-icon">
         ${RATING_ICONS.map((n) => `<button type="button" class="icon-pick ${n === form.icon ? 'on' : ''}" data-i="${n}" aria-label="${n}">${iconSVG(n)}</button>`).join('')}
       </div>
@@ -72,10 +60,7 @@ export function renderCreator() {
     <p class="hint center">Next, you'll fill in the tables. Each category's die can be changed later.</p>`;
 
   const refresh = () => {
-    syncSeg($('#cr-base'), form.base);
     syncSeg($('#cr-mode'), form.mode);
-    const theme = customThemes(form.accent)[form.base === 'light' ? 1 : 0];
-    $('#cr-preview').setAttribute('style', themeStyle(theme));
     $('#cr-preview').innerHTML = `
       <span class="pv-title">${esc(form.name || 'Your festival')}</span>
       <span class="pv-btn">Roll for tonight</span>
@@ -109,19 +94,9 @@ export function renderCreator() {
     refresh();
   });
   $('#cr-name').addEventListener('input', (e) => { form.name = e.target.value; refresh(); });
-  $('#cr-base').addEventListener('click', (e) => {
-    const b = e.target.closest('button'); if (!b) return;
-    form.base = b.dataset.value; refresh();
-  });
   $('#cr-mode').addEventListener('click', (e) => {
     const b = e.target.closest('button'); if (!b) return;
     form.mode = b.dataset.value; refresh();
-  });
-  $('#cr-accent').addEventListener('click', (e) => {
-    const b = e.target.closest('.swatch'); if (!b) return;
-    form.accent = b.dataset.c;
-    $$('#cr-accent .swatch').forEach((x) => x.classList.toggle('on', x === b));
-    refresh();
   });
   $('#cr-icon').addEventListener('click', (e) => {
     const b = e.target.closest('.icon-pick'); if (!b) return;
@@ -137,7 +112,6 @@ export function renderCreator() {
     if (!form.name.trim()) { $('#cr-name').focus(); return toast('Give your festival a name.'); }
     const f = store.createFestival({ ...form, copyFrom: form.copyFrom || null });
     form = null;
-    applyTheme(f);
     nav.go('edit', { part: 'tables' });
     toast(`${f.name} is ready. Fill in your tables!`);
   });

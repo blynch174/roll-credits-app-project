@@ -11,7 +11,7 @@ import { autofindBox, attachAutofind } from '../autofind.js';
 let currentCat = null;
 
 export function renderTables(opts = {}) {
-  const f = store.activeFestival();
+  const f = store.editFestival();
   if (opts.cat) currentCat = opts.cat;
   if (!currentCat || !store.category(f, currentCat)) currentCat = f.categories[0].id;
   const cat = store.category(f, currentCat);

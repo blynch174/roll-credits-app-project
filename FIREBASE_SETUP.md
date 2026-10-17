@@ -82,6 +82,14 @@ by itself.
 
 Removing someone from the invite list stops their backups. Their app keeps working on their device.
 
+## 8. Publish the official festivals (once)
+
+Settings → Admin tools → **Publish the built-in festivals**. From then on you can edit them there and publish
+updates to everyone.
+
+**Already set up before v3.6?** The rules changed (official festivals and drafts). Paste the new
+`firestore.rules` into Firestore → Rules and click **Publish** again before step 8.
+
 ## Checking it works
 
 - Sign in on a second device (or a private browser window). Your festivals and history should show up.
@@ -105,5 +113,7 @@ Removing someone from the invite list stops their backups. Their app keeps worki
 | `users/{User ID}` | One document per person: their whole Roll Credits data (festivals, tables, history, settings) |
 | `invites/{email}` | The invite list, managed from Admin tools |
 | `admins/{User ID}` | Admins, added by hand in the console |
+| `official/{festival id}` | Published official festivals. Anyone can read them |
+| `drafts/{festival id}` | Admins' unpublished edits |
 
 Passwords are handled by Firebase Authentication and are never visible, not even to you.

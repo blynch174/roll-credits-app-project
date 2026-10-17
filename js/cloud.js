@@ -5,6 +5,9 @@
 //   users/{uid}      { state: "<the app's saved data as JSON>", clientUpdatedAt, updatedAt, email, device, appVersion }
 //   invites/{email}  { addedBy, addedAt }      email is lowercase. Who's allowed to sync.
 //   admins/{uid}     { email }                 Added by hand in the Firebase console. Can manage invites.
+//   official/{id}    { name, icon, rev, kind, message, hidden, order, tables: "<JSON>", publishedAt, publishedBy }
+//                    Published official festivals. Anyone can read (no account needed). Admins write.
+//   drafts/{id}      { name, icon, tables: "<JSON>", baseRev, updatedAt, updatedBy }   Admins only.
 // firestore.rules enforces who can read and write each of these.
 
 import { firebaseConfig } from './firebase-config.js';
@@ -130,6 +133,60 @@ export async function addInvite(email) {
 export function removeInvite(email) {
   const { F, db } = fb;
   return F.deleteDoc(F.doc(db, 'invites', emailKey(email)));
+}
+
+// ---------- Official festivals ----------
+
+const parseOfficial = (id, d) => {
+  let tables = null;
+  try { tables = JSON.parse(d.tables); } catch (e) { return null; }
+  return {
+    id, name: d.name, icon: d.icon, rev: d.rev || 1, kind: d.kind || 'version', message: d.message || '',
+    hidden: !!d.hidden, order: d.order || 0, tables, publishedAt: d.publishedAt || 0, publishedBy: d.publishedBy || '',
+  };
+};
+
+// Everyone can read these, signed in or not.
+export async function listOfficial() {
+  const { F, db } = fb;
+  const snap = await F.getDocs(F.collection(db, 'official'));
+  return snap.docs.map((d) => parseOfficial(d.id, d.data())).filter(Boolean).sort((a, b) => a.order - b.order);
+}
+
+export async function publishOfficial(id, { name, icon, tables, rev, kind, message, hidden, order }) {
+  const { F, db } = fb;
+  await F.setDoc(F.doc(db, 'official', id), {
+    name, icon, tables: JSON.stringify(tables), rev, kind, message: message || '', hidden: !!hidden, order: order || 0,
+    publishedAt: Date.now(), publishedBy: fb.auth.currentUser.email,
+  });
+}
+
+export async function setOfficialHidden(id, hidden) {
+  const { F, db } = fb;
+  await F.updateDoc(F.doc(db, 'official', id), { hidden: !!hidden });
+}
+
+export async function listDrafts() {
+  const { F, db } = fb;
+  const snap = await F.getDocs(F.collection(db, 'drafts'));
+  return snap.docs.map((d) => {
+    const x = d.data();
+    let tables = null;
+    try { tables = JSON.parse(x.tables); } catch (e) { /* skip broken */ }
+    return { id: d.id, name: x.name, icon: x.icon, tables, baseRev: x.baseRev || 0, updatedAt: x.updatedAt || 0, updatedBy: x.updatedBy || '' };
+  }).filter((d) => d.tables);
+}
+
+export async function saveDraft(id, { name, icon, tables, baseRev }) {
+  const { F, db } = fb;
+  await F.setDoc(F.doc(db, 'drafts', id), {
+    name, icon, tables: JSON.stringify(tables), baseRev: baseRev || 0, updatedAt: Date.now(), updatedBy: fb.auth.currentUser.email,
+  });
+}
+
+export function deleteDraft(id) {
+  const { F, db } = fb;
+  return F.deleteDoc(F.doc(db, 'drafts', id));
 }
 
 // Firebase error codes → something a person can act on.

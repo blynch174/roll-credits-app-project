@@ -204,11 +204,11 @@ const BUCKET_LIST = [
 ];
 
 export const BUILT_IN_FESTIVALS = [
-  { id: 'halloween', name: 'Halloween', icon: 'skull', themeSet: 'halloween', categoryDie: 6, movieDie: 12, categories: HALLOWEEN },
-  { id: 'christmas', name: 'Christmas', icon: 'tree', themeSet: 'christmas', categoryDie: 6, movieDie: 12, categories: CHRISTMAS },
-  { id: 'awards', name: 'Awards Season', icon: 'trophy', themeSet: 'awards', categoryDie: 6, movieDie: 12, categories: AWARDS },
-  { id: 'kids', name: 'Kids & Family', icon: 'balloon', themeSet: 'kids', categoryDie: 6, movieDie: 20, categories: KIDS },
-  { id: 'bucketlist', name: 'Bucket List Cinema', icon: 'hourglass', themeSet: 'bucketlist', categoryDie: 6, movieDie: 20, categories: BUCKET_LIST },
+  { id: 'halloween', name: 'Halloween', icon: 'skull', categoryDie: 6, movieDie: 12, categories: HALLOWEEN },
+  { id: 'christmas', name: 'Christmas', icon: 'tree', categoryDie: 6, movieDie: 12, categories: CHRISTMAS },
+  { id: 'awards', name: 'Awards Season', icon: 'trophy', categoryDie: 6, movieDie: 12, categories: AWARDS },
+  { id: 'kids', name: 'Kids & Family', icon: 'balloon', categoryDie: 6, movieDie: 20, categories: KIDS },
+  { id: 'bucketlist', name: 'Bucket List Cinema', icon: 'hourglass', categoryDie: 6, movieDie: 20, categories: BUCKET_LIST },
 ];
 
 export function makeCategory(name, color, die, movies = []) {
@@ -226,25 +226,100 @@ export function builtInCategories(def) {
   return def.categories.map(([name, color, movies, die]) => makeCategory(name, color, die || def.movieDie, movies));
 }
 
+// Built-in festivals are "official": admins can publish newer versions (official.js).
+// sourceRev = which published revision this copy came from. The copy in this file is revision 1.
+// sourceSig = fingerprint of the tables at that time, so we can tell if the user has edited them since.
+export const BUNDLED_REV = 1;
+
 export function buildBuiltInFestival(def) {
-  return {
+  const f = {
     id: def.id,
     name: def.name,
     builtIn: true,
     icon: def.icon,
-    themeSet: def.themeSet,
-    theme: null, // null = first theme in the set
     mode: 'two',
     categoryDie: def.categoryDie,
     freshSince: null,
     categories: builtInCategories(def),
+    sourceRev: BUNDLED_REV,
   };
+  f.sourceSig = tablesSig(f);
+  return f;
+}
+
+// ---------- Official festival tables ----------
+// Published official festivals store their tables without ids:
+//   { mode, categoryDie, categories: [ { name, color, die, slots: [ { title, year, catalogId } | null ] } ] }
+
+const movieKey = (m) => (m ? `${m.title}|${m.year || ''}` : '');
+
+// Fingerprint of a festival's tables. A slot that moved on to a sequel counts as its original movie.
+export function tablesSig(f) {
+  return JSON.stringify([
+    f.mode, f.mode === 'one' ? null : f.categoryDie,
+    f.categories.map((c) => [c.name, c.color, c.die, c.slots.map((m) => movieKey(m && (m.base || m)))]),
+  ]);
+}
+
+export function tablesFromFestival(f) {
+  return {
+    mode: f.mode,
+    categoryDie: f.mode === 'one' ? null : f.categoryDie,
+    categories: f.categories.map((c) => ({
+      name: c.name,
+      color: c.color,
+      die: c.die,
+      slots: c.slots.map((m) => {
+        const b = m && (m.base || m);
+        return b ? { title: b.title, year: b.year || null, catalogId: b.catalogId || null } : null;
+      }),
+    })),
+  };
+}
+
+// Builds categories from published tables. Movies the user already had keep their slot (and any notes or
+// sequel progress), so Seen marks and history links carry over.
+export function categoriesFromTables(tables, oldFestival = null) {
+  const old = new Map();
+  if (oldFestival) {
+    for (const c of oldFestival.categories) for (const m of c.slots) if (m) old.set(movieKey(m.base || m), m);
+  }
+  return tables.categories.map((c) => ({
+    id: uid(),
+    name: c.name,
+    color: c.color,
+    die: c.die,
+    slots: Array.from({ length: c.die }, (_, i) => {
+      const m = c.slots[i];
+      if (!m) return null;
+      const keep = old.get(movieKey(m));
+      if (keep) { old.delete(movieKey(m)); return keep; }
+      return makeMovie(m.title, m.year, m.catalogId || null);
+    }),
+  }));
+}
+
+// A user's copy of a published official festival.
+export function festivalFromOfficial(pub) {
+  const f = {
+    id: pub.id,
+    name: pub.name,
+    builtIn: true,
+    icon: pub.icon,
+    mode: pub.tables.mode,
+    categoryDie: pub.tables.categoryDie,
+    freshSince: null,
+    categories: categoriesFromTables(pub.tables),
+    sourceRev: pub.rev,
+  };
+  f.sourceSig = tablesSig(f);
+  return f;
 }
 
 export function buildDefaultState() {
   return {
     version: 3,
-    settings: { diceMode: 'virtual', diceStyle: 'flat', slotMode: 'keep', sequels: true, tutorialSeen: false },
+    settings: { diceMode: 'virtual', diceStyle: 'flat', slotMode: 'keep', sequels: true, tutorialSeen: false, theme: 'classic-dark' },
     activeFestival: 'halloween',
     festivals: BUILT_IN_FESTIVALS.map(buildBuiltInFestival),
     history: [],

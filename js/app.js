@@ -16,8 +16,12 @@ import { renderSettings, initSettings } from './screens/settings.js';
 import { renderCreator, openCreator } from './screens/creator.js';
 import { renderAccountSection, renderAdmin, initAccount, chooseSideSheet } from './screens/account.js';
 import * as sync from './sync.js';
+import * as official from './official.js';
+import { renderBanner } from './screens/updates.js';
+import { renderThemePicker, initThemePicker } from './screens/theme-picker.js';
+import { leaveDraft } from './screens/admin-official.js';
 
-const SCREENS = ['home', 'watched', 'popcorn', 'settings', 'creator', 'edit', 'admin'];
+const SCREENS = ['home', 'watched', 'popcorn', 'settings', 'creator', 'edit', 'admin', 'themes'];
 const TABS = ['home', 'watched', 'popcorn', 'settings'];
 let screen = 'home';
 let lastTab = 'home'; // where "Done" / "Cancel" goes back to
@@ -25,6 +29,8 @@ let screenOpts = {};
 
 function go(name, opts = {}) {
   if (name !== 'home') dice3d.clearNow();
+  // Leaving an official festival draft (any navigation that isn't the draft editor itself) saves and closes it.
+  if (store.currentDraft() && !opts.keepDraft) leaveDraft();
   if (TABS.includes(name)) lastTab = name;
   screen = name;
   screenOpts = opts;
@@ -41,13 +47,14 @@ function render() {
   const f = store.activeFestival();
   $('#fest-name').textContent = f.name;
   $('#fest-btn-icon').innerHTML = iconSVG(f.icon);
-  if (screen === 'home') renderRoll();
+  if (screen === 'home') { renderBanner(); renderRoll(); }
   else if (screen === 'watched') renderWatched();
   else if (screen === 'popcorn') renderPopcorn();
   else if (screen === 'edit') renderEditor(screenOpts);
   else if (screen === 'settings') renderSettings();
   else if (screen === 'creator') renderCreator();
   else if (screen === 'admin') renderAdmin();
+  else if (screen === 'themes') renderThemePicker();
   screenOpts = {};
 }
 
@@ -67,7 +74,7 @@ function festivalSheet() {
           <li class="fest-row ${f.id === cur ? 'on' : ''}">
             <button type="button" class="fr-pick" data-id="${f.id}">
               <span class="fest-icon">${iconSVG(f.icon)}</span>
-              <span class="fr-main"><span class="fr-name">${esc(f.name)}</span>
+              <span class="fr-main"><span class="fr-name">${esc(f.name)}${f.isNew ? '<span class="new-badge">New</span>' : ''}${f.announce ? '<span class="update-dot" aria-label="Has an update"></span>' : ''}</span>
                 <span class="fr-sub">${f.id === cur ? 'Now showing · ' : ''}${f.mode === 'one' ? `One ${dieName(f.categories[0].die)} list` : `${f.categories.length} categories`}${f.builtIn ? '' : ' · Custom'}</span></span>
             </button>
             <button type="button" class="btn ghost small fr-edit" data-edit="${f.id}" aria-label="Edit ${esc(f.name)}">Edit</button>
@@ -80,7 +87,6 @@ function festivalSheet() {
     const changed = id !== store.activeFestival().id;
     store.setActiveFestival(id);
     const f = store.activeFestival();
-    applyTheme(f);
     if (changed) resetRoll();
     return { f, changed };
   };
@@ -102,7 +108,7 @@ function festivalSheet() {
 
 initSheets();
 store.load();
-applyTheme(store.activeFestival());
+applyTheme(store.themeId());
 $$('.tabbar button').forEach((b) => b.addEventListener('click', () => go(b.dataset.screen)));
 $('#fest-btn').addEventListener('click', festivalSheet);
 initRoll();
@@ -110,6 +116,7 @@ initWatched();
 initSettings();
 initEditor();
 initAccount();
+initThemePicker();
 initTutorial();
 $('#btn-tutorial').addEventListener('click', () => startTutorial(() => go('home')));
 go('home');
@@ -121,12 +128,16 @@ if (!store.getState().settings.tutorialSeen) startTutorial();
 // Accounts (only if js/firebase-config.js is filled in). Data from the account replaces this device's copy.
 sync.start({
   onRemoteApplied: () => {
-    applyTheme(store.activeFestival());
+    applyTheme(store.themeId());
+    official.reconcileNow();
     if (screen === 'home') resetRoll();
     render();
   },
   chooseSide: chooseSideSheet,
 });
+
+// Official festivals: newer published versions (cached copy first, then the database).
+official.start({ changed: () => render() });
 
 catalog.load().then(() => {
   if (!catalog.isReady()) return;

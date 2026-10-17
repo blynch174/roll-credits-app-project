@@ -5,6 +5,7 @@ import * as sync from '../sync.js';
 import * as cloud from '../cloud.js';
 import { INVITE_CONTACT } from '../firebase-config.js';
 import { $, $$, esc, toast, nav, openSheet, swapSheet, closeSheet, confirmSheet } from '../ui.js';
+import { renderOfficialSection } from './admin-official.js';
 
 // ---------- Settings → Account section ----------
 
@@ -48,7 +49,7 @@ export function renderAccountSection() {
       <small class="${warn ? 'warn' : ''}">${esc(statusText(st))}</small>
     </button>
     ${st.admin ? `<button type="button" class="row-btn" id="btn-admin">
-      <span>Admin tools</span><small>Invite list (only admins see this)</small></button>` : ''}`;
+      <span>Admin tools</span><small>Official festivals and the invite list (only admins see this)</small></button>` : ''}`;
   $('#btn-account').addEventListener('click', () => (sync.isSignedIn() ? accountSheet() : signInSheet()));
   const ab = $('#btn-admin');
   if (ab) ab.addEventListener('click', () => nav.go('admin'));
@@ -300,7 +301,8 @@ export async function renderAdmin() {
     <ul class="invite-list" id="invite-list"><li class="hint">Loading…</li></ul>
 
     <h2 class="section-title">Official festivals</h2>
-    <div class="card admin-soon"><p class="sheet-text">Coming in the next update: edit Halloween, Christmas, and the other built-in festivals here and publish new versions to everyone.</p></div>
+    <p class="hint">The festivals everyone gets. Edits stay in a draft until you publish.</p>
+    <div id="official-admin"></div>
 
     <h2 class="section-title">Admins</h2>
     <div class="card admin-soon"><p class="sheet-text">Admins are added in the Firebase console (see FIREBASE_SETUP.md, step 6).</p></div>`;
@@ -322,6 +324,7 @@ export async function renderAdmin() {
     }
     btn.disabled = false;
   });
+  renderOfficialSection();
   await loadInvites();
 }
 

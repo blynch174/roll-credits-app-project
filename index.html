@@ -28,6 +28,7 @@
     <main>
       <!-- ROLL -->
       <section class="screen" id="screen-home" aria-label="Roll">
+        <div id="fest-banner" hidden></div>
         <div class="card roll-card">
           <div class="seg" id="dice-mode" role="radiogroup" aria-label="Dice mode">
             <button type="button" role="radio" data-value="virtual">Virtual dice</button>
@@ -72,8 +73,6 @@
         </div>
         <div id="edit-settings" hidden>
           <div class="card settings-list" id="fest-card"></div>
-          <h2 class="section-title">Theme</h2>
-          <div class="theme-grid" id="theme-grid"></div>
         </div>
       </section>
 
@@ -84,7 +83,14 @@
           <div class="card settings-list" id="account-card"></div>
         </div>
 
-        <h2 class="section-title first" id="dice-style-title">Dice style</h2>
+        <h2 class="section-title first" id="dice-style-title">Themes</h2>
+        <div class="card settings-list">
+          <button type="button" class="row-btn" id="btn-themes">
+            <span>Theme: <b id="theme-current"></b></span><small>Colors for the whole app</small>
+          </button>
+        </div>
+
+        <h2 class="section-title">Dice style</h2>
         <div class="seg" id="dice-style" role="radiogroup" aria-label="Dice style">
           <button type="button" role="radio" data-value="flat">Flat</button>
           <button type="button" role="radio" data-value="3d">3D (beta)</button>
@@ -133,7 +139,7 @@
           </button>
         </div>
         <p class="hint" id="storage-warning" hidden>This browser isn't letting the app save. Changes will be lost when you close it. Export a backup to be safe.</p>
-        <p class="fine">Roll Credits v3.5</p>
+        <p class="fine">Roll Credits v3.6</p>
       </section>
 
       <!-- ADMIN (Settings → Admin tools, admins only; the database rules enforce it) -->
@@ -143,6 +149,15 @@
           <h2 class="edit-title">Admin tools</h2>
         </div>
         <div id="admin"></div>
+      </section>
+
+      <!-- THEMES (Settings → Themes) -->
+      <section class="screen" id="screen-themes" aria-label="Themes" hidden>
+        <div class="edit-head">
+          <button type="button" class="link" id="themes-done">‹ Done</button>
+          <h2 class="edit-title">Themes</h2>
+        </div>
+        <div id="themes"></div>
       </section>
 
       <!-- FESTIVAL CREATOR (opened from the festival menu) -->

@@ -2,8 +2,9 @@
 
 import {
   BUILT_IN_FESTIVALS, buildBuiltInFestival, buildDefaultState, builtInCategories,
-  makeCategory, makeMovie, uid, SWATCHES,
+  makeCategory, makeMovie, uid, SWATCHES, BUNDLED_REV, tablesSig, categoriesFromTables, festivalFromOfficial,
 } from './defaults.js';
+import { themeFromOldFestival, DEFAULT_THEME, isThemeId } from './themes.js';
 import { norm } from './catalog.js';
 
 const STORAGE_KEY = 'roll-credits:data';
@@ -12,6 +13,7 @@ const CURRENT_VERSION = 3;
 let state = null;
 let storageWorks = true;
 let booted = false;
+let freshInstall = false; // this session started with no saved data: official updates apply without announcements
 const saveListeners = []; // sync.js listens here to back changes up to the account
 
 // ---------- Load / save ----------
@@ -24,7 +26,8 @@ export function load() {
   } catch (e) {
     storageWorks = false;
   }
-  state = saved && looksValid(saved) ? migrate(saved) : buildDefaultState();
+  freshInstall = !(saved && looksValid(saved));
+  state = freshInstall ? buildDefaultState() : migrate(saved);
   save();
   booted = true;
   return state;
@@ -32,6 +35,15 @@ export function load() {
 
 // silent: write to the device without telling listeners (used when the change came from the account).
 export function save(silent = false) {
+  if (draft && !silent) {
+    draft.onChange(draft.fest);
+    return;
+  }
+  saveState(silent);
+}
+
+// Writes the saved state even while a draft is open (official updates can arrive any time).
+function saveState(silent = false) {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     storageWorks = true;
@@ -87,6 +99,15 @@ function migrate(d) {
   // Added in v3.3. Anyone with saved data from before already knows the app, so skip the tour for them.
   if (d.settings.tutorialSeen === undefined) d.settings.tutorialSeen = true;
   if (!d.festivals.some((f) => f.id === d.activeFestival)) d.activeFestival = d.festivals[0].id;
+  // v3.6: one app-wide theme instead of one per festival. Keep whatever the current festival looked like.
+  if (!isThemeId(d.settings.theme)) d.settings.theme = themeFromOldFestival(d.festivals.find((f) => f.id === d.activeFestival));
+  // v3.6: built-in festivals remember which published version they came from (the bundled one is revision 1).
+  for (const f of d.festivals) {
+    if (!f.builtIn || f.sourceRev !== undefined) continue;
+    const def = BUILT_IN_FESTIVALS.find((x) => x.id === f.id);
+    f.sourceRev = BUNDLED_REV;
+    f.sourceSig = def ? tablesSig(buildBuiltInFestival(def)) : tablesSig(f);
+  }
   d.version = CURRENT_VERSION;
   return d;
 }
@@ -152,12 +173,19 @@ function ensureBuiltIns(d) {
 // ---------- Lookups ----------
 
 export const festivals = () => state.festivals;
-export const festival = (id) => state.festivals.find((f) => f.id === id) || null;
-export const activeFestival = () => festival(state.activeFestival) || state.festivals[0];
+// While an admin edits an official festival's draft, that draft is reachable by its id ('draft:halloween')
+// so the normal table editing functions work on it.
+export const festival = (id) => (draft && draft.fest.id === id ? draft.fest : state.festivals.find((f) => f.id === id) || null);
+export const activeFestival = () => state.festivals.find((f) => f.id === state.activeFestival) || state.festivals[0];
+// The festival the Edit screen is showing: the draft when editing one, otherwise the active festival.
+export const editFestival = () => (draft ? draft.fest : activeFestival());
+export const themeId = () => state.settings.theme || DEFAULT_THEME;
 
 export function setActiveFestival(id) {
-  if (!festival(id)) return;
+  const f = state.festivals.find((x) => x.id === id);
+  if (!f) return;
   state.activeFestival = id;
+  if (f.isNew) delete f.isNew;
   save();
 }
 
@@ -339,19 +367,11 @@ export function setFestivalDice(fId, mode, categoryDie) {
 
 // ---------- Festivals ----------
 
-export function setFestivalTheme(fId, themeId) {
-  const f = festival(fId);
-  if (!f) return;
-  f.theme = themeId;
-  save();
-}
-
-export function updateFestivalLook(fId, { name, icon, accent }) {
+export function updateFestivalLook(fId, { name, icon }) {
   const f = festival(fId);
   if (!f || f.builtIn) return;
   if (name && name.trim()) f.name = name.trim();
   if (icon) f.icon = icon;
-  if (accent) f.accent = accent;
   save();
 }
 
@@ -367,15 +387,98 @@ export function startFresh(fId) {
   save();
 }
 
-export function restoreBuiltIn(fId) {
+// Back to the official tables: the latest published version if we have it, otherwise the bundled one.
+export function restoreBuiltIn(fId, pub = null) {
   const f = festival(fId);
+  if (!f) return;
+  if (pub) return applyOfficial(fId, pub, false);
   const def = BUILT_IN_FESTIVALS.find((d) => d.id === fId);
-  if (!f || !def) return;
-  f.mode = 'two';
-  f.categoryDie = def.categoryDie;
-  f.categories = builtInCategories(def);
+  if (!def) return;
+  const fresh = buildBuiltInFestival(def);
+  Object.assign(f, { mode: 'two', categoryDie: def.categoryDie, categories: fresh.categories, sourceRev: fresh.sourceRev, sourceSig: fresh.sourceSig });
+  delete f.announce;
   save();
 }
+
+// ---------- Official festivals (published by admins) ----------
+// pub = { id, name, icon, rev, kind: 'version' | 'fix', message, hidden, tables }
+
+export const isUntouched = (f) => !!f.sourceSig && tablesSig(f) === f.sourceSig;
+
+// Replace a festival's tables with a published version. keepAnnounce: show "X got an update" afterwards.
+export function applyOfficial(fId, pub, announce = false) {
+  const f = state.festivals.find((x) => x.id === fId);
+  if (!f) return;
+  f.name = pub.name;
+  f.icon = pub.icon;
+  f.mode = pub.tables.mode;
+  f.categoryDie = pub.tables.categoryDie;
+  f.categories = categoriesFromTables(pub.tables, f);
+  f.sourceRev = pub.rev;
+  f.sourceSig = tablesSig(f);
+  delete f.dismissedRev;
+  if (announce && pub.message) f.announce = { rev: pub.rev, message: pub.message, applied: true };
+  else delete f.announce;
+  saveState();
+}
+
+// "Keep mine": don't ask about this version again.
+export function keepMine(fId, rev) {
+  const f = state.festivals.find((x) => x.id === fId);
+  if (!f) return;
+  f.dismissedRev = rev;
+  delete f.announce;
+  saveState();
+}
+
+export function clearAnnounce(fId) {
+  const f = state.festivals.find((x) => x.id === fId);
+  if (!f || !f.announce) return;
+  delete f.announce;
+  saveState();
+}
+
+// Called with the published list whenever it's fetched. Returns true if anything changed.
+//  - Untouched festivals update by themselves (a New version also shows its message once).
+//  - Edited ones get a "Review" banner for a New version; a Quick fix waits quietly in Festival settings.
+//  - Official festivals the user doesn't have yet are added with a New badge (unless hidden).
+export function reconcileOfficial(list) {
+  let changed = false;
+  for (const pub of list) {
+    const f = state.festivals.find((x) => x.id === pub.id);
+    if (!f) {
+      if (pub.hidden) continue;
+      const nf = festivalFromOfficial(pub);
+      if (!freshInstall) nf.isNew = true;
+      state.festivals.push(nf);
+      changed = true;
+      continue;
+    }
+    if (!f.builtIn || !(pub.rev > (f.sourceRev || 0))) continue;
+    if (isUntouched(f)) {
+      applyOfficial(f.id, pub, pub.kind === 'version' && !freshInstall);
+      changed = true;
+    } else if (pub.kind === 'version' && pub.rev > (f.dismissedRev || 0) && (!f.announce || f.announce.rev !== pub.rev)) {
+      f.announce = { rev: pub.rev, message: pub.message || '', applied: false };
+      changed = true;
+    }
+  }
+  if (changed) saveState();
+  return changed;
+}
+
+// ---------- Admin drafts ----------
+// The draft lives outside the saved state. While it's open, edits go to it and onChange saves it to the database.
+
+let draft = null;
+
+export function openDraft(fest, onChange) {
+  draft = { fest, onChange };
+}
+export function closeDraft() {
+  draft = null;
+}
+export const currentDraft = () => (draft ? draft.fest : null);
 
 export function deleteFestival(fId) {
   const f = festival(fId);
@@ -385,7 +488,7 @@ export function deleteFestival(fId) {
   save();
 }
 
-// opts: { name, icon, accent, base, mode, categoryDie, movieDie, copyFrom }
+// opts: { name, icon, mode, categoryDie, movieDie, copyFrom }
 export function createFestival(opts) {
   const id = uid();
   let categories;
@@ -416,8 +519,6 @@ export function createFestival(opts) {
     name: opts.name.trim(),
     builtIn: false,
     icon: opts.icon,
-    accent: opts.accent,
-    theme: opts.base === 'light' ? 'custom-light' : 'custom-dark',
     mode: opts.mode,
     categoryDie: opts.mode === 'one' ? null : opts.categoryDie,
     freshSince: null,

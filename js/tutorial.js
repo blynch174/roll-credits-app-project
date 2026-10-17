@@ -30,7 +30,7 @@ const STEPS = [
   {
     icon: LIST,
     title: 'Make it yours',
-    text: "In that same menu, tap <b>Edit</b> next to a festival. You can swap any movie for one you'd rather watch (start typing and it'll suggest titles), and change its dice and theme.",
+    text: "In that same menu, tap <b>Edit</b> next to a festival. You can swap any movie for one you'd rather watch (start typing and it'll suggest titles), and change its dice. Colors for the whole app are in <b>Settings → Themes</b>.",
   },
   {
     icon: TICKET,

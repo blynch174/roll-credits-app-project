@@ -1,13 +1,17 @@
 // EDIT FESTIVAL screen: everything about one festival in one place.
-// Two parts: Tables (its categories and movies) and Festival settings (dice, theme, look, start fresh, restore/delete).
+// Two parts: Tables (its categories and movies) and Festival settings (dice, look, start fresh, restore/delete).
 // Opened from the festival menu (tap the festival name at the top → Edit).
+// Admins also use it for drafts of official festivals (Admin tools → Official festivals); then the settings
+// tab shows Publish / Hide / Discard instead.
 
 import * as store from '../store.js';
-import { SWATCHES, RATING_ICONS, DIE_OPTIONS, dieName } from '../defaults.js';
-import { themesFor, currentTheme, themeStyle, applyTheme } from '../themes.js';
+import { RATING_ICONS, DIE_OPTIONS, dieName } from '../defaults.js';
 import { iconSVG } from '../icons.js';
+import * as official from '../official.js';
 import { $, $$, esc, toast, nav, openSheet, closeSheet, confirmSheet, syncSeg, dieChips, wireChips } from '../ui.js';
 import { renderTables } from './tables.js';
+import { reviewSheet } from './updates.js';
+import { draftSettingsHTML, wireDraftSettings, closeDraftEditor } from './admin-official.js';
 
 let part = 'tables'; // 'tables' | 'settings'
 
@@ -19,8 +23,10 @@ const diceSummary = (f) =>
 export function renderEditor(opts = {}) {
   if (opts.part) part = opts.part;
   if (opts.cat) part = 'tables';
-  const f = store.activeFestival();
-  $('#edit-title').innerHTML = `<span class="fest-icon small">${iconSVG(f.icon)}</span>Edit ${esc(f.name)}`;
+  const f = store.editFestival();
+  $('#edit-title').innerHTML = f.draftInfo
+    ? `<span class="fest-icon small">${iconSVG(f.icon)}</span>${esc(f.name)}<span class="draft-pill">Official draft</span>`
+    : `<span class="fest-icon small">${iconSVG(f.icon)}</span>Edit ${esc(f.name)}`;
   syncSeg($('#edit-tab'), part);
   $('#edit-tables').hidden = part !== 'tables';
   $('#edit-settings').hidden = part !== 'settings';
@@ -29,31 +35,31 @@ export function renderEditor(opts = {}) {
 }
 
 function renderFestivalSettings() {
-  const f = store.activeFestival();
-  $('#fest-card').innerHTML = `
+  const f = store.editFestival();
+  const head = `
     <div class="fest-head">
       <span class="fest-icon">${iconSVG(f.icon)}</span>
-      <div><p class="fest-name">${esc(f.name)}</p><p class="fest-sub">${diceSummary(f)}${f.builtIn ? ' · Built-in' : ''}</p></div>
-    </div>
-    ${f.builtIn ? '' : `<button type="button" class="row-btn" id="btn-look"><span>Name, look &amp; icon</span><small>Rename it, change its accent color or rating icon</small></button>`}
+      <div><p class="fest-name">${esc(f.name)}</p><p class="fest-sub">${diceSummary(f)}${f.builtIn ? ' · Official' : ''}</p></div>
+    </div>`;
+  if (f.draftInfo) {
+    $('#fest-card').innerHTML = head + draftSettingsHTML(f);
+    $('#btn-look').addEventListener('click', () => lookSheet(f.id));
+    $('#btn-dice').addEventListener('click', () => diceSheet(f.id));
+    wireDraftSettings(f);
+    return;
+  }
+  const upd = official.updateFor(f);
+  $('#fest-card').innerHTML = `${head}
+    ${upd ? `<button type="button" class="row-btn accent" id="btn-update"><span>Update available</span><small>${esc(upd.message || (upd.kind === 'fix' ? 'Small fixes to the official tables' : 'A new version of this festival'))}</small></button>` : ''}
+    ${f.builtIn ? '' : `<button type="button" class="row-btn" id="btn-look"><span>Name &amp; rating icon</span><small>Rename it or change its rating icon</small></button>`}
     <button type="button" class="row-btn" id="btn-dice"><span>Festival dice</span><small>One die or two, and how many categories</small></button>
     <button type="button" class="row-btn" id="btn-fresh"><span>Start fresh</span><small>Clears the Seen marks on this festival's tables. History stays.</small></button>
     ${f.builtIn
-      ? `<button type="button" class="row-btn" id="btn-restore"><span>Restore default tables</span><small>Puts the original categories and movies back</small></button>`
+      ? `<button type="button" class="row-btn" id="btn-restore"><span>Restore default tables</span><small>Puts the official categories and movies back</small></button>`
       : `<button type="button" class="row-btn danger" id="btn-delete-fest"><span>Delete festival</span><small>Removes it and its tables. Your watch history stays.</small></button>`}`;
 
-  const cur = currentTheme(f);
-  $('#theme-grid').innerHTML = themesFor(f).map((t) => `
-    <button type="button" class="theme-card ${t.id === cur.id ? 'on' : ''}" data-theme-id="${t.id}" style="${themeStyle(t)}">
-      <span class="tc-swatch"><i></i><i></i><i></i></span>
-      <span class="tc-name">${esc(t.name)}</span>
-      <span class="tc-desc">${esc(t.desc)}</span>
-    </button>`).join('');
-  $$('#theme-grid .theme-card').forEach((b) => b.addEventListener('click', () => {
-    store.setFestivalTheme(f.id, b.dataset.themeId);
-    applyTheme(f);
-    renderFestivalSettings();
-  }));
+  const ub = $('#btn-update');
+  if (ub) ub.addEventListener('click', () => reviewSheet(f.id));
 
   const look = $('#btn-look');
   if (look) look.addEventListener('click', () => lookSheet(f.id));
@@ -67,9 +73,9 @@ function renderFestivalSettings() {
   const restore = $('#btn-restore');
   if (restore) restore.addEventListener('click', () => confirmSheet(
     'Restore default tables?',
-    `${f.name}'s categories and movies go back to the originals, and its dice go back to a d6 and d12. Any movies you swapped in are removed. Your watch history isn't touched.`,
+    `${f.name}'s categories, movies, and dice go back to the latest official version. Any movies you swapped in are removed. Your watch history isn't touched.`,
     'Restore',
-    () => { store.restoreBuiltIn(f.id); nav.render(); toast('Default tables restored.'); },
+    () => { store.restoreBuiltIn(f.id, official.get(f.id)); nav.render(); toast('Default tables restored.'); },
     true
   ));
   const del = $('#btn-delete-fest');
@@ -79,7 +85,6 @@ function renderFestivalSettings() {
     'Delete festival',
     () => {
       store.deleteFestival(f.id);
-      applyTheme(store.activeFestival());
       nav.go('home');
       toast('Festival deleted.');
     },
@@ -89,16 +94,11 @@ function renderFestivalSettings() {
 
 function lookSheet(fId) {
   const f = store.festival(fId);
-  let accent = f.accent;
   let icon = f.icon;
   const sheet = openSheet({
-    title: 'Name, look & icon',
+    title: 'Name & rating icon',
     body: `
       <label class="field"><span class="label">Name</span><input id="l-name" type="text" maxlength="40" value="${esc(f.name)}"></label>
-      <div class="field"><span class="label">Accent color</span>
-        <div class="swatches" id="l-accent">${SWATCHES.map((s) => `<button type="button" class="swatch ${s.id === accent ? 'on' : ''}" data-c="${s.id}" style="--sw:${s.hex}" aria-label="${s.id}"></button>`).join('')}</div>
-        <p class="hint">Dark or light is picked under Theme.</p>
-      </div>
       <div class="field"><span class="label">Rating icon</span>
         <div class="icon-grid" id="l-icon">${RATING_ICONS.map((n) => `<button type="button" class="icon-pick ${n === icon ? 'on' : ''}" data-i="${n}" aria-label="${n}">${iconSVG(n)}</button>`).join('')}</div>
         <p class="hint">Movies you already rated keep the icon they were rated with.</p>
@@ -109,18 +109,12 @@ function lookSheet(fId) {
         label: 'Save', kind: 'primary', onClick: (s) => {
           const name = $('#l-name', s).value.trim();
           if (!name) return toast('Give it a name.');
-          store.updateFestivalLook(fId, { name, icon, accent });
-          applyTheme(f);
+          store.updateFestivalLook(fId, { name, icon });
           closeSheet();
           nav.render();
         },
       },
     ],
-  });
-  $('#l-accent', sheet).addEventListener('click', (e) => {
-    const b = e.target.closest('.swatch'); if (!b) return;
-    accent = b.dataset.c;
-    $$('#l-accent .swatch', sheet).forEach((x) => x.classList.toggle('on', x === b));
   });
   $('#l-icon', sheet).addEventListener('click', (e) => {
     const b = e.target.closest('.icon-pick'); if (!b) return;
@@ -193,5 +187,5 @@ export function initEditor() {
     renderEditor();
     window.scrollTo(0, 0);
   });
-  $('#edit-done').addEventListener('click', () => nav.back());
+  $('#edit-done').addEventListener('click', () => (store.currentDraft() ? closeDraftEditor() : nav.back()));
 }

@@ -1,7 +1,7 @@
 # Roll Credits
 
 Roll dice to pick tonight's movie. Each **film festival** (Halloween, Christmas, Awards Season, Kids & Family, Bucket List Cinema, or one you make)
-has its own tables, dice, theme, and rating icon. Plain HTML, CSS, and JavaScript. No frameworks, no build step.
+has its own tables, dice, and rating icon. Colors are one app-wide theme (Settings → Themes). Plain HTML, CSS, and JavaScript. No frameworks, no build step.
 
 ## Run it on your computer
 
@@ -20,7 +20,8 @@ Then open http://localhost:8000. (The JS loads as modules, which don't run from 
 | `js/app.js` | Boot, tab navigation, festival switcher, background loading of the catalog and 3D dice |
 | `js/store.js` | Saved data and every change to it, plus upgrading older saved data |
 | `js/defaults.js` | Built-in festivals and their starter movies, dice options, category colors, rating icon list |
-| `js/themes.js` | Theme sets for each built-in festival, and the generator for custom festivals |
+| `js/themes.js` | The theme library (Classic, Seasonal, Common, Developer picks). One theme for the whole app |
+| `js/official.js` | Official festivals: fetches the published versions, caches them, works out what changed |
 | `js/icons.js` | SVG drawings for rating icons and flat dice |
 | `js/dice.js` | Fair random numbers, the flat dice tumble, and the CSS 3D coin flip |
 | `js/dice3d.js` | 3D dice: loads dice-box only when 3D is on, falls back to flat dice if it can't start |
@@ -31,7 +32,7 @@ Then open http://localhost:8000. (The JS loads as modules, which don't run from 
 | `js/sync.js` | Keeps the device's data and the account's copy in step |
 | `js/tutorial.js` | First-run tour (shows on a fresh install; Settings → Show the tutorial replays it) |
 | `js/ui.js` | Shared helpers: sheets (with swipe-down to close), toasts, the type-DELETE confirm, dice and coin markup |
-| `js/screens/*.js` | One file per screen. `editor.js` is Edit festival (tables + festival settings), `tables.js` draws the tables inside it, `popcorn.js` is the Popcorn tab, `account.js` is the Account section, sign-in sheets, and Admin tools |
+| `js/screens/*.js` | One file per screen. `editor.js` is Edit festival (tables + festival settings), `tables.js` draws the tables inside it, `popcorn.js` is the Popcorn tab, `account.js` is the Account section, sign-in sheets, and Admin tools, `admin-official.js` is editing and publishing official festivals, `updates.js` is the update banner and Review sheet, `theme-picker.js` is Settings → Themes |
 | `data/` | The movie catalog. `all_movies.json` is the master copy the app reads; the collection files list each built-in festival's movies |
 | `vendor/firebase/` | Firebase JS SDK 12.19.0 (Apache 2.0): app, auth, firestore-lite. Only downloaded when accounts are set up |
 | `firestore.rules` | Database security rules. Paste into the Firebase console (Firestore → Rules) after any change |
@@ -42,7 +43,7 @@ Then open http://localhost:8000. (The JS loads as modules, which don't run from 
 
 1. Make your changes.
 2. If you added a new file under `js/`, add it to the `FILES` list in `sw.js`.
-3. Bump `CACHE_VERSION` in `sw.js` (`v10` → `v11`).
+3. Bump `CACHE_VERSION` in `sw.js` (`v11` → `v12`).
 4. `git add .`, `git commit -m "what changed"`, `git push`.
 
 `data/` and `vendor/` are deliberately not in `FILES`. They're too big to download at install, and get saved for
@@ -56,8 +57,9 @@ catalog movies belong to each built-in festival (`bucket_list_collection.json` a
 
 ## Adding a built-in festival
 
-Add an entry to `BUILT_IN_FESTIVALS` in `js/defaults.js`, and a theme set in `js/themes.js` under the same
-`themeSet` name. Existing users get it automatically next time they open the app. A category can have its own
+Easiest: Settings → Admin tools → **+ New official festival**, fill it in, Publish. Everyone gets it.
+To also ship it inside the app (offline / first launch), add it to `BUILT_IN_FESTIVALS` in `js/defaults.js`;
+it then shows up under Admin tools as not published yet. Existing users get code-added festivals automatically. A category can have its own
 movie die as a 4th item (`[name, color, movies, 8]`); otherwise it uses the festival's `movieDie`. To give it a
 movie list for search and sequels, add its collection file to `COLLECTIONS` in `js/catalog.js`.
 
@@ -76,6 +78,31 @@ Set up once with `FIREBASE_SETUP.md`. Signing in is optional; without it nothing
 - Testing locally without a real project: run the Firebase Auth and Firestore emulators and set
   `localStorage['roll-credits:emulator'] = '1'`.
 
+## Official festivals (admins)
+
+The built-in festivals are "official": admins edit and publish them from Settings → Admin tools → Official festivals.
+
+- **First time:** tap *Publish the built-in festivals*. That uploads what's in `defaults.js` as revision 1, so
+  nothing changes for anyone.
+- **Editing** opens a draft in the normal Edit screen. Drafts save to the database (`drafts/{id}`) as you go and
+  show who edited last. Nobody else sees them. Leaving the screen saves and closes the draft.
+- **Publish** has two kinds:
+  - *New version*: announced with your message. People who never changed that festival get it right away plus a
+    "just got an update" banner. People who did get a **Review** banner: Update or Keep mine.
+  - *Quick fix*: no announcement. Untouched copies update quietly; edited ones show *Update available* in
+    Edit → Festival settings.
+- **Update** replaces the festival's tables and dice. Movies that stay keep their slot (notes, sequel progress),
+  so Seen marks and history are untouched. Brand-new installs take the latest version without any banner.
+- **New official festivals** appear in everyone's list with a *New* badge. **Hide** stops new users getting one;
+  people who already have it keep it. **Restore default tables** goes to the latest published version.
+- Each copy stores `sourceRev` (the revision it came from) and `sourceSig` (a fingerprint of its tables then),
+  which is how the app tells untouched from edited. The bundled `defaults.js` copy is revision 1.
+
+## Themes
+
+One theme for the whole app (`settings.theme`), picked in Settings → Themes. Add or move themes in the
+`THEME_GROUPS` list in `js/themes.js`. Never change a theme's id; saved choices point at it.
+
 ## Saved data (version 3)
 
 Stored in localStorage under `roll-credits:data` (sync bookkeeping is in `roll-credits:sync`).
@@ -84,10 +111,10 @@ Settings → Export backup saves a copy.
 ```
 {
   version: 3,
-  settings: { diceMode, diceStyle, slotMode, sequels },
+  settings: { diceMode, diceStyle, slotMode, sequels, theme },
   activeFestival: "halloween",
-  festivals: [ { id, name, builtIn, icon, themeSet | accent, theme, mode: "one"|"two",
-                 categoryDie, freshSince,
+  festivals: [ { id, name, builtIn, icon, mode: "one"|"two", categoryDie, freshSince,
+                 sourceRev, sourceSig, dismissedRev, announce, isNew,   (official festivals only)
                  categories: [ { id, name, color, die, slots: [movie or null] } ] } ],
   history: [ { festivalId, festivalName, icon, categoryId, categoryName, movieId, catalogId,
                title, year, date, rating, notes } ]
@@ -119,7 +146,7 @@ Settings → Export backup saves a copy.
 - **Log a movie** (Watched tab): add something watched outside the app. If it's on that festival's tables it's
   linked to that slot, like a normal watch.
 - **Editing a festival:** tap the festival name at the top → **Edit**. Tables and everything specific to that festival
-  (dice, theme, look, Start fresh, restore/delete) live there. Settings only holds app-wide options.
+  (dice, look, Start fresh, restore/delete) live there. Settings only holds app-wide options, including the theme.
 - **Popcorn Pick** (Popcorn tab): one random movie from the whole catalog, optionally limited to a mood. Every movie
   has an equal chance and watched ones stay in the mix. Watched picks go under their own "Popcorn Pick" label
   (`festivalId: "popcorn"`) and are rated with popcorn.

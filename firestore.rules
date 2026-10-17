@@ -8,6 +8,7 @@ rules_version = '2';
 //     and only if they're an admin, or on the invite list with a confirmed email.
 //   - Only admins can see or change the invite list.
 //   - Nobody can add admins from the app. Admins are added by hand in the Firebase console.
+//   - Anyone can read published official festivals; only admins can publish them or see drafts.
 //   - Everything else is closed.
 
 service cloud.firestore {
@@ -52,6 +53,18 @@ service cloud.firestore {
     match /admins/{uid} {
       allow get: if signedIn() && request.auth.uid == uid;
       allow list, write: if false;
+    }
+
+    // Published official festivals (Halloween, Christmas, …). Anyone can read them, even without an account,
+    // so every copy of the app gets updates. Only admins publish.
+    match /official/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Admins' unpublished edits to official festivals.
+    match /drafts/{id} {
+      allow read, write: if isAdmin();
     }
   }
 }
