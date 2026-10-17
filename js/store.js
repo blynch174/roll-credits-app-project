@@ -11,6 +11,8 @@ const CURRENT_VERSION = 3;
 
 let state = null;
 let storageWorks = true;
+let booted = false;
+const saveListeners = []; // sync.js listens here to back changes up to the account
 
 // ---------- Load / save ----------
 
@@ -24,16 +26,45 @@ export function load() {
   }
   state = saved && looksValid(saved) ? migrate(saved) : buildDefaultState();
   save();
+  booted = true;
   return state;
 }
 
-export function save() {
+// silent: write to the device without telling listeners (used when the change came from the account).
+export function save(silent = false) {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     storageWorks = true;
   } catch (e) {
     storageWorks = false;
   }
+  if (booted && !silent) saveListeners.forEach((cb) => cb());
+}
+
+export function onSave(cb) {
+  saveListeners.push(cb);
+}
+
+// Swaps in data that came from the account. Returns false if it doesn't look like Roll Credits data.
+export function replaceState(d) {
+  if (!looksValid(d)) return false;
+  state = migrate(d);
+  save(true);
+  return true;
+}
+
+// True when nothing on this device is worth keeping: no history, no custom festivals, built-in tables untouched.
+export function isPristine() {
+  if (state.history.length) return false;
+  if (state.festivals.some((f) => !f.builtIn)) return false;
+  for (const f of state.festivals) {
+    const def = BUILT_IN_FESTIVALS.find((d) => d.id === f.id);
+    if (!def) return false;
+    const fresh = builtInCategories(def);
+    const sig = (cats) => JSON.stringify(cats.map((c) => [c.name, c.die, c.slots.map((m) => (m ? m.title + '|' + m.year : ''))]));
+    if (sig(f.categories) !== sig(fresh)) return false;
+  }
+  return true;
 }
 
 export const canSave = () => storageWorks;

@@ -4,6 +4,8 @@
 import * as store from '../store.js';
 import { applyTheme } from '../themes.js';
 import * as dice3d from '../dice3d.js';
+import * as sync from '../sync.js';
+import { renderAccountSection } from './account.js';
 import {
   $, esc, toast, nav, openSheet, closeSheet, confirmSheet, typedConfirm, syncSeg,
 } from '../ui.js';
@@ -26,6 +28,7 @@ export function renderSettings() {
     ? 'Rolling a movie you already watched just offers a reroll.'
     : 'Rolling a movie you already watched here offers the next unseen movie in its series, like Scream → Scream 2. Start fresh puts the originals back.';
   $('#storage-warning').hidden = store.canSave();
+  renderAccountSection();
 
 }
 
@@ -128,7 +131,9 @@ export function initSettings() {
   $('#btn-reset').addEventListener('click', () => {
     confirmSheet(
       'Reset everything?',
-      'All festivals, tables, watch history, and settings go back to a fresh install.',
+      sync.isSignedIn()
+        ? "All festivals, tables, watch history, and settings go back to a fresh install, here and in your account's backup."
+        : 'All festivals, tables, watch history, and settings go back to a fresh install.',
       'Continue',
       () => typedConfirm('Really reset everything?', "This can't be undone. Export a backup first if you want to keep anything.", () => {
         store.resetAll();

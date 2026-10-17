@@ -14,8 +14,10 @@ import { renderEditor, initEditor } from './screens/editor.js';
 import { renderPopcorn } from './screens/popcorn.js';
 import { renderSettings, initSettings } from './screens/settings.js';
 import { renderCreator, openCreator } from './screens/creator.js';
+import { renderAccountSection, renderAdmin, initAccount, chooseSideSheet } from './screens/account.js';
+import * as sync from './sync.js';
 
-const SCREENS = ['home', 'watched', 'popcorn', 'settings', 'creator', 'edit'];
+const SCREENS = ['home', 'watched', 'popcorn', 'settings', 'creator', 'edit', 'admin'];
 const TABS = ['home', 'watched', 'popcorn', 'settings'];
 let screen = 'home';
 let lastTab = 'home'; // where "Done" / "Cancel" goes back to
@@ -45,6 +47,7 @@ function render() {
   else if (screen === 'edit') renderEditor(screenOpts);
   else if (screen === 'settings') renderSettings();
   else if (screen === 'creator') renderCreator();
+  else if (screen === 'admin') renderAdmin();
   screenOpts = {};
 }
 
@@ -106,6 +109,7 @@ initRoll();
 initWatched();
 initSettings();
 initEditor();
+initAccount();
 initTutorial();
 $('#btn-tutorial').addEventListener('click', () => startTutorial(() => go('home')));
 go('home');
@@ -114,6 +118,16 @@ go('home');
 if (!store.getState().settings.tutorialSeen) startTutorial();
 
 // Load the movie catalog in the background, then link any movies typed before it existed.
+// Accounts (only if js/firebase-config.js is filled in). Data from the account replaces this device's copy.
+sync.start({
+  onRemoteApplied: () => {
+    applyTheme(store.activeFestival());
+    if (screen === 'home') resetRoll();
+    render();
+  },
+  chooseSide: chooseSideSheet,
+});
+
 catalog.load().then(() => {
   if (!catalog.isReady()) return;
   store.linkCatalog(catalog.match);

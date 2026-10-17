@@ -26,10 +26,15 @@ Then open http://localhost:8000. (The JS loads as modules, which don't run from 
 | `js/dice3d.js` | 3D dice: loads dice-box only when 3D is on, falls back to flat dice if it can't start |
 | `js/catalog.js` | Loads `data/all_movies.json`: title search, title matching, franchise lookups |
 | `js/autofind.js` | Catalog suggestions under a title box (slot editor and Log a movie) |
+| `js/firebase-config.js` | Firebase project settings. `null` = no accounts (everything stays on the device). See `FIREBASE_SETUP.md` |
+| `js/cloud.js` | Firebase sign-in and database calls |
+| `js/sync.js` | Keeps the device's data and the account's copy in step |
 | `js/tutorial.js` | First-run tour (shows on a fresh install; Settings → Show the tutorial replays it) |
 | `js/ui.js` | Shared helpers: sheets (with swipe-down to close), toasts, the type-DELETE confirm, dice and coin markup |
-| `js/screens/*.js` | One file per screen. `editor.js` is Edit festival (tables + festival settings), `tables.js` draws the tables inside it, `popcorn.js` is the Popcorn tab |
+| `js/screens/*.js` | One file per screen. `editor.js` is Edit festival (tables + festival settings), `tables.js` draws the tables inside it, `popcorn.js` is the Popcorn tab, `account.js` is the Account section, sign-in sheets, and Admin tools |
 | `data/` | The movie catalog. `all_movies.json` is the master copy the app reads; the collection files list each built-in festival's movies |
+| `vendor/firebase/` | Firebase JS SDK 12.19.0 (Apache 2.0): app, auth, firestore-lite. Only downloaded when accounts are set up |
+| `firestore.rules` | Database security rules. Paste into the Firebase console (Firestore → Rules) after any change |
 | `vendor/dice-box/` | [dice-box](https://github.com/3d-dice/dice-box) v1.1.4 (MIT), copied unmodified from npm. About 3 MB, only downloaded when 3D dice are used |
 | `sw.js` | Offline support |
 
@@ -37,7 +42,7 @@ Then open http://localhost:8000. (The JS loads as modules, which don't run from 
 
 1. Make your changes.
 2. If you added a new file under `js/`, add it to the `FILES` list in `sw.js`.
-3. Bump `CACHE_VERSION` in `sw.js` (`v9` → `v10`).
+3. Bump `CACHE_VERSION` in `sw.js` (`v10` → `v11`).
 4. `git add .`, `git commit -m "what changed"`, `git push`.
 
 `data/` and `vendor/` are deliberately not in `FILES`. They're too big to download at install, and get saved for
@@ -56,9 +61,25 @@ Add an entry to `BUILT_IN_FESTIVALS` in `js/defaults.js`, and a theme set in `js
 movie die as a 4th item (`[name, color, movies, 8]`); otherwise it uses the festival's `movieDie`. To give it a
 movie list for search and sequels, add its collection file to `COLLECTIONS` in `js/catalog.js`.
 
+## Accounts and sync (optional)
+
+Set up once with `FIREBASE_SETUP.md`. Signing in is optional; without it nothing changes.
+
+- The device copy (localStorage) is still what the app reads and writes, so it works offline. When signed in,
+  each change is also saved to `users/{uid}` in Firestore about 1.5 seconds later.
+- Opening the app, or switching back to it, pulls the account's copy if another device saved something newer.
+  If both changed, the newer save wins.
+- Signing in on a device that has its own data, with an account that also has data, asks which to keep.
+  A device with untouched defaults just takes the account's data.
+- Invite-only: `firestore.rules` only lets admins, or people on the invite list with a confirmed email, read or write
+  their data. Admins manage the invite list in Settings → Admin tools. Admins themselves are added in the console.
+- Testing locally without a real project: run the Firebase Auth and Firestore emulators and set
+  `localStorage['roll-credits:emulator'] = '1'`.
+
 ## Saved data (version 3)
 
-Stored in localStorage under `roll-credits:data`, on this device only. Settings → Export backup saves a copy.
+Stored in localStorage under `roll-credits:data` (sync bookkeeping is in `roll-credits:sync`).
+Settings → Export backup saves a copy.
 
 ```
 {

@@ -3,9 +3,10 @@
 // IMPORTANT: every time you push changes to GitHub, bump CACHE_VERSION
 // (v1 -> v2 -> v3 ...). Otherwise phones keep showing the old version.
 // The data/ and vendor/ files are not listed here on purpose (too big to download at install).
+// vendor/firebase is only downloaded when accounts are set up (js/firebase-config.js).
 // They get saved for offline use the first time the app loads them.
 
-const CACHE_VERSION = 'v9';
+const CACHE_VERSION = 'v10';
 const CACHE_NAME = 'roll-credits-' + CACHE_VERSION;
 
 const FILES = [
@@ -23,6 +24,9 @@ const FILES = [
   './js/autofind.js',
   './js/dice3d.js',
   './js/tutorial.js',
+  './js/firebase-config.js',
+  './js/cloud.js',
+  './js/sync.js',
   './js/screens/roll.js',
   './js/screens/watched.js',
   './js/screens/tables.js',
@@ -30,6 +34,7 @@ const FILES = [
   './js/screens/settings.js',
   './js/screens/creator.js',
   './js/screens/popcorn.js',
+  './js/screens/account.js',
   './manifest.webmanifest',
   './icons/icon-192.png',
   './icons/icon-512.png',
