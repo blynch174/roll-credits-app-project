@@ -4,9 +4,7 @@ rules_version = '2';
 // Firebase console → Firestore Database → Rules, then click Publish.
 //
 // Who can do what:
-//   - Each person can read and write only their own saved data (users/{their uid}),
-//     and only if they're an admin, or on the invite list with a confirmed email.
-//   - Only admins can see or change the invite list.
+//   - Anyone with an account can read and write only their own saved data (users/{their uid}).
 //   - Nobody can add admins from the app. Admins are added by hand in the Firebase console.
 //   - Anyone can read published official festivals; only admins can publish them or see drafts.
 //   - Everything else is closed.
@@ -22,31 +20,14 @@ service cloud.firestore {
       return signedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
     }
 
-    function myEmail() {
-      return request.auth.token.email.lower();
-    }
-
-    function isInvited() {
-      return signedIn()
-        && request.auth.token.email_verified == true
-        && exists(/databases/$(database)/documents/invites/$(myEmail()));
-    }
-
     // One document per person: the app's saved data as text, plus when it was saved.
     match /users/{uid} {
-      allow read, delete: if signedIn() && request.auth.uid == uid && (isAdmin() || isInvited());
-      allow create, update: if signedIn() && request.auth.uid == uid && (isAdmin() || isInvited())
+      allow read, delete: if signedIn() && request.auth.uid == uid;
+      allow create, update: if signedIn() && request.auth.uid == uid
         && request.resource.data.keys().hasOnly(['state', 'clientUpdatedAt', 'updatedAt', 'email', 'device', 'appVersion'])
         && request.resource.data.state is string
         && request.resource.data.state.size() < 900000
         && request.resource.data.clientUpdatedAt is number;
-    }
-
-    // Invite list. Document id = lowercase email. A person may check their own invite (so the app can say
-    // "not on the list yet"); only admins can list, add, or remove.
-    match /invites/{email} {
-      allow get: if signedIn() && (isAdmin() || myEmail() == email);
-      allow list, create, update, delete: if isAdmin();
     }
 
     // Admins. Document id = the admin's user ID. A person may check whether they're an admin. No app writes.

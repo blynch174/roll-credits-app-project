@@ -76,8 +76,8 @@ Set up once with `FIREBASE_SETUP.md`. Signing in is optional; without it nothing
   If both changed, the newer save wins.
 - Signing in on a device that has its own data, with an account that also has data, asks which to keep.
   A device with untouched defaults just takes the account's data.
-- Invite-only: `firestore.rules` only lets admins, or people on the invite list with a confirmed email, read or write
-  their data. Admins manage the invite list in Settings → Admin tools. Admins themselves are added in the console.
+- Open sign-up: anyone who creates an account starts backing up right away. `firestore.rules` only lets each
+  person read and write their own data. Admins are added by hand in the console.
 - Testing locally without a real project: run the Firebase Auth and Firestore emulators and set
   `localStorage['roll-credits:emulator'] = '1'`.
 

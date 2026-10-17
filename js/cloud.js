@@ -3,8 +3,7 @@
 //
 // Database layout (Firestore):
 //   users/{uid}      { state: "<the app's saved data as JSON>", clientUpdatedAt, updatedAt, email, device, appVersion }
-//   invites/{email}  { addedBy, addedAt }      email is lowercase. Who's allowed to sync.
-//   admins/{uid}     { email }                 Added by hand in the Firebase console. Can manage invites.
+//   admins/{uid}     { email }                 Added by hand in the Firebase console.
 //   official/{id}    { name, icon, rev, kind, message, hidden, order, tables: "<JSON>", publishedAt, publishedBy }
 //                    Published official festivals. Anyone can read (no account needed). Admins write.
 //   drafts/{id}      { name, icon, tables: "<JSON>", baseRev, updatedAt, updatedBy }   Admins only.
@@ -60,7 +59,6 @@ export function onUser(cb) {
 
 export async function signUp(email, password) {
   const cred = await fb.A.createUserWithEmailAndPassword(fb.auth, email.trim(), password);
-  await fb.A.sendEmailVerification(cred.user).catch(() => {});
   return cred.user;
 }
 
@@ -82,18 +80,11 @@ export async function refreshUser() {
   return fb.auth.currentUser;
 }
 
-// What this account is allowed to do.
+// What this account is allowed to do. Any signed-in account saves its own data; admins can do more.
 export async function access(user) {
   const { F, db } = fb;
-  const [adminDoc, inviteDoc] = await Promise.all([
-    F.getDoc(F.doc(db, 'admins', user.uid)).catch(() => null),
-    F.getDoc(F.doc(db, 'invites', emailKey(user.email))).catch(() => null),
-  ]);
-  return {
-    admin: !!(adminDoc && adminDoc.exists()),
-    invited: !!(inviteDoc && inviteDoc.exists()),
-    verified: !!user.emailVerified,
-  };
+  const adminDoc = await F.getDoc(F.doc(db, 'admins', user.uid)).catch(() => null);
+  return { admin: !!(adminDoc && adminDoc.exists()), invited: true, verified: true };
 }
 
 // ---------- This user's saved data ----------
@@ -111,28 +102,6 @@ export async function putUserData(uid, { state, clientUpdatedAt, email, device, 
   await F.setDoc(F.doc(db, 'users', uid), {
     state, clientUpdatedAt, email, device, appVersion, updatedAt: F.serverTimestamp(),
   });
-}
-
-// ---------- Admin: invite list ----------
-
-export async function listInvites() {
-  const { F, db } = fb;
-  const snap = await F.getDocs(F.collection(db, 'invites'));
-  return snap.docs
-    .map((d) => ({ email: d.id, ...d.data() }))
-    .sort((a, b) => a.email.localeCompare(b.email));
-}
-
-export async function addInvite(email) {
-  const { F, db } = fb;
-  const key = emailKey(email);
-  await F.setDoc(F.doc(db, 'invites', key), { addedBy: fb.auth.currentUser.email, addedAt: Date.now() });
-  return key;
-}
-
-export function removeInvite(email) {
-  const { F, db } = fb;
-  return F.deleteDoc(F.doc(db, 'invites', emailKey(email)));
 }
 
 // ---------- Official festivals ----------

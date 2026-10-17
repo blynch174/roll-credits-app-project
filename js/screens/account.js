@@ -111,7 +111,6 @@ function createSheet(email = '') {
   const sheet = swapSheet({
     title: 'Create an account',
     body: `
-      <p class="sheet-text">Roll Credits is invite-only for now. Use the email you were invited with.</p>
       ${field('a-email', 'Email', 'email', 'username', email)}
       ${field('a-pass', 'Password (8 or more characters)', 'password', 'new-password')}
       ${field('a-pass2', 'Password again', 'password', 'new-password')}
@@ -135,14 +134,8 @@ async function submitCreate(sheet) {
   busy(sheet, 'a-go', true, 'Creating…');
   try {
     await sync.signUp(email, pass);
-    swapSheet({
-      title: 'Check your email',
-      body: `<p class="sheet-text">We sent a link to <b>${esc(email)}</b>. Tap it to confirm your email, then come back and tap <b>I've confirmed it</b>. Check spam if it's not there in a minute.</p>`,
-      actions: [
-        { label: 'Later', kind: 'ghost', onClick: closeSheet },
-        { label: "I've Confirmed it", kind: 'primary', id: 'a-ver', onClick: (s) => checkVerified(s) },
-      ],
-    });
+    closeSheet();
+    toast('Account created. Your data is backing up.');
   } catch (e) {
     busy(sheet, 'a-go', false);
     showError(sheet, cloud.errorText(e));
@@ -281,8 +274,6 @@ export function chooseSideSheet(remote, done) {
 
 // ---------- Admin screen ----------
 
-let invites = null; // null = not loaded yet
-
 export async function renderAdmin() {
   const root = $('#admin');
   if (!sync.isAdmin()) {
@@ -290,71 +281,12 @@ export async function renderAdmin() {
     return;
   }
   root.innerHTML = `
-    <h2 class="section-title first">Invite list</h2>
-    <form class="invite-add" id="invite-form" autocomplete="off">
-      <input id="invite-email" type="email" placeholder="friend@example.com" autocapitalize="off" spellcheck="false" aria-label="Email to invite">
-      <button type="submit" class="btn primary small" id="invite-go">Add</button>
-    </form>
-    <ul class="invite-list" id="invite-list"><li class="hint">Loading…</li></ul>
-
-    <h2 class="section-title">Official festivals</h2>
+    <h2 class="section-title first">Official Festivals</h2>
     <div id="official-admin"></div>
 
     <h2 class="section-title">Admins</h2>
     <div class="card admin-soon"><p class="sheet-text">Admins are added in the Firebase console (see FIREBASE_SETUP.md, step 6).</p></div>`;
-  $('#invite-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const input = $('#invite-email');
-    const email = input.value.trim().toLowerCase();
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return toast("That doesn't look like an email address.");
-    if (invites && invites.some((i) => i.email === email)) return toast('Already on the list.');
-    const btn = $('#invite-go');
-    btn.disabled = true;
-    try {
-      await cloud.addInvite(email);
-      input.value = '';
-      toast(`Added ${email}.`);
-      await loadInvites();
-    } catch (err) {
-      toast(cloud.errorText(err));
-    }
-    btn.disabled = false;
-  });
   renderOfficialSection();
-  await loadInvites();
-}
-
-async function loadInvites() {
-  const list = $('#invite-list');
-  if (!list) return;
-  try {
-    invites = await cloud.listInvites();
-  } catch (e) {
-    list.innerHTML = `<li class="hint">${esc(cloud.errorText(e))}</li>`;
-    return;
-  }
-  if (!invites.length) {
-    list.innerHTML = '<li class="hint">Nobody yet. Add an email above.</li>';
-    return;
-  }
-  list.innerHTML = invites.map((i) => `
-    <li class="invite-row">
-      <span class="invite-email">${esc(i.email)}</span>
-      <small>${i.addedAt ? 'Added ' + esc(new Date(i.addedAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })) : ''}</small>
-      <button type="button" class="btn ghost small" data-remove="${esc(i.email)}">Remove</button>
-    </li>`).join('');
-  $$('[data-remove]', list).forEach((b) => b.addEventListener('click', () => {
-    const email = b.dataset.remove;
-    confirmSheet(`Remove ${email}?`, 'They can still open the app, but their data stops backing up. What’s already backed up stays.', 'Remove', async () => {
-      try {
-        await cloud.removeInvite(email);
-        toast(`Removed ${email}.`);
-        loadInvites();
-      } catch (e) {
-        toast(cloud.errorText(e));
-      }
-    }, true);
-  }));
 }
 
 export function initAccount() {

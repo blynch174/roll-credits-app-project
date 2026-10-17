@@ -63,24 +63,20 @@ by itself.
 
 1. Push the update (`git add .`, `git commit`, `git push`), wait a minute, and open the app.
 2. **Settings → Account → Sign in or create an account → New here? Create an account.** Use your real email.
-3. You'll get a confirmation email (check spam). The app will say **Not on the invite list yet**. That's expected.
-4. Tap your email in Settings. At the bottom it shows **User ID** → **Copy**.
-5. Back in Firebase: **Firestore Database → Data → Start collection**.
+3. Tap your email in Settings. At the bottom it shows **User ID** → **Copy**.
+4. Back in Firebase: **Firestore Database → Data → Start collection**.
    - Collection ID: `admins` → **Next**
    - Document ID: paste your User ID
    - Add a field: name `email`, type `string`, value your email
    - **Save**
-6. In the app, tap your email → **Check again**. You should see **Backed up just now**, and an
-   **Admin tools** row under it.
+5. Close and reopen the app. An **Admin Tools** row shows up under your account.
 
 ## 7. Add Kyle (and testers)
 
-- **Testers:** Settings → Admin tools → type their email → **Add**. Tell them to open the app, go to
-  Settings → Account → create an account with that same email, and tap the link in the confirmation email.
-- **Kyle as an admin:** add him to the invite list first so he can sign up. Then have him copy his User ID
-  (Settings → tap his email) and add a second document under `admins` the same way as step 6.
-
-Removing someone from the invite list stops their backups. Their app keeps working on their device.
+- **Testers:** just send them the link. Anyone can create an account (Settings → Account) and their data starts
+  backing up right away.
+- **Kyle as an admin:** once he has an account, have him copy his User ID (Settings → tap his email) and add a
+  second document under `admins` the same way as step 6.
 
 ## 8. Publish the official festivals (once)
 
@@ -101,8 +97,8 @@ updates to everyone.
 | What you see | Usually means |
 |---|---|
 | No Account section in Settings | `js/firebase-config.js` is still `null`, or the phone has the old version cached. Pull down to refresh, or close and reopen. |
-| "Not on the invite list yet" | The email on the invite list doesn't match the one they signed up with, or (for you) the `admins` document ID isn't exactly your User ID. |
-| "Verify your email…" won't go away | They need to tap the link in the email, then tap **I've confirmed it**. The link sometimes lands in spam. |
+| No Admin Tools row | The `admins` document ID isn't exactly your User ID. |
+| "Your account doesn't have access to that" | The rules in the console are out of date. Paste `firestore.rules` and publish (step 5). |
 | "Couldn't back up" | Most often the rules weren't published (step 5). |
 | Sign-up says "Something went wrong" | Email/Password sign-in isn't turned on (step 3). |
 
@@ -111,7 +107,6 @@ updates to everyone.
 | Firestore collection | What's in it |
 |---|---|
 | `users/{User ID}` | One document per person: their whole Roll Credits data (festivals, tables, history, settings) |
-| `invites/{email}` | The invite list, managed from Admin tools |
 | `admins/{User ID}` | Admins, added by hand in the console |
 | `official/{festival id}` | Published official festivals. Anyone can read them |
 | `drafts/{festival id}` | Admins' unpublished edits |
