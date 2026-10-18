@@ -49,7 +49,6 @@ function emulatorOn() {
 }
 
 export const currentUser = () => (fb ? fb.auth.currentUser : null);
-export const emailKey = (email) => String(email || '').trim().toLowerCase();
 
 export function onUser(cb) {
   return fb.A.onAuthStateChanged(fb.auth, cb);
@@ -69,22 +68,19 @@ export async function signIn(email, password) {
 
 export const signOut = () => fb.A.signOut(fb.auth);
 export const sendReset = (email) => fb.A.sendPasswordResetEmail(fb.auth, email.trim());
-export const resendVerification = () => fb.A.sendEmailVerification(fb.auth.currentUser);
-
-// After the user taps the link in the verification email: refresh so the database sees email_verified = true.
-export async function refreshUser() {
-  const u = fb.auth.currentUser;
-  if (!u) return null;
-  await u.reload();
-  await u.getIdToken(true);
-  return fb.auth.currentUser;
+// Admins are listed by hand in the Firebase console (admins/{uid}).
+export async function isAdmin(user) {
+  const { F, db } = fb;
+  const doc = await F.getDoc(F.doc(db, 'admins', user.uid)).catch(() => null);
+  return !!(doc && doc.exists());
 }
 
-// What this account is allowed to do. Any signed-in account saves its own data; admins can do more.
-export async function access(user) {
-  const { F, db } = fb;
-  const adminDoc = await F.getDoc(F.doc(db, 'admins', user.uid)).catch(() => null);
-  return { admin: !!(adminDoc && adminDoc.exists()), invited: true, verified: true };
+// Deletes the saved data, then the sign-in itself. Firebase asks for the password again first.
+export async function deleteAccount(user, password) {
+  const { A, F, db } = fb;
+  await A.reauthenticateWithCredential(user, A.EmailAuthProvider.credential(user.email, password));
+  await F.deleteDoc(F.doc(db, 'users', user.uid));
+  await A.deleteUser(user);
 }
 
 // ---------- This user's saved data ----------

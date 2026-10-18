@@ -6,13 +6,16 @@ import {
 } from './defaults.js';
 import { themeFromOldFestival, DEFAULT_THEME, isThemeId } from './themes.js';
 import { norm } from './catalog.js';
+import { ensureSync, baselineOf, stamp, merge, sameData } from './merge.js';
 
 const STORAGE_KEY = 'roll-credits:data';
+const BACKUP_KEY = 'roll-credits:before-sync'; // this device's data from just before a sync changed it
 const CURRENT_VERSION = 3;
 
 let state = null;
 let storageWorks = true;
 let booted = false;
+let base = null; // what each item looked like at the last save (merge.js), to tell what changed
 let freshInstall = false; // this session started with no saved data: official updates apply without announcements
 const saveListeners = []; // sync.js listens here to back changes up to the account
 
@@ -27,7 +30,7 @@ export function load() {
     storageWorks = false;
   }
   freshInstall = !(saved && looksValid(saved));
-  state = freshInstall ? buildDefaultState() : migrate(saved);
+  state = freshInstall ? buildDefaultState() : migrate(sanitize(saved));
   save();
   booted = true;
   return state;
@@ -43,7 +46,14 @@ export function save(silent = false) {
 }
 
 // Writes the saved state even while a draft is open (official updates can arrive any time).
-function saveState(silent = false) {
+// rebase: the state came from elsewhere (the account), so it isn't a change made on this device.
+function saveState(silent = false, rebase = false) {
+  if (rebase) {
+    ensureSync(state);
+    base = baselineOf(state);
+  } else {
+    base = stamp(state, base);
+  }
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     storageWorks = true;
@@ -60,8 +70,60 @@ export function onSave(cb) {
 // Swaps in data that came from the account. Returns false if it doesn't look like Roll Credits data.
 export function replaceState(d) {
   if (!looksValid(d)) return false;
-  state = migrate(d);
-  save(true);
+  state = migrate(sanitize(d));
+  saveState(true, true);
+  return true;
+}
+
+// Combines data from the account with this device's, item by item (merge.js). Returns false if the account's
+// data isn't usable. changed: whether this device's data changed; differs: whether the account needs the result.
+export function mergeIn(d, { remoteWinsTies = true } = {}) {
+  if (!looksValid(d)) return false;
+  const remote = migrate(sanitize(d));
+  const merged = merge(state, remote, { remoteWinsTies, savedMax: SAVED_MAX });
+  const changed = !sameData(state, merged);
+  state = merged;
+  saveState(true, true);
+  return { changed, differs: !sameData(merged, remote) };
+}
+
+// Keeps a copy of this device's data before a sync changes it (Settings → Restore Previous Data).
+export function backupBeforeSync() {
+  try {
+    localStorage.setItem(BACKUP_KEY, JSON.stringify({ at: Date.now(), state }));
+  } catch (e) { /* storage full or blocked: the backup is best-effort */ }
+}
+export function syncBackup() {
+  try {
+    const b = JSON.parse(localStorage.getItem(BACKUP_KEY) || 'null');
+    return b && b.state && looksValid(b.state) ? b : null;
+  } catch (e) {
+    return null;
+  }
+}
+// Brings back the backed-up data: anything it had that's missing or different now comes back as it was.
+// Nothing currently here is deleted, so this never loses data either. It syncs out like any other edit.
+export function restoreSyncBackup() {
+  const b = syncBackup();
+  if (!b) return false;
+  const old = migrate(sanitize(JSON.parse(JSON.stringify(b.state))));
+  backupBeforeSync(); // the restore itself can be undone the same way
+  const put = (list, key) => {
+    const byKey = new Map(state[list].map((x, i) => [key(x), i]));
+    for (const x of old[list] || []) {
+      if (byKey.has(key(x))) state[list][byKey.get(key(x))] = x;
+      else state[list].push(x);
+    }
+  };
+  put('festivals', (f) => f.id);
+  put('history', (e) => e.id);
+  put('savedPicks', (x) => x.movieId);
+  state.history.sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
+  state.savedPicks = state.savedPicks.slice(-SAVED_MAX);
+  state.settings = old.settings;
+  const present = new Set(state.festivals.map((f) => f.id));
+  state.removedOfficial = removedOfficial().filter((id) => !present.has(id));
+  save();
   return true;
 }
 
@@ -88,12 +150,57 @@ function looksValid(d) {
   return Array.isArray(d.festivals) && Array.isArray(d.history) && !!d.settings;
 }
 
+// Repairs data from outside this device (a backup file, the account) before it's used: drops entries that
+// are broken, trims oversized text, and caps list sizes. Only applies to version 2+ data (version 1 is migrated).
+const LIMITS = { festivals: 100, categories: 24, slots: 120, history: 50000, saved: 3, text: 300, notes: 4000 };
+const str = (v, max = LIMITS.text) => (typeof v === 'string' ? v.slice(0, max) : v == null ? v : String(v).slice(0, max));
+const isObj = (v) => !!v && typeof v === 'object' && !Array.isArray(v);
+function cleanMovie(m) {
+  if (!isObj(m) || typeof m.title !== 'string' || !m.title.trim()) return null;
+  m.title = str(m.title);
+  if (m.note != null) m.note = str(m.note, LIMITS.notes);
+  if (isObj(m.base)) m.base = cleanMovie(m.base); else delete m.base;
+  if (!m.base) delete m.base;
+  return m;
+}
+function sanitize(d) {
+  if (!isObj(d) || d.version === 1) return d;
+  if (!isObj(d.settings)) d.settings = {};
+  d.festivals = (Array.isArray(d.festivals) ? d.festivals : [])
+    .filter((f) => isObj(f) && typeof f.id === 'string' && Array.isArray(f.categories))
+    .slice(0, LIMITS.festivals);
+  for (const f of d.festivals) {
+    f.name = str(f.name) || 'Festival';
+    f.categories = f.categories
+      .filter((c) => isObj(c) && typeof c.id === 'string' && Array.isArray(c.slots))
+      .slice(0, LIMITS.categories);
+    for (const c of f.categories) {
+      c.name = str(c.name) || '';
+      c.slots = c.slots.slice(0, LIMITS.slots).map(cleanMovie);
+    }
+  }
+  d.history = (Array.isArray(d.history) ? d.history : [])
+    .filter((e) => isObj(e) && typeof e.id === 'string' && typeof e.title === 'string' && typeof e.date === 'string')
+    .slice(0, LIMITS.history);
+  for (const e of d.history) {
+    e.title = str(e.title);
+    e.notes = str(e.notes || '', LIMITS.notes);
+    e.rating = Math.max(0, Math.min(5, Number(e.rating) || 0));
+  }
+  d.savedPicks = (Array.isArray(d.savedPicks) ? d.savedPicks : [])
+    .filter((x) => isObj(x) && x.movieId != null && typeof x.title === 'string')
+    .slice(0, LIMITS.saved);
+  if (!Array.isArray(d.removedOfficial)) d.removedOfficial = [];
+  return d;
+}
+
 // Upgrades older saved data one version at a time.
 function migrate(d) {
   if (d.version === 1) d = migrateV1toV2(d);
   if (d.version === 2) d = migrateV2toV3(d);
   // Future: if (d.version === 3) d = migrateV3toV4(d);
   ensureBuiltIns(d);
+  if (!d.festivals.length) { d.festivals = buildDefaultState().festivals; d.removedOfficial = []; }
   if (!Array.isArray(d.savedPicks)) d.savedPicks = [];
   // 3D dice are opt-in for now: anyone who never picked a style themselves goes to flat dice.
   if (!d.settings.diceStyleChosen) d.settings.diceStyle = 'flat';
@@ -508,6 +615,12 @@ export function restoreOfficialFestival(id, pub = null) {
   return f;
 }
 
+// Free accounts get a few festivals of their own (official ones don't count). Admins aren't limited.
+// Only checked here in the app: when paid plans exist this needs enforcing on the server too.
+export const CUSTOM_FESTIVAL_LIMIT = 10;
+export const customFestivalCount = () => state.festivals.filter((f) => !f.builtIn).length;
+export const canCreateFestival = (admin = false) => admin || customFestivalCount() < CUSTOM_FESTIVAL_LIMIT;
+
 // opts: { name, icon, mode, categoryDie, movieDie, copyFrom }
 export function createFestival(opts) {
   const id = uid();
@@ -754,7 +867,9 @@ export function snapshot() {
 }
 
 export function restore(snap) {
+  const keepSync = state.sync;
   state = JSON.parse(snap);
+  state.sync = keepSync;
   save();
 }
 
@@ -772,12 +887,16 @@ export function importJSON(text) {
     return false;
   }
   if (!looksValid(d)) return false;
-  state = migrate(d);
+  const keepSync = state.sync;
+  state = migrate(sanitize(d));
+  state.sync = keepSync;
   save();
   return true;
 }
 
 export function resetAll() {
+  const keepSync = state.sync;
   state = buildDefaultState();
+  state.sync = keepSync;
   save();
 }

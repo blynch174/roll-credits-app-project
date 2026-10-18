@@ -4,6 +4,7 @@ import * as store from '../store.js';
 import { RATING_ICONS, DIE_OPTIONS, dieName } from '../defaults.js';
 import { iconSVG } from '../icons.js';
 import { $, $$, esc, toast, nav, syncSeg, dieChips, wireChips } from '../ui.js';
+import * as sync from '../sync.js';
 
 let form;
 
@@ -106,6 +107,7 @@ export function renderCreator() {
   });
   $('#cr-create').addEventListener('click', () => {
     if (!form.name.trim()) { $('#cr-name').focus(); return toast('Give your festival a name.'); }
+    if (!store.canCreateFestival(sync.isAdmin())) return toast('Custom Festival Limit Reached.');
     const f = store.createFestival({ ...form, copyFrom: form.copyFrom || null });
     form = null;
     nav.go('edit', { part: 'tables' });

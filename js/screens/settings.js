@@ -26,6 +26,9 @@ export function renderSettings() {
   $('#storage-warning').hidden = store.canSave();
   $('#theme-current').textContent = themeById(store.themeId()).name;
   renderAccountSection();
+  const b = store.syncBackup();
+  $('#btn-restore-sync').hidden = !b;
+  if (b) $('#restore-sync-when').textContent = `From before the sync on ${new Date(b.at).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}`;
 
 }
 
@@ -124,6 +127,15 @@ export function initSettings() {
         nav.render();
         toast('Backup loaded.');
       } else toast("That file isn't a Roll Credits backup.");
+    });
+  });
+  $('#btn-restore-sync').addEventListener('click', () => {
+    confirmSheet('Restore previous data?', "Brings back this device's festivals and history from before that sync. Nothing here now gets deleted.", 'Restore', () => {
+      if (store.restoreSyncBackup()) {
+        applyTheme(store.themeId());
+        nav.render();
+        toast('Previous data restored.');
+      }
     });
   });
   $('#btn-reset').addEventListener('click', () => {

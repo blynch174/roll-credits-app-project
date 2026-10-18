@@ -3,8 +3,7 @@
 
 import * as sync from '../sync.js';
 import * as cloud from '../cloud.js';
-import { INVITE_CONTACT } from '../firebase-config.js';
-import { $, $$, esc, toast, nav, openSheet, swapSheet, closeSheet, confirmSheet } from '../ui.js';
+import { $, esc, toast, nav, openSheet, swapSheet, closeSheet, confirmSheet } from '../ui.js';
 import { renderOfficialSection } from './admin-official.js';
 
 // ---------- Settings → Account section ----------
@@ -24,8 +23,6 @@ export function statusText(st) {
   switch (st.status) {
     case 'loading': return 'Checking your account…';
     case 'signedOut': return 'Back up your data and use it on other devices';
-    case 'notInvited': return 'Not on the invite list yet';
-    case 'unverified': return 'Verify your email to turn on backup';
     case 'choosing': return 'Pick which data to keep';
     case 'saving': return 'Backing up…';
     case 'synced': return `Backed up ${ago(st.lastSynced)}`;
@@ -42,7 +39,7 @@ export function renderAccountSection() {
   $('#dice-style-title').classList.toggle('first', !st.configured);
   if (!st.configured) return;
   const signedIn = sync.isSignedIn();
-  const warn = ['notInvited', 'unverified', 'error'].includes(st.status);
+  const warn = st.status === 'error';
   $('#account-card').innerHTML = `
     <button type="button" class="row-btn account-row" id="btn-account">
       <span>${signedIn ? esc(st.email) : 'Sign in or create an account'}</span>
@@ -142,19 +139,6 @@ async function submitCreate(sheet) {
   }
 }
 
-async function checkVerified(sheet) {
-  busy(sheet, 'a-ver', true, 'Checking…');
-  try {
-    await sync.refreshVerification();
-  } catch (e) { /* status shows the problem */ }
-  busy(sheet, 'a-ver', false);
-  const st = sync.getStatus().status;
-  if (st === 'unverified') return toast("Not confirmed yet. Tap the link in the email first.");
-  closeSheet();
-  if (st === 'notInvited') toast(`Confirmed. ${INVITE_CONTACT} still needs to add you to the invite list.`);
-  else toast('Email confirmed. Your data is backing up.');
-}
-
 function resetSheet(email = '') {
   const sheet = swapSheet({
     title: 'Reset your password',
@@ -184,62 +168,71 @@ function resetSheet(email = '') {
 
 function accountSheet() {
   const st = sync.getStatus();
-  let note = '';
-  const actions = [];
-  if (st.status === 'notInvited') {
-    note = `<p class="sheet-text">Roll Credits is invite-only while it's being tested. Ask ${esc(INVITE_CONTACT)} to add <b>${esc(st.email)}</b> to the invite list, then tap Check again. Until then your data stays on this device only.</p>`;
-    actions.push({ label: 'Check Again', kind: 'primary', id: 'a-go', onClick: (s) => recheck(s) });
-  } else if (st.status === 'unverified') {
-    note = `<p class="sheet-text">Tap the link we emailed to <b>${esc(st.email)}</b>, then come back and tap I've confirmed it.</p>
-      <div class="sheet-links"><button type="button" class="link" id="a-resend">Resend the Email</button></div>`;
-    actions.push({ label: "I've Confirmed it", kind: 'primary', id: 'a-ver', onClick: (s) => checkVerified(s) });
-  } else {
-    actions.push({
-      label: 'Back Up Now', kind: 'primary', id: 'a-go', onClick: async (s) => {
-        busy(s, 'a-go', true, 'Backing up…');
-        await sync.syncNow();
-        closeSheet();
-        const now = sync.getStatus().status;
-        toast(now === 'synced' ? 'Backed up.' : statusText(sync.getStatus()));
-      },
-    });
-  }
+  const actions = [{
+    label: 'Back Up Now', kind: 'primary', id: 'a-go', onClick: async (s) => {
+      busy(s, 'a-go', true, 'Backing up…');
+      await sync.syncNow();
+      closeSheet();
+      const now = sync.getStatus().status;
+      toast(now === 'synced' ? 'Backed up.' : statusText(sync.getStatus()));
+    },
+  }];
   const sheet = openSheet({
     title: 'Your account',
     body: `
       <div class="acct-head"><b>${esc(st.email)}</b><small>${esc(statusText(st))}</small></div>
-      ${note}
       <div class="settings-list card acct-list">
         <button type="button" class="row-btn" id="a-pw"><span>Change Password</span></button>
         <button type="button" class="row-btn danger" id="a-out"><span>Sign Out</span></button>
+        <button type="button" class="row-btn danger" id="a-del"><span>Delete Account</span></button>
       </div>
       <p class="fine acct-uid">User ID <code>${esc(st.uid)}</code> <button type="button" class="link" id="a-copy">Copy</button></p>`,
     actions: [{ label: 'Close', kind: 'ghost', onClick: closeSheet }, ...actions],
-  });
-  const resend = $('#a-resend', sheet);
-  if (resend) resend.addEventListener('click', async () => {
-    try { await sync.resendVerification(); toast('Sent. Check your email.'); } catch (e) { toast(cloud.errorText(e)); }
   });
   $('#a-pw', sheet).addEventListener('click', async () => {
     try { await sync.sendReset(st.email); toast(`Password link sent to ${st.email}.`); } catch (e) { toast(cloud.errorText(e)); }
   });
   $('#a-out', sheet).addEventListener('click', () => {
-    confirmSheet('Sign out?', 'Your festivals and history stay on this device. Sign back in any time to keep backing up.', 'Sign out', async () => {
+    confirmSheet('Sign out?', 'Your festivals and history stay on this device. Sign back in any time to keep backing up.', 'Sign Out', async () => {
       await sync.signOut();
       toast('Signed out.');
     });
   });
+  $('#a-del', sheet).addEventListener('click', () => deleteSheet(st.email));
   $('#a-copy', sheet).addEventListener('click', async () => {
     try { await navigator.clipboard.writeText(st.uid); toast('User ID copied.'); } catch (e) { toast("Couldn't copy. Select it instead."); }
   });
 }
 
-async function recheck(sheet) {
-  busy(sheet, 'a-go', true, 'Checking…');
-  await sync.checkAccess();
-  closeSheet();
-  const st = sync.getStatus().status;
-  toast(st === 'notInvited' ? 'Still not on the invite list.' : 'You’re in. Your data is backing up.');
+// Deletes the account and its backup. Firebase needs the password again for this.
+function deleteSheet(email) {
+  swapSheet({
+    title: 'Delete your account?',
+    body: `
+      <p class="sheet-text">Deletes <b>${esc(email)}</b> and everything backed up to it. This can't be undone. Your festivals and history stay on this device.</p>
+      ${field('a-pass', 'Password', 'password', 'current-password')}
+      <p class="sheet-error" hidden></p>`,
+    actions: [
+      { label: 'Cancel', kind: 'ghost', onClick: closeSheet },
+      {
+        label: 'Delete Account', kind: 'danger', id: 'a-go', onClick: async (s) => {
+          const pass = $('#a-pass', s).value;
+          if (!pass) return showError(s, 'Enter your password.');
+          showError(s, '');
+          busy(s, 'a-go', true, 'Deleting…');
+          try {
+            await sync.deleteAccount(pass);
+            closeSheet();
+            toast('Account deleted.');
+          } catch (e) {
+            busy(s, 'a-go', false);
+            const code = (e && e.code) || '';
+            showError(s, /invalid-credential|wrong-password/.test(code) ? 'Wrong password.' : cloud.errorText(e));
+          }
+        },
+      },
+    ],
+  });
 }
 
 // Signing in on a device that already has its own data, for an account that also has data.
@@ -253,13 +246,15 @@ export function chooseSideSheet(remote, done) {
     body: `
       <p class="sheet-text">This device and your account both have Roll Credits data.</p>
       <div class="settings-list card acct-list">
+        <button type="button" class="row-btn" id="c-combine"><span>Combine Both</span><small>Keeps the festivals and history from each</small></button>
         <button type="button" class="row-btn" id="c-account"><span>Use My Account's Data</span><small>Replaces what's on this device${when ? ` · last backed up ${esc(when)}` : ''}</small></button>
         <button type="button" class="row-btn" id="c-device"><span>Use This Device's Data</span><small>Replaces what's in your account</small></button>
       </div>
-      <p class="sheet-text">Whichever one you don't pick gets replaced.</p>`,
+`,
     actions: [],
     onClose: () => { if (!picked) setTimeout(() => chooseSideSheet(remote, done), 260); },
   });
+  $('#c-combine').addEventListener('click', () => pick('combine'));
   $('#c-account').addEventListener('click', () => pick('account'));
   $('#c-device').addEventListener('click', () => swapSheet({
     title: "Replace your account's data?",

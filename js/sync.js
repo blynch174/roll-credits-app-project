@@ -2,14 +2,15 @@
 //
 // The device copy (localStorage) is still the one the app reads and writes. When signed in, every change is
 // also sent to the account about a second and a half later. Opening the app, or coming back to it, pulls the
-// account's copy if another device saved something newer. If both changed, the newer save wins.
+// account's copy if another device saved something newer. If both changed, the two are combined item by item
+// (merge.js): each festival, history entry, and saved movie keeps its most recent change, and deletions stick.
 //
-// Status: off | loading | signedOut | notInvited | unverified | choosing | synced | saving | offline | error
+// Status: off | loading | signedOut | choosing | synced | saving | offline | error
 
 import * as store from './store.js';
 import * as cloud from './cloud.js';
 
-export const APP_VERSION = '3.12';
+export const APP_VERSION = '3.13';
 const META_KEY = 'roll-credits:sync';
 const DEVICE_KEY = 'roll-credits:device';
 const PUSH_DELAY = 1500;
@@ -22,8 +23,8 @@ let lastSynced = 0;
 let pushTimer = null;
 let pushing = null;
 let changeSeq = 0;
-let deniedOnce = false; // stops a re-check loop if the database keeps refusing for some other reason
-let hooks = { onRemoteApplied: () => {}, chooseSide: (remote, done) => done('account') };
+let deniedOnce = false; // stops a re-check loop if the database keeps refusing
+let hooks = { onRemoteApplied: () => {}, chooseSide: (remote, done) => done('combine'), onReplaced: () => {} };
 const listeners = [];
 
 export function getStatus() {
@@ -92,19 +93,15 @@ function handleUser(u) {
   checkAccess();
 }
 
-// Is this account on the invite list (or an admin), and is its email verified?
+// Is this account an admin? Then line up this device with the account.
 export async function checkAccess() {
   if (!user) return;
   set('loading');
-  let a;
   try {
-    a = await cloud.access(user);
+    admin = await cloud.isAdmin(user);
   } catch (e) {
     return failed(e);
   }
-  admin = a.admin;
-  if (!a.admin && !a.invited) return set('notInvited');
-  if (!a.admin && !a.verified) return set('unverified');
   await reconcile();
 }
 
@@ -126,7 +123,7 @@ async function reconcile() {
   if (meta.uid === uid) {
     ready = true;
     const remoteNewer = remote.clientUpdatedAt > meta.syncedAt;
-    if (meta.dirty) return remoteNewer && remote.clientUpdatedAt > meta.localAt ? apply(remote) : push();
+    if (meta.dirty) return push(remote); // push combines the two first if the account changed meanwhile
     if (remoteNewer) return apply(remote);
     return set('synced', { lastSynced: meta.syncedAt });
   }
@@ -139,19 +136,46 @@ async function reconcile() {
   hooks.chooseSide(remote, (choice) => {
     if (!user || user.uid !== uid) return;
     ready = true;
-    if (choice === 'account') apply(remote);
-    else push();
+    if (choice === 'account') {
+      apply(remote, true);
+      hooks.onReplaced();
+    } else if (choice === 'combine') {
+      combine(remote, false);
+    } else push(null, true);
   });
 }
 
-function apply(remote) {
-  let d = null;
-  try { d = JSON.parse(remote.state); } catch (e) { /* bad data */ }
-  if (!d || !store.replaceState(d)) return set('error');
+const parse = (remote) => {
+  try { return JSON.parse(remote.state); } catch (e) { return null; }
+};
+
+// The account's data replaces this device's. Only used when this device has no unsent changes
+// (or the person chose it), so nothing is lost; a copy is still kept for Restore Previous Data.
+function apply(remote, backup = false) {
+  const d = parse(remote);
+  if (!d) return set('error');
+  if (backup && !store.isPristine()) store.backupBeforeSync();
+  if (!store.replaceState(d)) return set('error');
   writeMeta({ uid: user.uid, syncedAt: remote.clientUpdatedAt, dirty: false, localAt: 0 });
   deniedOnce = false;
   set('synced', { lastSynced: remote.clientUpdatedAt });
   hooks.onRemoteApplied();
+}
+
+// Both sides changed: combine them, then send the result back if the account is missing anything.
+function combine(remote, remoteWinsTies = true) {
+  const d = parse(remote);
+  if (!d) return set('error');
+  const before = store.isPristine() ? null : store.snapshot();
+  const r = store.mergeIn(d, { remoteWinsTies });
+  if (!r) return set('error');
+  if (r.changed && before) {
+    try { localStorage.setItem('roll-credits:before-sync', JSON.stringify({ at: Date.now(), state: JSON.parse(before) })); } catch (e) { /* best-effort */ }
+  }
+  writeMeta({ uid: user.uid, syncedAt: remote.clientUpdatedAt, dirty: r.differs, localAt: Date.now() });
+  if (r.changed) hooks.onRemoteApplied();
+  if (r.differs) return push(null, true);
+  set('synced', { lastSynced: remote.clientUpdatedAt });
 }
 
 // ---------- Sending changes ----------
@@ -168,16 +192,36 @@ function localChanged() {
   if (status !== 'saving') set('saving');
 }
 
-function push() {
+// Sends this device's data. Before writing, checks whether another device saved since the last sync
+// (knownRemote: already fetched). If so, combines first so that device's changes aren't overwritten.
+// force: skip the check (this device's data was chosen to replace the account's).
+function push(knownRemote = null, force = false) {
   clearTimeout(pushTimer);
   pushTimer = null;
   if (!ready || !user) return Promise.resolve();
   if (pushing) return pushing.then(() => (readMeta().dirty ? push() : null));
   const uid = user.uid;
+  set('saving');
+  pushing = (force ? Promise.resolve(null) : knownRemote ? Promise.resolve(knownRemote) : cloud.getUserData(uid))
+    .then((remote) => {
+      if (remote && remote.clientUpdatedAt > readMeta().syncedAt) {
+        const d = parse(remote);
+        const r = d && store.mergeIn(d, { remoteWinsTies: false });
+        if (r && r.changed) hooks.onRemoteApplied();
+      }
+      return write(uid);
+    })
+    .catch(failed)
+    .finally(() => {
+      pushing = null;
+    });
+  return pushing;
+}
+
+function write(uid) {
   const seq = changeSeq;
   const now = Date.now();
-  set('saving');
-  pushing = cloud.putUserData(uid, {
+  return cloud.putUserData(uid, {
     state: JSON.stringify(store.getState()),
     clientUpdatedAt: now,
     email: user.email,
@@ -192,16 +236,11 @@ function push() {
       writeMeta(m);
       deniedOnce = false;
       set('synced', { lastSynced: now });
-    })
-    .catch(failed)
-    .finally(() => {
-      pushing = null;
       if (changeSeq !== seq && ready && user) {
         clearTimeout(pushTimer);
         pushTimer = setTimeout(push, PUSH_DELAY);
       }
     });
-  return pushing;
 }
 
 // Send anything waiting right now (app going to the background, signing out).
@@ -216,6 +255,7 @@ async function pullIfNewer() {
   if (m.dirty) return push();
   try {
     const remote = await cloud.getUserData(user.uid);
+    if (readMeta().dirty) return push(remote); // something changed here while we were fetching
     if (remote && remote.clientUpdatedAt > m.syncedAt) apply(remote);
     else if (status !== 'synced') set('synced', { lastSynced: m.syncedAt });
   } catch (e) {
@@ -226,7 +266,7 @@ async function pullIfNewer() {
 function failed(e) {
   const code = (e && e.code) || '';
   if (code === 'permission-denied' && user && !deniedOnce) {
-    // Probably taken off the invite list. Re-check once rather than keep failing.
+    // Maybe the account changed (e.g. admin removed). Re-check once rather than keep failing.
     deniedOnce = true;
     ready = false;
     return checkAccess();
@@ -259,12 +299,15 @@ export async function signOut() {
 }
 
 export const sendReset = (email) => cloud.sendReset(email);
-export const resendVerification = () => cloud.resendVerification();
 
-export async function refreshVerification() {
-  await cloud.refreshUser();
-  user = cloud.currentUser();
-  return checkAccess();
+// Deletes the account and everything saved in it. This device keeps its own copy.
+export async function deleteAccount(password) {
+  if (!user) return;
+  clearTimeout(pushTimer);
+  pushTimer = null;
+  ready = false;
+  await cloud.deleteAccount(user, password);
+  writeMeta({ uid: null, syncedAt: 0, dirty: false, localAt: 0 });
 }
 
 export const isSignedIn = () => !!user;

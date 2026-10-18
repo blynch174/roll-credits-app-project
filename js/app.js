@@ -88,7 +88,9 @@ function festivalSheet() {
             </div>
           </li>`).join('')}
       </ul>
-      <button type="button" class="btn ghost big" id="btn-new-fest">+ Create a Festival</button>
+      ${store.canCreateFestival(sync.isAdmin())
+    ? '<button type="button" class="btn ghost big" id="btn-new-fest">+ Create a Festival</button>'
+    : '<button type="button" class="btn ghost big" id="btn-new-fest" disabled>Custom Festival Limit Reached</button>'}
       ${removed.length ? '<button type="button" class="btn ghost big" id="btn-add-official">+ Add an Official Festival</button>' : ''}`,
     actions: [{ label: 'Close', kind: 'ghost', onClick: closeSheet }],
   });
@@ -179,6 +181,18 @@ sync.start({
     render();
   },
   chooseSide: chooseSideSheet,
+  // Chose "Use My Account's Data" on a device that had its own: offer a way back.
+  onReplaced: () => {
+    if (!store.syncBackup()) return;
+    toast("Now using your account's data.", {
+      action: 'Undo',
+      onAction: () => {
+        store.restoreSyncBackup();
+        applyTheme(store.themeId());
+        render();
+      },
+    });
+  },
 });
 
 // Official festivals: newer published versions (cached copy first, then the database).
@@ -196,8 +210,24 @@ if (store.getState().settings.diceStyle !== 'flat') {
   later(() => dice3d.prepare());
 }
 
+// Offline support. When a new version takes over while the app is open, the code already running is the old
+// one, so offer a reload instead of mixing old and new files.
 if ('serviceWorker' in navigator && location.protocol !== 'file:') {
-  window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+  const hadController = !!navigator.serviceWorker.controller;
+  let prompted = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (!hadController || prompted) return; // first install: nothing old is running
+    prompted = true;
+    toast('Roll Credits has been updated.', { action: 'Reload', onAction: () => location.reload(), duration: 600000 });
+  });
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').then((reg) => {
+      // Check for a new version whenever the app comes back to the front.
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') reg.update().catch(() => {});
+      });
+    }).catch(() => {});
+  });
 }
 
 // iOS home-screen apps sometimes lay out the fixed tab bar above the real bottom edge on launch, until the

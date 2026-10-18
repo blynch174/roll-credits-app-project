@@ -51,7 +51,7 @@ export function toast(msg, opts = {}) {
   }
   t.classList.add('show');
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove('show'), opts.action ? 5000 : 3200);
+  toastTimer = setTimeout(() => t.classList.remove('show'), opts.duration || (opts.action ? 5000 : 3200));
 }
 
 // ---------- Swipe to delete (list rows) ----------

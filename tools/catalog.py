@@ -3,6 +3,7 @@
 
   python3 tools/catalog.py fetch            Get details + posters from TMDB for movies that don't have them yet
   python3 tools/catalog.py fetch --refresh  Re-fetch every movie (picks up TMDB corrections)
+  python3 tools/catalog.py fetch --retry    Also try again for movies TMDB didn't match last time
   python3 tools/catalog.py add "Terrifier" 2016 --to halloween
                                             Add a movie (finds it on TMDB, then builds)
   python3 tools/catalog.py oscars           Re-download the Oscar data and rebuild every movie's Oscar fields
@@ -187,7 +188,15 @@ def cmd_fetch(args):
     cur = read(CURATION, [])
     facts = read(FACTS, {})
     refresh = '--refresh' in args
-    todo = [m for m in cur if refresh or (facts.get(m['id'], {}).get('source') != 'tmdb')]
+    retry = refresh or '--retry' in args
+    def needs(m):
+        f = facts.get(m['id'], {})
+        if refresh:
+            return True
+        if f.get('source') == 'tmdb':
+            return False  # already has its details and poster
+        return retry or not f.get('tmdbMissing')  # no match last time: skip unless asked to retry
+    todo = [m for m in cur if needs(m)]
     print(f'Fetching {len(todo)} of {len(cur)} movies from TMDB…')
     missing = []
     for i, m in enumerate(todo, 1):
@@ -197,6 +206,7 @@ def cmd_fetch(args):
             f = movie_facts(hit[1]) if hit[0] == 'movie' else tv_facts(hit[1])
         if not f:
             missing.append(m['id'])
+            facts[m['id']] = {**facts.get(m['id'], {}), 'tmdbMissing': True}  # remembered, so the next run skips it
         else:
             old = facts.get(m['id'], {})
             # keep earlier hand-entered values where TMDB has nothing
@@ -213,6 +223,7 @@ def cmd_fetch(args):
     write_lines(FACTS, facts)
     if missing:
         print(f'\nNo TMDB match for {len(missing)}: ' + ', '.join(missing[:20]) + (' …' if len(missing) > 20 else ''))
+        print('These are skipped next time. Fix their IMDb id or title in curation.json, then run fetch --retry.')
         print('Add "tmdbId": <number> to those lines in curation.json and run fetch again.')
     cmd_build([])
 

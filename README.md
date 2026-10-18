@@ -73,7 +73,15 @@ Set up once with `FIREBASE_SETUP.md`. Signing in is optional; without it nothing
 - The device copy (localStorage) is still what the app reads and writes, so it works offline. When signed in,
   each change is also saved to `users/{uid}` in Firestore about 1.5 seconds later.
 - Opening the app, or switching back to it, pulls the account's copy if another device saved something newer.
-  If both changed, the newer save wins.
+  If both changed, they're combined item by item (`js/merge.js`): each festival, history entry, and saved movie
+  keeps its most recent change, and deletions stick (remembered for 120 days). Before sending, the app checks
+  whether another device saved in the meantime and combines first.
+- If a sync changes this device's data, the old copy is kept: Settings → Restore Previous Data brings it back
+  (it only adds things back, never deletes).
+- Settings → Account → Delete Account removes the backup and the sign-in (asks for the password). The device
+  keeps its own copy.
+- Free limit: 3 custom festivals (`CUSTOM_FESTIVAL_LIMIT` in `store.js`); admins aren't limited. Only enforced in
+  the app for now; paid plans would need server-side enforcement.
 - Signing in on a device that has its own data, with an account that also has data, asks which to keep.
   A device with untouched defaults just takes the account's data.
 - Open sign-up: anyone who creates an account starts backing up right away. `firestore.rules` only lets each
@@ -101,6 +109,12 @@ The built-in festivals are "official": admins edit and publish them from Setting
 - Each copy stores `sourceRev` (the revision it came from) and `sourceSig` (a fingerprint of its tables then),
   which is how the app tells untouched from edited. The bundled `defaults.js` copy is revision 1.
 
+## TMDB logo
+
+TMDB asks apps to show their logo with the credit. Download one of the official logos from
+https://www.themoviedb.org/about/logos-attribution and save it as `icons/tmdb.svg`. Settings → About shows it
+automatically (nothing shows until the file is there).
+
 ## Themes
 
 One theme for the whole app (`settings.theme`), picked in Settings → Themes. Add or move themes in the
@@ -122,6 +136,7 @@ Settings → Export Backup saves a copy.
   history: [ { festivalId, festivalName, icon, categoryId, categoryName, movieId, catalogId,
                title, year, date, rating, notes } ],
   savedPicks: [ { movieId, title, year, moods, date } ]   (Popcorn Pick "Save for Later", up to 3)
+  sync: { at: { f, h, s, settings }, gone: { f, h, s } }   (change and deletion times, for merging; merge.js)
 }
 ```
 
@@ -133,6 +148,8 @@ Settings → Export Backup saves a copy.
   original in `base`, which Start fresh restores.
 - **Saved for Later** (Popcorn tab): swipe left removes, swipe right moves it to the watch history as a Popcorn Pick.
 - Logged movies that aren't on a table use the category id `off-menu` ("Off the menu").
+- Backups and data from the account are checked and repaired before use (`sanitize()` in `store.js`): broken
+  entries are dropped, long text is trimmed, list sizes are capped.
 - Version 1 and 2 data upgrade automatically. To change the shape again, bump `CURRENT_VERSION` in `store.js`
   and add a step in `migrate()`.
 

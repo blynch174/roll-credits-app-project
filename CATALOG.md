@@ -11,6 +11,23 @@ files in `data/catalog/` by `tools/catalog.py`:
 
 The script only needs Python 3 (already on your Mac; check with `python3 --version` in the VS Code terminal).
 
+## Automatic: GitHub Actions (recommended)
+
+`.github/workflows/catalog.yml` runs on every push. It fetches details and posters for movies that don't have them
+yet (everything that already has a poster is skipped), rebuilds `data/all_movies.json`, and commits both files
+back to the repo. Its own commit doesn't start it again.
+
+One-time setup: GitHub repo → **Settings → Secrets and variables → Actions → New repository secret**.
+Name `TMDB_TOKEN`, value your **API Read Access Token** (the long one starting with `eyJ`).
+
+- After it commits, run `git pull` before your next push.
+- To redo everything (picks up TMDB corrections) or retry movies it couldn't match: **Actions → Update movie
+  catalog → Run workflow**, and tick *refresh* or *retry*.
+- Movies TMDB can't match are remembered and skipped next time. Fix their IMDb id or title in `curation.json`,
+  then use *retry*.
+
+The rest of this page is for running it on your own computer instead.
+
 ## One-time setup: your TMDB key
 
 1. In VS Code, create a file called **`tools/tmdb_key.txt`**.
@@ -65,6 +82,7 @@ Then open `data/catalog/curation.json`, find the new line at the bottom, and fil
 |---|---|
 | `python3 tools/catalog.py build` | Rebuilds `data/all_movies.json` from the three files. Run after any hand edit |
 | `python3 tools/catalog.py fetch --refresh` | Re-downloads TMDB details for every movie (picks up their corrections) |
+| `python3 tools/catalog.py fetch --retry` | Tries again for movies TMDB didn't match before |
 | `python3 tools/catalog.py oscars` | Downloads the latest Oscar data and redoes every movie's Oscar fields (after each ceremony) |
 | `python3 tools/catalog.py check` | The report described above |
 

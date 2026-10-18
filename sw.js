@@ -6,7 +6,7 @@
 // vendor/firebase is only downloaded when accounts are set up (js/firebase-config.js).
 // They get saved for offline use the first time the app loads them.
 
-const CACHE_VERSION = 'v17';
+const CACHE_VERSION = 'v18';
 const CACHE_NAME = 'roll-credits-' + CACHE_VERSION;
 
 const FILES = [
@@ -27,6 +27,7 @@ const FILES = [
   './js/firebase-config.js',
   './js/cloud.js',
   './js/sync.js',
+  './js/merge.js',
   './js/official.js',
   './js/movieinfo.js',
   './js/screens/roll.js',

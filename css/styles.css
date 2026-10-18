@@ -1400,3 +1400,5 @@ input[type="date"] {
 /* Tab bar: pinned to the screen's bottom edge (iOS home-screen apps can lay it out too high on launch). */
 html, body { min-height: 100%; }
 .tabbar { inset: auto 0 0 0; transform: translateZ(0); }
+
+.tmdb-logo { display: block; height: 14px; width: auto; margin-bottom: 10px; }
