@@ -5,7 +5,7 @@ import {
   makeCategory, makeMovie, uid, SWATCHES, BUNDLED_REV, tablesSig, categoriesFromTables, festivalFromOfficial,
 } from './defaults.js';
 import { themeFromOldFestival, DEFAULT_THEME, isThemeId } from './themes.js';
-import { norm } from './catalog.js';
+import { norm, setExtras } from './catalog.js';
 import { ensureSync, baselineOf, stamp, merge, sameData } from './merge.js';
 
 const STORAGE_KEY = 'roll-credits:data';
@@ -60,6 +60,7 @@ function saveState(silent = false, rebase = false) {
   } catch (e) {
     storageWorks = false;
   }
+  setExtras(state.customMovies);
   if (booted && !silent) saveListeners.forEach((cb) => cb());
 }
 
@@ -190,6 +191,15 @@ function sanitize(d) {
   d.savedPicks = (Array.isArray(d.savedPicks) ? d.savedPicks : [])
     .filter((x) => isObj(x) && x.movieId != null && typeof x.title === 'string')
     .slice(0, LIMITS.saved);
+  d.customMovies = (Array.isArray(d.customMovies) ? d.customMovies : [])
+    .filter((m) => isObj(m) && typeof m.id === 'string' && /^tmdb-\d+$/.test(m.id) && typeof m.title === 'string')
+    .slice(0, 2000);
+  for (const m of d.customMovies) {
+    m.title = str(m.title);
+    m.overview = m.overview ? str(m.overview, 600) : null;
+    m.tmdbId = +m.id.slice(5);
+    for (const k of ['countries', 'languages', 'genres', 'directors', 'moodTone']) if (!Array.isArray(m[k])) m[k] = [];
+  }
   if (!Array.isArray(d.removedOfficial)) d.removedOfficial = [];
   return d;
 }
@@ -202,6 +212,7 @@ function migrate(d) {
   ensureBuiltIns(d);
   if (!d.festivals.length) { d.festivals = buildDefaultState().festivals; d.removedOfficial = []; }
   if (!Array.isArray(d.savedPicks)) d.savedPicks = [];
+  if (!Array.isArray(d.customMovies)) d.customMovies = [];
   // 3D dice are opt-in for now: anyone who never picked a style themselves goes to flat dice.
   if (!d.settings.diceStyleChosen) d.settings.diceStyle = 'flat';
   // Added in v3.3. Anyone with saved data from before already knows the app, so skip the tour for them.
@@ -368,11 +379,20 @@ export function setSlot(fId, catId, index, { title, year, catalogId = null }) {
 
 // Fills in catalog links for slots and history typed before the catalog existed.
 // matchFn(title, year) returns a catalog movie or null.
-export function linkCatalog(matchFn) {
+// Also: movies picked from TMDB search ('tmdb-123') switch to the catalog's own id once the catalog has them.
+export function linkCatalog(matchFn, byTmdbFn = () => null) {
   let changed = 0;
+  const upgrade = (o) => {
+    if (o && typeof o.catalogId === 'string' && o.catalogId.startsWith('tmdb-')) {
+      const hit = byTmdbFn(o.catalogId.slice(5));
+      if (hit) { o.catalogId = hit.id; changed++; }
+    }
+  };
   for (const f of state.festivals) {
     for (const c of f.categories) {
       for (const m of c.slots) {
+        upgrade(m);
+        if (m && m.base) upgrade(m.base);
         if (m && !m.catalogId) {
           const hit = matchFn(m.title, m.year);
           if (hit) { m.catalogId = hit.id; changed++; }
@@ -381,13 +401,27 @@ export function linkCatalog(matchFn) {
     }
   }
   for (const e of state.history) {
+    upgrade(e);
     if (!e.catalogId) {
       const hit = matchFn(e.title, e.year);
       if (hit) { e.catalogId = hit.id; changed++; }
     }
   }
+  const before = customMovies().length;
+  state.customMovies = customMovies().filter((m) => !byTmdbFn(m.tmdbId));
+  if (state.customMovies.length !== before) changed++;
   if (changed) save();
   return changed;
+}
+
+// Movies picked from TMDB search that aren't in the catalog yet. Kept with the person's data (and synced) so
+// their posters and details show everywhere. Dropped once the catalog gets the movie (linkCatalog).
+export const customMovies = () => state.customMovies || [];
+export function addCustomMovie(m) {
+  if (!m || !m.id || customMovies().some((x) => x.id === m.id)) return;
+  const clean = Object.fromEntries(Object.entries(m).filter(([k]) => !k.startsWith('_')));
+  state.customMovies = [...customMovies(), clean];
+  save();
 }
 
 // Sequel switching: the slot now shows the sequel. The original is kept so Start fresh can restore it.
@@ -617,7 +651,7 @@ export function restoreOfficialFestival(id, pub = null) {
 
 // Free accounts get a few festivals of their own (official ones don't count). Admins aren't limited.
 // Only checked here in the app: when paid plans exist this needs enforcing on the server too.
-export const CUSTOM_FESTIVAL_LIMIT = 10;
+export const CUSTOM_FESTIVAL_LIMIT = 3;
 export const customFestivalCount = () => state.festivals.filter((f) => !f.builtIn).length;
 export const canCreateFestival = (admin = false) => admin || customFestivalCount() < CUSTOM_FESTIVAL_LIMIT;
 

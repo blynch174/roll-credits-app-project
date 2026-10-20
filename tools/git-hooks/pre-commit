@@ -1,0 +1,26 @@
+#!/bin/sh
+# Stops a commit that would delete files the app can't run without, or that hold data only you have.
+# Turn it on once, from the repo folder:   git config core.hooksPath tools/git-hooks
+# (To commit anyway, on purpose: git commit --no-verify)
+
+PROTECTED="js/firebase-config.js
+data/all_movies.json
+data/catalog/curation.json
+data/catalog/facts.json
+data/catalog/oscars.json
+.github/workflows/catalog.yml"
+
+deleted=$(git diff --cached --name-only --diff-filter=D)
+blocked=""
+for f in $PROTECTED; do
+  if echo "$deleted" | grep -qx "$f"; then blocked="$blocked
+  $f"; fi
+done
+
+if [ -n "$blocked" ]; then
+  echo "Commit stopped. It would delete:$blocked"
+  echo ""
+  echo "To put them back:  git restore --staged --worktree --source=HEAD -- <file>"
+  exit 1
+fi
+exit 0

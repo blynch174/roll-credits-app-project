@@ -95,7 +95,7 @@ export function editSlotSheet(fId, catId, index, after) {
     onClick: (sheet) => {
       const title = $('#f-title', sheet).value.trim();
       if (!title) { $('#f-title', sheet).focus(); return toast('A title is required.'); }
-      store.setSlot(fId, catId, index, { title, year: $('#f-year', sheet).value, catalogId: getCatalogId() });
+      store.setSlot(fId, catId, index, { title, year: $('#f-year', sheet).value, catalogId: getCatalogId(true) });
       closeSheet();
       after && after();
     },

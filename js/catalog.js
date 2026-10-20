@@ -29,6 +29,8 @@ let status = 'idle'; // idle | loading | ready | failed
 let loading = null;
 let byId = new Map();
 let byKey = new Map(); // normalized title|year -> movie
+let byTmdb = new Map(); // TMDB id -> catalog movie
+let extras = new Map(); // this person's movies from TMDB search that aren't in the catalog yet: 'tmdb-123' -> movie
 let franchises = new Map(); // franchise -> movies sorted by seriesOrder
 let list = [];
 const collections = new Map(); // festival id -> Set of catalog ids
@@ -45,7 +47,27 @@ export function norm(s) {
 }
 
 export const isReady = () => status === 'ready';
-export const get = (id) => byId.get(id) || null;
+// Catalog movie by id. 'tmdb-123' ids (picked from TMDB search) resolve to the catalog's own entry once that
+// movie has been added to the catalog, and to the person's saved copy until then.
+export function get(id) {
+  if (!id) return null;
+  const hit = byId.get(id);
+  if (hit) return hit;
+  if (String(id).startsWith('tmdb-')) return byTmdb.get(+String(id).slice(5)) || extras.get(id) || null;
+  return null;
+}
+export const byTmdbId = (tmdbId) => byTmdb.get(+tmdbId) || null;
+
+// The person's own TMDB-picked movies (store.customMovies). Searchable and viewable, but not in Popcorn Pick.
+export function setExtras(movies) {
+  extras = new Map();
+  for (const m of movies || []) {
+    if (!m || !m.id) continue;
+    m._t = norm(m.title);
+    m._o = m.originalTitle ? norm(m.originalTitle) : '';
+    extras.set(m.id, m);
+  }
+}
 
 export function onReady(cb) {
   if (status === 'ready') cb();
@@ -66,6 +88,7 @@ export function load() {
         m._t = norm(m.title);
         m._o = m.originalTitle ? norm(m.originalTitle) : '';
         byId.set(m.id, m);
+        if (m.tmdbId && m.tmdbType !== 'tv') byTmdb.set(m.tmdbId, m);
         byKey.set(m._t + '|' + m.releaseYear, m);
         if (m._o) byKey.set(m._o + '|' + m.releaseYear, m);
         if (m.franchise) {
@@ -116,7 +139,8 @@ export function search(query, festivalId, limit = 6) {
   const yearMatch = String(query).match(/\b(18|19|20)\d{2}\b/);
   const coll = collections.get(festivalId);
   const scored = [];
-  for (const m of list) {
+  const mine = [...extras.values()].filter((m) => !byTmdb.has(m.tmdbId));
+  for (const m of mine.length ? list.concat(mine) : list) {
     let score = 0;
     for (const t of [m._t, m._o]) {
       if (!t) continue;

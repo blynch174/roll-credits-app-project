@@ -200,7 +200,7 @@ official.start({ changed: () => render() });
 
 catalog.load().then(() => {
   if (!catalog.isReady()) return;
-  store.linkCatalog(catalog.match);
+  store.linkCatalog(catalog.match, catalog.byTmdbId);
   catalog.loadAllCollections();
 });
 

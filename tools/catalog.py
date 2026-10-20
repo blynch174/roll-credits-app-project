@@ -7,6 +7,7 @@
   python3 tools/catalog.py add "Terrifier" 2016 --to halloween
                                             Add a movie (finds it on TMDB, then builds)
   python3 tools/catalog.py oscars           Re-download the Oscar data and rebuild every movie's Oscar fields
+  python3 tools/catalog.py requests         Add movies admins approved in the app (Admin Tools → Movie Requests)
   python3 tools/catalog.py build            Merge everything into data/all_movies.json (the file the app reads)
   python3 tools/catalog.py check            List movies missing a poster, moods, or a TMDB match
 
@@ -270,6 +271,86 @@ def cmd_add(args):
             print(f'Added to the {fest} list.')
     cmd_build([])
 
+# ---------- approved movie requests (Firestore) ----------
+
+FIRESTORE = os.environ.get('FIRESTORE_BASE', 'https://firestore.googleapis.com')
+
+def firebase_project():
+    pid = os.environ.get('FIREBASE_PROJECT_ID', '').strip()
+    if pid:
+        return pid
+    path = os.path.join(ROOT, 'js', 'firebase-config.js')
+    if os.path.exists(path):
+        m = re.search(r'projectId\s*:\s*[\'"]([^\'"]+)', open(path, encoding='utf-8').read())
+        if m:
+            return m.group(1)
+    return None
+
+def fs_value(v):
+    if 'stringValue' in v: return v['stringValue']
+    if 'integerValue' in v: return int(v['integerValue'])
+    if 'doubleValue' in v: return v['doubleValue']
+    if 'booleanValue' in v: return v['booleanValue']
+    if 'arrayValue' in v: return [fs_value(x) for x in v['arrayValue'].get('values', [])]
+    return None
+
+def approved_requests(pid):
+    """Movie requests are public to read (no personal info), so no key is needed."""
+    out, token = [], ''
+    while True:
+        url = f'{FIRESTORE}/v1/projects/{pid}/databases/(default)/documents/requests?pageSize=300'
+        if token:
+            url += '&pageToken=' + urllib.parse.quote(token)
+        with urllib.request.urlopen(url, timeout=30) as r:
+            d = json.loads(r.read().decode('utf-8'))
+        for doc in d.get('documents', []):
+            f = {k: fs_value(v) for k, v in doc.get('fields', {}).items()}
+            if f.get('status') == 'approved' and f.get('tmdbId'):
+                out.append(f)
+        token = d.get('nextPageToken')
+        if not token:
+            return out
+
+def cmd_requests(args):
+    pid = firebase_project()
+    if not pid:
+        sys.exit('No Firebase project id (set FIREBASE_PROJECT_ID, or fill in js/firebase-config.js).')
+    try:
+        approved = approved_requests(pid)
+    except urllib.error.HTTPError as e:
+        sys.exit(f'Could not read movie requests ({e.code}). Are the latest firestore.rules published?')
+    cur = read(CURATION, [])
+    facts = read(FACTS, {})
+    have_tmdb = {m.get('tmdbId') for m in cur} | {f.get('tmdbId') for f in facts.values() if f.get('tmdbType', 'movie') == 'movie'}
+    have_imdb = {m.get('imdbId') for m in cur if m.get('imdbId')}
+    ids = {m['id'] for m in cur}
+    added = 0
+    for r in approved:
+        tid = int(r['tmdbId'])
+        if tid in have_tmdb:
+            continue
+        f = movie_facts(tid)
+        if not f or not f.get('tmdbYear'):
+            print(f'  ! TMDB {tid} ({r.get("title")}): no details on TMDB, skipped.')
+            continue
+        if f.get('imdbId') and f['imdbId'] in have_imdb:
+            continue  # already in the catalog under another TMDB entry
+        title, year = f['tmdbTitle'], f['tmdbYear']
+        mid = slug(title, year)
+        if mid in ids:
+            mid = f'{mid}-{tid}'
+        cur.append({'id': mid, 'imdbId': f.get('imdbId'), 'tmdbId': tid, 'title': title, 'releaseYear': year,
+                    'type': 'Feature Film', 'moodTone': [m for m in (r.get('moods') or []) if isinstance(m, str)],
+                    'scariness': None, 'comedy': None, 'franchise': None, 'seriesOrder': None, 'requested': True})
+        facts[mid] = f
+        ids.add(mid); have_tmdb.add(tid)
+        added += 1
+        print(f'  + {title} ({year}) as "{mid}"')
+    if added:
+        write_lines(CURATION, cur)
+        write_lines(FACTS, facts)
+    print(f'Approved requests: {len(approved)}. Newly added to the catalog: {added}.')
+
 MAJOR = {'BEST PICTURE': 'picture', 'DIRECTING': 'director', 'ACTOR IN A LEADING ROLE': 'actor', 'ACTRESS IN A LEADING ROLE': 'actress',
          'ACTOR IN A SUPPORTING ROLE': 'supportingActor', 'ACTRESS IN A SUPPORTING ROLE': 'supportingActress',
          'WRITING (Original Screenplay)': 'originalScreenplay', 'WRITING (Adapted Screenplay)': 'adaptedScreenplay'}
@@ -381,7 +462,8 @@ def cmd_check(args):
     show('TMDB uses a different title (yours is kept)', renamed)
     show('TMDB year is 2+ years off (check the IMDb id)', year_off)
 
-COMMANDS = {'fetch': cmd_fetch, 'add': cmd_add, 'oscars': cmd_oscars, 'build': cmd_build, 'check': cmd_check}
+COMMANDS = {'fetch': cmd_fetch, 'add': cmd_add, 'oscars': cmd_oscars, 'build': cmd_build, 'check': cmd_check,
+            'requests': cmd_requests}
 
 if __name__ == '__main__':
     if len(sys.argv) < 2 or sys.argv[1] not in COMMANDS:

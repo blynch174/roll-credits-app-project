@@ -50,7 +50,7 @@ export function infoBlock(m) {
 }
 
 // The catalog movie behind a table slot or history entry, if it's linked.
-export const catalogMovie = (catalogId) => (catalogId && catalog.isReady() ? catalog.get(catalogId) : null);
+export const catalogMovie = (catalogId) => (catalogId ? catalog.get(catalogId) : null);
 
 export function movieInfoSheet(m, onClose = null) {
   if (!m) return;

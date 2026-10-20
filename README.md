@@ -109,6 +109,25 @@ The built-in festivals are "official": admins edit and publish them from Setting
 - Each copy stores `sourceRev` (the revision it came from) and `sourceSig` (a fingerprint of its tables then),
   which is how the app tells untouched from edited. The bundled `defaults.js` copy is revision 1.
 
+## Movies that aren't in the catalog
+
+- When a title isn't found while logging a movie or filling a slot, **Search TMDB** looks it up through the relay
+  (`worker/`, set up with `RELAY_SETUP.md`). Picking one saves it with the person's data (`customMovies`, synced)
+  so its poster and details show everywhere, and files a request: `requests/{tmdbId}` in Firestore, one vote per
+  account (`requests/{tmdbId}/voters/{uid}`), no personal info.
+- Admins review them in **Admin Tools → Movie Requests** (most requested first), pick moods, and Approve or Reject.
+- The **Update movie catalog** workflow (every push and nightly) adds approved movies to `curation.json`, fetches
+  them, and rebuilds the catalog. People's saved `tmdb-123` ids switch to the catalog's own id automatically.
+- `curation.json` now changes in the repo (approved movies get added), so update zips no longer include it.
+
+## Protecting your own files
+
+Update zips leave out the files only your repo has: `js/firebase-config.js`, `data/all_movies.json`, and
+`data/catalog/` (`curation.json`, `facts.json`, `oscars.json`). Apply an update with
+`unzip -o ~/Downloads/roll-credits-vX.zip -d .` from the repo folder (adds and overwrites, never deletes).
+Turn on the commit guard once: `git config core.hooksPath tools/git-hooks`. It stops any commit that would delete
+those files. If `js/firebase-config.js` is ever missing, the app still runs with accounts and TMDB search off.
+
 ## TMDB logo
 
 TMDB asks apps to show their logo with the credit. Download one of the official logos from

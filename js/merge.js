@@ -1,7 +1,7 @@
 // Change tracking and merging, so edits made on two devices both survive a sync.
 //
 // Every saved state carries a small `sync` record:
-//   sync.at   = { f: {festivalId: time}, h: {historyId: time}, s: {movieId: time}, settings: time }
+//   sync.at   = { f: {festivalId: time}, h: {historyId: time}, s: {movieId: time}, c: {customMovieId: time}, settings: time }
 //               when each item was last changed on any device
 //   sync.gone = { f: {...}, h: {...}, s: {...} }   when each item was deleted
 // stamp() fills these in by comparing the state with what was last saved. merge() combines two states item by
@@ -11,11 +11,12 @@ const KINDS = [
   { k: 'f', list: 'festivals', key: (x) => x.id },
   { k: 'h', list: 'history', key: (x) => x.id },
   { k: 's', list: 'savedPicks', key: (x) => x.movieId },
+  { k: 'c', list: 'customMovies', key: (x) => x.id },
 ];
 const KEEP_GONE = 120 * 24 * 3600 * 1000; // deletions are remembered this long (another device may be offline)
 
 export function emptySync() {
-  return { at: { f: {}, h: {}, s: {}, settings: 0 }, gone: { f: {}, h: {}, s: {} } };
+  return { at: { f: {}, h: {}, s: {}, c: {}, settings: 0 }, gone: { f: {}, h: {}, s: {}, c: {} } };
 }
 
 // Makes sure d.sync exists and has the right shape (older data, or data from another source).
@@ -25,8 +26,8 @@ export function ensureSync(d) {
   const at = obj(s.at);
   const gone = obj(s.gone);
   d.sync = {
-    at: { f: obj(at.f), h: obj(at.h), s: obj(at.s), settings: Number(at.settings) || 0 },
-    gone: { f: obj(gone.f), h: obj(gone.h), s: obj(gone.s) },
+    at: { f: obj(at.f), h: obj(at.h), s: obj(at.s), c: obj(at.c), settings: Number(at.settings) || 0 },
+    gone: { f: obj(gone.f), h: obj(gone.h), s: obj(gone.s), c: obj(gone.c) },
   };
   return d.sync;
 }
@@ -72,7 +73,7 @@ export function merge(local, remote, { remoteWinsTies = true, savedMax = 3, now 
   const ls = ensureSync(L);
   const rs = ensureSync(R);
   const out = { ...L };
-  const sync = { at: { f: {}, h: {}, s: {}, settings: 0 }, gone: { f: {}, h: {}, s: {} } };
+  const sync = emptySync();
 
   for (const { k, list, key } of KINDS) {
     const lMap = new Map((L[list] || []).map((x) => [key(x), x]));

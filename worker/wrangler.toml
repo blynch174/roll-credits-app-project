@@ -1,0 +1,11 @@
+# Cloudflare Worker settings for the TMDB relay. Deployed by .github/workflows/relay.yml.
+name = "roll-credits-tmdb"
+main = "tmdb-relay.js"
+compatibility_date = "2025-09-01"
+workers_dev = true
+
+[vars]
+# Sites allowed to use the relay, comma-separated (no trailing slash).
+ALLOWED_ORIGINS = "https://blynch174.github.io,http://localhost:8000,http://127.0.0.1:8000"
+RATE_LIMIT = "60"
+# TMDB_TOKEN is a secret, set by the workflow from your GitHub secret. Never put it here.

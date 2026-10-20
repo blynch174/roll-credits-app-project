@@ -1402,3 +1402,24 @@ html, body { min-height: 100%; }
 .tabbar { inset: auto 0 0 0; transform: translateZ(0); }
 
 .tmdb-logo { display: block; height: 14px; width: auto; margin-bottom: 10px; }
+
+/* ---------- v3.14: TMDB search in autofind, movie requests ---------- */
+.af-tmdb .af-title { color: var(--accent); }
+.af-note { margin: 0; padding: 12px 14px; font-size: 14px; color: var(--muted); }
+.af-item.af-hit { flex-direction: row; align-items: center; gap: 10px; }
+.af-poster { flex: none; width: 34px; height: 51px; border-radius: 4px; object-fit: cover; background: var(--surface-2); }
+.af-text { display: flex; flex-direction: column; min-width: 0; }
+.af-hit .af-sub { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.req-list { display: flex; flex-direction: column; gap: 10px; }
+.req-row { display: flex; gap: 12px; padding: 12px; }
+.req-row .af-poster { width: 46px; height: 69px; }
+.req-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.req-title { font-weight: 700; }
+.req-sub { font-size: 13px; color: var(--muted); }
+.req-moods { display: flex; flex-wrap: wrap; gap: 6px; }
+.req-moods button { padding: 4px 10px; border: 1px solid var(--line); border-radius: 999px; background: transparent; color: var(--muted); font: inherit; font-size: 13px; }
+.req-moods button.on { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.req-actions { display: flex; gap: 8px; }
+.req-moods[hidden] { display: none; }
+.req-mood-toggle { align-self: flex-start; padding: 0; border: 0; background: none; color: var(--accent); font: inherit; font-size: 14px; font-weight: 650; }
+.sub-title { margin: 18px 4px 8px; font-size: 12px; font-weight: 750; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }

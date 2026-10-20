@@ -10,7 +10,7 @@
 import * as store from './store.js';
 import * as cloud from './cloud.js';
 
-export const APP_VERSION = '3.13';
+export const APP_VERSION = '3.14';
 const META_KEY = 'roll-credits:sync';
 const DEVICE_KEY = 'roll-credits:device';
 const PUSH_DELAY = 1500;
@@ -299,6 +299,12 @@ export async function signOut() {
 }
 
 export const sendReset = (email) => cloud.sendReset(email);
+
+// Files a catalog request for a movie picked from TMDB. Quietly does nothing without an account.
+export function requestMovie(m) {
+  if (!user || !m || !m.tmdbId) return Promise.resolve(null);
+  return cloud.requestMovie(user, m).catch(() => null);
+}
 
 // Deletes the account and everything saved in it. This device keeps its own copy.
 export async function deleteAccount(password) {

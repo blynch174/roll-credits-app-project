@@ -110,5 +110,6 @@ updates to everyone.
 | `admins/{User ID}` | Admins, added by hand in the console |
 | `official/{festival id}` | Published official festivals. Anyone can read them |
 | `drafts/{festival id}` | Admins' unpublished edits |
+| `requests/{TMDB id}` | Movies people asked to add to the catalog (title, poster, vote count). Anyone can read |
 
 Passwords are handled by Firebase Authentication and are never visible, not even to you.

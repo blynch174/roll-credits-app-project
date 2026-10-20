@@ -5,6 +5,7 @@ import * as sync from '../sync.js';
 import * as cloud from '../cloud.js';
 import { $, esc, toast, nav, openSheet, swapSheet, closeSheet, confirmSheet } from '../ui.js';
 import { renderOfficialSection } from './admin-official.js';
+import { renderRequestsSection, initRequestsSection } from './admin-requests.js';
 
 // ---------- Settings → Account section ----------
 
@@ -279,9 +280,13 @@ export async function renderAdmin() {
     <h2 class="section-title first">Official Festivals</h2>
     <div id="official-admin"></div>
 
+    <h2 class="section-title">Movie Requests</h2>
+    <div id="requests-admin"></div>
+
     <h2 class="section-title">Admins</h2>
     <div class="card admin-soon"><p class="sheet-text">Admins are added in the Firebase console (see FIREBASE_SETUP.md, step 6).</p></div>`;
   renderOfficialSection();
+  renderRequestsSection();
 }
 
 export function initAccount() {
@@ -290,4 +295,5 @@ export function initAccount() {
     if (!$('#screen-admin').hidden && !sync.isAdmin()) renderAdmin();
   });
   $('#admin-done').addEventListener('click', () => nav.go('settings'));
+  initRequestsSection();
 }

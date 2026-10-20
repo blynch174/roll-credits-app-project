@@ -7,9 +7,12 @@
 //   official/{id}    { name, icon, rev, kind, message, hidden, order, tables: "<JSON>", publishedAt, publishedBy }
 //                    Published official festivals. Anyone can read (no account needed). Admins write.
 //   drafts/{id}      { name, icon, tables: "<JSON>", baseRev, updatedAt, updatedBy }   Admins only.
+//   requests/{tmdbId} { tmdbId, title, year, posterPath, count, status, moods, firstAt, lastAt }
+//                    Movies people want in the catalog. Anyone can read (no personal info). Signed-in people add
+//                    one vote each (requests/{tmdbId}/voters/{uid}); admins approve or reject.
 // firestore.rules enforces who can read and write each of these.
 
-import { firebaseConfig } from './firebase-config.js';
+import { firebaseConfig } from './appconfig.js';
 
 let fb = null;
 let loading = null;
@@ -98,6 +101,43 @@ export async function putUserData(uid, { state, clientUpdatedAt, email, device, 
   await F.setDoc(F.doc(db, 'users', uid), {
     state, clientUpdatedAt, email, device, appVersion, updatedAt: F.serverTimestamp(),
   });
+}
+
+// ---------- Movie requests ----------
+
+// Asks for a TMDB movie to be added to the catalog. One vote per account. Returns 'added', 'voted' or 'already'.
+export async function requestMovie(user, m) {
+  const { F, db } = fb;
+  const id = String(m.tmdbId);
+  const reqRef = F.doc(db, 'requests', id);
+  const voterRef = F.doc(db, 'requests', id, 'voters', user.uid);
+  const [r, v] = await Promise.all([F.getDoc(reqRef), F.getDoc(voterRef)]);
+  if (v.exists()) return 'already';
+  const now = Date.now();
+  const batch = F.writeBatch(db);
+  if (r.exists()) {
+    batch.update(reqRef, { count: (r.data().count || 0) + 1, lastAt: now });
+  } else {
+    batch.set(reqRef, {
+      tmdbId: m.tmdbId, title: String(m.title).slice(0, 300), year: m.releaseYear || null, posterPath: m.posterPath || null,
+      count: 1, status: 'pending', moods: [], firstAt: now, lastAt: now,
+    });
+  }
+  batch.set(voterRef, { at: now });
+  await batch.commit();
+  return r.exists() ? 'voted' : 'added';
+}
+
+export async function listRequests() {
+  const { F, db } = fb;
+  const snap = await F.getDocs(F.collection(db, 'requests'));
+  return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+}
+
+// Admins: status 'approved' | 'rejected' | 'pending', plus the moods it gets in the catalog.
+export function setRequest(id, { status, moods }) {
+  const { F, db } = fb;
+  return F.updateDoc(F.doc(db, 'requests', String(id)), { status, moods: moods || [], reviewedAt: Date.now() });
 }
 
 // ---------- Official festivals ----------

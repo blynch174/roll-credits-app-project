@@ -7,6 +7,8 @@ rules_version = '2';
 //   - Anyone with an account can read and write only their own saved data (users/{their uid}).
 //   - Nobody can add admins from the app. Admins are added by hand in the Firebase console.
 //   - Anyone can read published official festivals; only admins can publish them or see drafts.
+//   - Anyone can read movie requests (they hold no personal info). Signed-in people can add one vote per movie;
+//     only admins can approve, reject, or delete.
 //   - Everything else is closed.
 
 service cloud.firestore {
@@ -46,6 +48,36 @@ service cloud.firestore {
     // Admins' unpublished edits to official festivals.
     match /drafts/{id} {
       allow read, write: if isAdmin();
+    }
+
+    // Movies people want added to the catalog. Document id = the TMDB id. Each account votes once: the vote is
+    // a voters/{uid} document written in the same batch as the new request (or as the count going up by one).
+    match /requests/{tmdbId} {
+      function voterPath() {
+        return /databases/$(database)/documents/requests/$(tmdbId)/voters/$(request.auth.uid);
+      }
+      allow read: if true;
+      allow create: if signedIn()
+        && request.resource.data.keys().hasOnly(['tmdbId', 'title', 'year', 'posterPath', 'count', 'status', 'moods', 'firstAt', 'lastAt'])
+        && request.resource.data.tmdbId == int(tmdbId)
+        && request.resource.data.title is string && request.resource.data.title.size() <= 300
+        && request.resource.data.count == 1
+        && request.resource.data.status == 'pending'
+        && request.resource.data.moods.size() == 0
+        && !exists(voterPath()) && existsAfter(voterPath());
+      allow update: if isAdmin() || (signedIn()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['count', 'lastAt'])
+        && request.resource.data.count == resource.data.count + 1
+        && !exists(voterPath()) && existsAfter(voterPath()));
+      allow delete: if isAdmin();
+
+      match /voters/{uid} {
+        allow get: if signedIn() && request.auth.uid == uid;
+        allow create: if signedIn() && request.auth.uid == uid
+          && request.resource.data.keys().hasOnly(['at'])
+          && existsAfter(/databases/$(database)/documents/requests/$(tmdbId));
+        allow list, update, delete: if false;
+      }
     }
   }
 }

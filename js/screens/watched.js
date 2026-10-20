@@ -261,7 +261,7 @@ export function logSheet(after) {
           if (day > todayStr()) return toast("That date hasn't happened yet.");
           const date = day === todayStr() ? new Date().toISOString() : new Date(day + 'T12:00:00').toISOString();
           const res = store.logMovie({
-            festivalId: festId, title, year: $('#f-year', s).value, catalogId: getCatalogId(),
+            festivalId: festId, title, year: $('#f-year', s).value, catalogId: getCatalogId(true),
             date, rating, notes: $('#lg-notes', s).value,
           });
           closeSheet();
