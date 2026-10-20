@@ -133,12 +133,30 @@ function renderList() {
 export function entrySheet(entryId, after) {
   const e = store.entry(entryId);
   if (!e) return;
-  const fest = store.festival(e.festivalId);
+  const subLine = () => {
+    const f = store.festival(e.festivalId);
+    if (e.festivalId === store.NO_FEST) return `${esc(store.NO_FEST_NAME)} · ${fmtDate(e.date)}`;
+    return `${esc(f ? f.name : e.festivalName)} · ${esc(e.categoryName)} · ${fmtDate(e.date)}`;
+  };
+  // Festival choices: No Festival, Popcorn Pick (only for Popcorn picks), every festival, and a deleted one it's still in.
+  const festOptions = () => {
+    const opts = [[store.NO_FEST, store.NO_FEST_NAME]];
+    if (e.festivalId === store.POPCORN) opts.push([store.POPCORN, store.POPCORN_NAME]);
+    for (const f of store.festivals()) opts.push([f.id, f.name]);
+    if (!opts.some(([id]) => id === e.festivalId)) opts.push([e.festivalId, store.historyGroupName(e.festivalId)]);
+    return opts.map(([id, name]) => `<option value="${esc(id)}" ${id === e.festivalId ? 'selected' : ''}>${esc(name)}</option>`).join('');
+  };
   const sheet = openSheet({
     title: e.title + (e.year ? ` (${e.year})` : ''),
     body: `
-      <p class="sheet-sub">${esc(fest ? fest.name : e.festivalName)} · ${esc(e.categoryName)} · ${fmtDate(e.date)}</p>
+      <p class="sheet-sub" id="e-sub">${subLine()}</p>
       ${infoBlock(catalogMovie(e.catalogId))}
+      <div class="field-row">
+        <label class="field"><span class="label">Festival</span>
+          <select id="e-fest">${festOptions()}</select></label>
+        <label class="field"><span class="label">Watched on</span>
+          <input id="e-date" type="date" value="${dayOf(e.date)}" max="${todayStr()}"></label>
+      </div>
       <div class="field">
         <span class="label">Rating</span>
         <div class="rating-row" id="rating-row">${ratingIcons(e.icon, e.rating, true)}</div>
@@ -161,6 +179,20 @@ export function entrySheet(entryId, after) {
     $('#rating-row', sheet).innerHTML = ratingIcons(e.icon, rating, true);
   });
   $('#e-notes', sheet).addEventListener('input', (ev) => store.updateEntry(entryId, { notes: ev.target.value }));
+  $('#e-fest', sheet).addEventListener('change', (ev) => {
+    const res = store.moveEntry(entryId, ev.target.value);
+    if (!res) return;
+    $('#e-sub', sheet).innerHTML = subLine();
+    $('#rating-row', sheet).innerHTML = ratingIcons(e.icon, rating, true);
+    if (res.found) toast(`Matched to your ${res.found.cat.name} table.`);
+  });
+  $('#e-date', sheet).addEventListener('change', (ev) => {
+    const day = ev.target.value;
+    if (!day) return;
+    if (day > todayStr()) { ev.target.value = dayOf(e.date); return toast("That date hasn't happened yet."); }
+    store.setEntryDate(entryId, day);
+    $('#e-sub', sheet).innerHTML = subLine();
+  });
   $('#btn-remove', sheet).addEventListener('click', () => removeSheet(entryId, after));
 }
 
@@ -217,6 +249,12 @@ function removeSheet(entryId, after) {
 }
 
 // ---------- Log a movie watched outside the app ----------
+
+// The local calendar day of a saved time, as 'YYYY-MM-DD'.
+const dayOf = (iso) => {
+  const d = new Date(iso);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+};
 
 const todayStr = () => {
   const d = new Date();

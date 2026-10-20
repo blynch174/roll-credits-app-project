@@ -738,6 +738,51 @@ export function updateEntry(id, { rating, notes }) {
   save();
 }
 
+// Moves a history entry to another festival (or No Festival). If that festival has the movie on a table, the entry
+// is matched to it (so it shows as Seen there); otherwise it's "Off the menu". Tables themselves aren't changed.
+export function moveEntry(id, festivalId) {
+  const e = entry(id);
+  if (!e || e.festivalId === festivalId) return null;
+  if (festivalId === NO_FEST || festivalId === POPCORN) {
+    Object.assign(e, {
+      festivalId,
+      festivalName: festivalId === NO_FEST ? NO_FEST_NAME : POPCORN_NAME,
+      icon: festivalId === NO_FEST ? NO_FEST_ICON : 'popcorn',
+      categoryId: OFF_MENU,
+      categoryName: festivalId === NO_FEST ? NO_FEST_NAME : 'Any mood',
+      slotIndex: null,
+    });
+    save();
+    return { found: null };
+  }
+  const f = festival(festivalId);
+  if (!f) return null;
+  const found = findSlot(f, { title: e.title, year: e.year, catalogId: e.catalogId });
+  Object.assign(e, {
+    festivalId: f.id,
+    festivalName: f.name,
+    icon: f.icon,
+    categoryId: found ? found.cat.id : OFF_MENU,
+    categoryName: found ? found.cat.name : 'Off the menu',
+    movieId: found ? found.movie.id : e.movieId,
+    slotIndex: found ? found.index : null,
+  });
+  save();
+  return { found };
+}
+
+// day: 'YYYY-MM-DD'. Keeps the newest-first order.
+export function setEntryDate(id, day) {
+  const e = entry(id);
+  if (!e || !/^\d{4}-\d{2}-\d{2}$/.test(day)) return;
+  const old = new Date(e.date);
+  const oldDay = `${old.getFullYear()}-${String(old.getMonth() + 1).padStart(2, '0')}-${String(old.getDate()).padStart(2, '0')}`;
+  if (oldDay === day) return;
+  e.date = new Date(day + 'T12:00:00').toISOString();
+  state.history.sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
+  save();
+}
+
 // reason: 'unfinished' | 'hated' | 'mistake'. Returns a message for the UI.
 export function removeEntry(id, reason) {
   const i = state.history.findIndex((e) => e.id === id);
