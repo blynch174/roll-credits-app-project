@@ -568,9 +568,9 @@ input[type="number"] { -moz-appearance: textfield; }
 .sheet-text { margin: 6px 0 0; color: var(--muted); }
 .sheet-body { display: flex; flex-direction: column; gap: 14px; margin-top: 10px; }
 .sheet-body .field { display: block; }
-.field-row { display: flex; gap: 10px; }
-.field-row .year { width: 110px; flex: none; }
-.field-row .grow { flex: 1; }
+.field-row { display: grid; grid-template-columns: minmax(0, 1fr) 140px; gap: 10px; }
+.field-row > .field { min-width: 0; }
+.field-row input, .field-row select { width: 100%; min-width: 0; }
 .sheet-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
 .sheet-actions .btn { flex: 1 1 auto; }
 .sheet-actions .btn.primary { flex-basis: 100%; order: -1; }
@@ -825,9 +825,13 @@ input[type="search"] {
 /* Log a movie */
 .section-head.first { margin-top: 4px; }
 .section-head .section-title { margin-top: 4px; }
-.field-row .date { width: 150px; flex: none; }
 input[type="date"] {
+  display: block;
   width: 100%;
+  min-width: 0;
+  -webkit-appearance: none;
+  appearance: none;
+  text-align: left;
   min-height: 46px;
   padding: 10px 12px;
   background: var(--surface-2);

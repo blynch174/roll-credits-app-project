@@ -18,8 +18,8 @@ const STEPS = [
   },
   {
     icon: DIE,
-    title: 'Roll for Tonight',
-    text: 'On the Roll tab, tap <b>Roll for Tonight</b>. The first die picks a category, the second picks a movie in it. Like it? Tap <b>Watch it</b>. Not feeling it? <b>Reroll it</b> as many times as you want.',
+    title: 'Roll the Dice',
+    text: 'On the Roll tab, tap <b>Roll the Dice</b>. The first die picks a category, the second picks a movie in it. Like it? Tap <b>Watch it</b>. Not feeling it? <b>Reroll it</b> as many times as you want.',
     tip: 'Have real dice? Switch to <b>Physical Dice</b> and type in what you rolled.',
   },
   {

@@ -796,7 +796,13 @@ export function findSlot(f, { title, year, catalogId }) {
 
 // Log a movie watched outside the app. If it's on the festival's tables, it's linked to that slot
 // (marked Seen, or opened in Replace mode), just like watching it from a roll.
+// Logging a movie that isn't part of any festival.
+export const NO_FEST = 'none';
+export const NO_FEST_NAME = 'No Festival';
+export const NO_FEST_ICON = 'star';
+
 export function logMovie({ festivalId, title, year, catalogId, date, rating, notes }) {
+  if (festivalId === NO_FEST) return logUnfiled({ title, year, catalogId, date, rating, notes });
   const f = festival(festivalId);
   if (!f || !String(title || '').trim()) return null;
   const y = parseInt(year, 10);
@@ -824,6 +830,32 @@ export function logMovie({ festivalId, title, year, catalogId, date, rating, not
   if (found && state.settings.slotMode === 'replace') found.cat.slots[found.index] = null;
   save();
   return { entry, found };
+}
+
+function logUnfiled({ title, year, catalogId, date, rating, notes }) {
+  if (!String(title || '').trim()) return null;
+  const y = parseInt(year, 10);
+  const entry = {
+    id: uid(),
+    festivalId: NO_FEST,
+    festivalName: NO_FEST_NAME,
+    icon: NO_FEST_ICON,
+    categoryId: OFF_MENU,
+    categoryName: NO_FEST_NAME,
+    movieId: uid(),
+    catalogId: catalogId || null,
+    title: String(title).trim(),
+    year: Number.isFinite(y) && y > 1800 && y < 3000 ? y : null,
+    slotIndex: null,
+    date: date || new Date().toISOString(),
+    rating: rating || 0,
+    notes: notes || '',
+    logged: true,
+  };
+  state.history.push(entry);
+  state.history.sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
+  save();
+  return { entry, found: null };
 }
 
 // Popcorn Pick: a random movie from the whole catalog. Not a festival, but it gets its own
@@ -880,6 +912,7 @@ export function watchSaved(movie) {
 // Display name for a history group: festival name, Popcorn Pick, or a deleted festival.
 export function historyGroupName(id) {
   if (id === POPCORN) return POPCORN_NAME;
+  if (id === NO_FEST) return NO_FEST_NAME;
   const f = festival(id);
   if (f) return f.name;
   const e = state.history.find((x) => x.festivalId === id);

@@ -21,7 +21,7 @@ export function entryRow(e, showFestival) {
       <button type="button" class="watched-item swipe-item" data-id="${esc(e.id)}" style="--cat:${color}">
         <span class="wi-main">
           <span class="wi-title">${movieLabel(e)}</span>
-          <span class="wi-meta">${where}${esc(cat ? cat.name : e.categoryName)} · ${fmtDate(e.date)}</span>
+          <span class="wi-meta">${e.festivalId === store.NO_FEST ? `${esc(store.NO_FEST_NAME)} · ` : `${where}${esc(cat ? cat.name : e.categoryName)} · `}${fmtDate(e.date)}</span>
           ${e.notes ? `<span class="wi-notes">${esc(e.notes)}</span>` : ''}
         </span>
         <span class="wi-rating">${e.rating ? ratingIcons(e.icon, e.rating) : '<span class="rate-me">Rate</span>'}</span>
@@ -224,8 +224,7 @@ const todayStr = () => {
 };
 
 export function logSheet(after) {
-  const active = store.activeFestival();
-  let festId = active.id;
+  let festId = store.NO_FEST;
   let rating = 0;
   let getCatalogId = () => null;
   const sheet = openSheet({
@@ -241,7 +240,7 @@ export function logSheet(after) {
       ${autofindBox()}
       <div class="field-row">
         <label class="field grow"><span class="label">Festival</span>
-          <select id="lg-fest">${store.festivals().map((x) => `<option value="${x.id}" ${x.id === festId ? 'selected' : ''}>${esc(x.name)}</option>`).join('')}</select></label>
+          <select id="lg-fest"><option value="${store.NO_FEST}" selected>${store.NO_FEST_NAME}</option>${store.festivals().map((x) => `<option value="${x.id}">${esc(x.name)}</option>`).join('')}</select></label>
         <label class="field date"><span class="label">Watched on</span>
           <input id="lg-date" type="date" value="${todayStr()}" max="${todayStr()}"></label>
       </div>
@@ -273,11 +272,11 @@ export function logSheet(after) {
   });
 
   const fest = () => store.festival(festId);
-  const drawRating = () => { $('#rating-row', sheet).innerHTML = ratingIcons(fest().icon, rating, true); };
+  const drawRating = () => { $('#rating-row', sheet).innerHTML = ratingIcons(fest() ? fest().icon : store.NO_FEST_ICON, rating, true); };
   const updateMatch = () => {
     const title = $('#f-title', sheet).value.trim();
     const el = $('#lg-match', sheet);
-    if (!title) { el.textContent = ''; return; }
+    if (!title || !fest()) { el.textContent = ''; return; }
     const y = parseInt($('#f-year', sheet).value, 10) || null;
     const hit = store.findSlot(fest(), { title, year: y, catalogId: getCatalogId() });
     const mode = store.getState().settings.slotMode;

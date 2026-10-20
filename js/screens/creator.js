@@ -63,7 +63,7 @@ export function renderCreator() {
     syncSeg($('#cr-mode'), form.mode);
     $('#cr-preview').innerHTML = `
       <span class="pv-title">${esc(form.name || 'Your festival')}</span>
-      <span class="pv-btn">Roll for Tonight</span>
+      <span class="pv-btn">Roll the Dice</span>
       <span class="pv-icons">${[1, 2, 3, 4, 5].map((i) => `<span class="ricon ${i <= 3 ? 'on' : ''}">${iconSVG(form.icon)}</span>`).join('')}</span>`;
     $('#cr-cat-wrap').hidden = form.mode === 'one';
     const cats = form.mode === 'one' ? 1 : form.categoryDie;

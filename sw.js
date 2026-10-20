@@ -6,7 +6,7 @@
 // vendor/firebase is only downloaded when accounts are set up (js/firebase-config.js).
 // They get saved for offline use the first time the app loads them.
 
-const CACHE_VERSION = 'v19';
+const CACHE_VERSION = 'v20';
 const CACHE_NAME = 'roll-credits-' + CACHE_VERSION;
 
 const FILES = [

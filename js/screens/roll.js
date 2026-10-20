@@ -103,7 +103,7 @@ function renderRollArea() {
     }
     area.innerHTML = `
       ${diceRow(fest, { cat: single || fest.categories[0], showMovie: !!single })}
-      <button type="button" class="btn primary big" id="btn-roll">Roll for Tonight</button>
+      <button type="button" class="btn primary big" id="btn-roll">Roll the Dice</button>
       ${catKey(fest)}`;
     $('#btn-roll').addEventListener('click', rollAll);
     return;
