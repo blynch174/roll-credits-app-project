@@ -17,3 +17,5 @@ export const firebaseConfig = {
 
 // Name shown to people who sign up but aren't on the invite list yet ("Ask Brandon to add you").
 export const INVITE_CONTACT = 'Brandon';
+
+export const TMDB_RELAY = 'https://roll-credits-tmdb.blynch174.workers.dev';
