@@ -1,0 +1,80 @@
+# Keeps the movie catalog up to date. On every push, and every night, it:
+#   1. adds movies admins approved in the app (Admin Tools → Movie Requests),
+#   2. fetches TMDB details and posters for any movie that doesn't have them yet (the rest are skipped),
+#   3. rebuilds data/all_movies.json, and commits the result back to the repo.
+# Pushes made by this workflow don't start it again.
+#
+# Setup (once): repo Settings → Secrets and variables → Actions → New repository secret
+#   Name: TMDB_TOKEN    Value: your TMDB "API Read Access Token"
+#
+# Run it by hand: Actions tab → Update movie catalog → Run workflow (with optional refresh / retry).
+
+name: Update movie catalog
+
+on:
+  push:
+  schedule:
+    - cron: '17 7 * * *'   # every night, about 3 AM Eastern
+  workflow_dispatch:
+    inputs:
+      refresh:
+        description: 'Re-fetch every movie (picks up TMDB corrections)'
+        type: boolean
+        default: false
+      retry:
+        description: "Try again for movies TMDB didn't match before"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: catalog
+  cancel-in-progress: false
+
+jobs:
+  catalog:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Add approved movie requests
+        env:
+          TMDB_TOKEN: ${{ secrets.TMDB_TOKEN }}
+        run: |
+          if [ -z "$TMDB_TOKEN" ] || [ ! -f js/firebase-config.js ]; then
+            echo "Skipped (needs the TMDB_TOKEN secret and js/firebase-config.js)."
+            exit 0
+          fi
+          python3 tools/catalog.py requests || echo "::warning::Couldn't read movie requests this time."
+
+      - name: Fetch new movies from TMDB
+        env:
+          TMDB_TOKEN: ${{ secrets.TMDB_TOKEN }}
+        run: |
+          if [ -z "$TMDB_TOKEN" ]; then
+            echo "::warning::No TMDB_TOKEN secret yet, so nothing was fetched. Add it under Settings → Secrets and variables → Actions."
+            exit 0
+          fi
+          flags=""
+          if [ "${{ inputs.refresh }}" = "true" ]; then flags="$flags --refresh"; fi
+          if [ "${{ inputs.retry }}" = "true" ]; then flags="$flags --retry"; fi
+          python3 tools/catalog.py fetch $flags
+
+      - name: Build data/all_movies.json
+        run: python3 tools/catalog.py build
+
+      - name: Commit catalog changes
+        run: |
+          if git diff --quiet -- data/catalog/curation.json data/catalog/facts.json data/all_movies.json; then
+            echo "Catalog already up to date."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/catalog/curation.json data/catalog/facts.json data/all_movies.json
+          git commit -m "Update movie catalog from TMDB"
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
