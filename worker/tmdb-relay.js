@@ -50,7 +50,12 @@ function limited(req, env) {
 async function tmdb(path, params, env) {
   const url = new URL((env.TMDB_API_BASE || TMDB) + path);
   for (const [k, v] of Object.entries(params || {})) if (v !== undefined && v !== '') url.searchParams.set(k, v);
-  const get = () => fetch(url, { headers: { Authorization: `Bearer ${env.TMDB_TOKEN}`, Accept: 'application/json' } });
+  // Works with either TMDB credential: the long "API Read Access Token" (eyJ…) or the short "API Key".
+  const token = String(env.TMDB_TOKEN || '').trim();
+  const headers = { Accept: 'application/json' };
+  if (token.startsWith('eyJ')) headers.Authorization = `Bearer ${token}`;
+  else url.searchParams.set('api_key', token);
+  const get = () => fetch(url, { headers });
   let res = await get();
   if (res.status === 429) { // TMDB's rate limit: wait a moment and try once more
     await new Promise((r) => setTimeout(r, 1000));
@@ -118,8 +123,26 @@ async function movie(id, env) {
   };
 }
 
+// GET /health (open in a browser): is the relay up, does it have a key, and does TMDB accept it?
+// Shows no secrets.
+async function health(env) {
+  const out = { relay: 'ok', keySet: !!env.TMDB_TOKEN, tmdb: 'not checked', allowedOrigins: env.ALLOWED_ORIGINS || '' };
+  if (!env.TMDB_TOKEN) return out;
+  try {
+    await tmdb('/configuration', {}, env);
+    out.tmdb = 'ok';
+  } catch (e) {
+    out.tmdb = String(e.message || e).replace('tmdb ', 'TMDB answered ');
+    if (/401/.test(out.tmdb)) out.tmdb += ' (the TMDB_TOKEN secret is wrong)';
+  }
+  return out;
+}
+
 export default {
   async fetch(req, env, ctx) {
+    if (new URL(req.url).pathname === '/health') {
+      return new Response(JSON.stringify(await health(env), null, 2), { headers: { 'Content-Type': 'application/json; charset=utf-8' } });
+    }
     const origin = allowedOrigin(req, env);
     if (req.method === 'OPTIONS') return origin ? reply({}, 204, origin) : reply({ error: 'forbidden' }, 403, null);
     if (req.method !== 'GET') return reply({ error: 'method' }, 405, origin);
