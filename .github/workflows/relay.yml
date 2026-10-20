@@ -1,0 +1,51 @@
+# Deploys the TMDB relay (worker/) to Cloudflare. Your TMDB key comes from the same TMDB_TOKEN GitHub secret the
+# catalog workflow uses, and is stored on Cloudflare as an encrypted secret. It never appears in the app or the repo.
+#
+# Setup (once): see RELAY_SETUP.md. Needs these repo secrets: TMDB_TOKEN, CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID.
+# Runs when anything in worker/ changes, or by hand: Actions → Deploy TMDB relay → Run workflow.
+
+name: Deploy TMDB relay
+
+on:
+  push:
+    paths:
+      - 'worker/**'
+      - '.github/workflows/relay.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: relay
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check secrets
+        id: check
+        env:
+          CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CF_ACCOUNT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          TMDB_TOKEN: ${{ secrets.TMDB_TOKEN }}
+        run: |
+          if [ -z "$CF_TOKEN" ] || [ -z "$CF_ACCOUNT" ] || [ -z "$TMDB_TOKEN" ]; then
+            echo "::warning::Relay not deployed: add CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID and TMDB_TOKEN secrets (see RELAY_SETUP.md)."
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Deploy to Cloudflare
+        if: steps.check.outputs.ready == 'true'
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: worker
+          secrets: |
+            TMDB_TOKEN
+        env:
+          TMDB_TOKEN: ${{ secrets.TMDB_TOKEN }}
