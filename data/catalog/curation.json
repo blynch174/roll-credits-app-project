@@ -2250,5 +2250,7 @@
 {"id": "wayne-s-world-2-1993", "imdbId": null, "title": "Wayne's World 2", "releaseYear": 1993, "type": "Feature Film", "moodTone": ["Energetic", "Nostalgic"], "scariness": 1, "comedy": 3, "franchise": null, "seriesOrder": null},
 {"id": "robocop-2-1990", "imdbId": null, "title": "RoboCop 2", "releaseYear": 1990, "type": "Feature Film", "moodTone": ["Energetic", "Nostalgic"], "scariness": 1, "comedy": 3, "franchise": null, "seriesOrder": null},
 {"id": "rambo-first-blood-part-ii-1985", "imdbId": null, "title": "Rambo: First Blood Part II", "releaseYear": 1985, "type": "Feature Film", "moodTone": ["Energetic", "Nostalgic"], "scariness": 1, "comedy": 3, "franchise": null, "seriesOrder": null},
-{"id": "honey-i-blew-up-the-kid-1992", "imdbId": null, "title": "Honey, I Blew Up the Kid", "releaseYear": 1992, "type": "Feature Film", "moodTone": ["Energetic", "Nostalgic"], "scariness": 1, "comedy": 3, "franchise": null, "seriesOrder": null}
+{"id": "honey-i-blew-up-the-kid-1992", "imdbId": null, "title": "Honey, I Blew Up the Kid", "releaseYear": 1992, "type": "Feature Film", "moodTone": ["Energetic", "Nostalgic"], "scariness": 1, "comedy": 3, "franchise": null, "seriesOrder": null},
+{"id": "last-holiday-2006", "imdbId": "tt0408985", "tmdbId": 17379, "title": "Last Holiday", "releaseYear": 2006, "type": "Feature Film", "moodTone": ["Adventurous", "Character-Driven", "Festive", "Witty"], "scariness": null, "comedy": null, "franchise": null, "seriesOrder": null, "requested": true},
+{"id": "home-for-the-holidays-1995", "imdbId": "tt0113321", "tmdbId": 9089, "title": "Home for the Holidays", "releaseYear": 1995, "type": "Feature Film", "moodTone": [], "scariness": null, "comedy": null, "franchise": null, "seriesOrder": null, "requested": true}
 ]
