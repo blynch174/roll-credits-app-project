@@ -1,7 +1,7 @@
 // All saved data and every change to it. The screens call these and then re-render.
 
 import {
-  BUILT_IN_FESTIVALS, buildBuiltInFestival, buildDefaultState, builtInCategories,
+  BUILT_IN_FESTIVALS, STARTER_FESTIVALS, buildBuiltInFestival, buildDefaultState, builtInCategories,
   makeCategory, makeMovie, uid, SWATCHES, BUNDLED_REV, tablesSig, categoriesFromTables, festivalFromOfficial,
 } from './defaults.js';
 import { themeFromOldFestival, DEFAULT_THEME, isThemeId, retiredTheme } from './themes.js';
@@ -201,6 +201,7 @@ function sanitize(d) {
     for (const k of ['countries', 'languages', 'genres', 'directors', 'moodTone']) if (!Array.isArray(m[k])) m[k] = [];
   }
   if (!Array.isArray(d.removedOfficial)) d.removedOfficial = [];
+  if (Array.isArray(d.librarySeen)) d.librarySeen = d.librarySeen.filter((x) => typeof x === 'string').slice(-500);
   return d;
 }
 
@@ -213,6 +214,8 @@ function migrate(d) {
   if (!d.festivals.length) { d.festivals = buildDefaultState().festivals; d.removedOfficial = []; }
   if (!Array.isArray(d.savedPicks)) d.savedPicks = [];
   if (!Array.isArray(d.customMovies)) d.customMovies = [];
+  // v3.19 Festival Library: festivals that already existed don't count as "New".
+  if (!Array.isArray(d.librarySeen)) d.librarySeen = BUILT_IN_FESTIVALS.map((x) => x.id);
   // 3D dice are opt-in for now: anyone who never picked a style themselves goes to flat dice.
   if (!d.settings.diceStyleChosen) d.settings.diceStyle = 'flat';
   // Added in v3.3. Anyone with saved data from before already knows the app, so skip the tour for them.
@@ -285,12 +288,11 @@ function migrateV2toV3(d) {
 }
 
 // New built-in festivals shipped in an update appear for existing users too.
+// Since v3.19 new official festivals aren't added automatically; they wait in the Festival Library.
+// Only a device with no festivals at all gets the starter set back.
 function ensureBuiltIns(d) {
-  const removed = d.removedOfficial || [];
-  for (const def of BUILT_IN_FESTIVALS) {
-    if (removed.includes(def.id)) continue; // the user deleted it
-    if (!d.festivals.some((f) => f.id === def.id)) d.festivals.push(buildBuiltInFestival(def));
-  }
+  if (d.festivals.length) return;
+  for (const def of BUILT_IN_FESTIVALS) if (STARTER_FESTIVALS.includes(def.id)) d.festivals.push(buildBuiltInFestival(def));
 }
 
 // ---------- Lookups ----------
@@ -592,14 +594,7 @@ export function reconcileOfficial(list) {
   let changed = false;
   for (const pub of list) {
     const f = state.festivals.find((x) => x.id === pub.id);
-    if (!f) {
-      if (pub.hidden || removedOfficial().includes(pub.id)) continue;
-      const nf = festivalFromOfficial(pub);
-      if (!freshInstall) nf.isNew = true;
-      state.festivals.push(nf);
-      changed = true;
-      continue;
-    }
+    if (!f) continue; // not added: it's waiting in the Festival Library
     if (!f.builtIn || !(pub.rev > (f.sourceRev || 0))) continue;
     if (isUntouched(f)) {
       applyOfficial(f.id, pub, pub.kind === 'version' && !freshInstall);
@@ -639,6 +634,17 @@ export function deleteFestival(fId) {
 }
 
 export const removedOfficial = () => state.removedOfficial || [];
+
+// Festival Library: which official festivals this person has already seen there (the rest get a "New" badge).
+export const librarySeen = () => state.librarySeen || [];
+export function markLibrarySeen(ids) {
+  const seen = new Set(librarySeen());
+  const before = seen.size;
+  ids.forEach((id) => seen.add(id));
+  if (seen.size === before) return;
+  state.librarySeen = [...seen].slice(-500);
+  save();
+}
 
 // Adds a deleted official festival back: the latest published version if we have it, otherwise the bundled one.
 export function restoreOfficialFestival(id, pub = null) {

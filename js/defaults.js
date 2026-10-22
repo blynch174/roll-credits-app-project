@@ -20,7 +20,9 @@ export const SWATCHES = [
 export const swatchHex = (id) => (SWATCHES.find((s) => s.id === id) || SWATCHES[7]).hex;
 
 // Rating icons a festival can use (drawn in icons.js).
-export const RATING_ICONS = ['skull', 'tree', 'trophy', 'star', 'popcorn', 'heart', 'ghost', 'snowflake', 'balloon', 'hourglass', 'teardrop', 'vinyl', 'vhs'];
+export const RATING_ICONS = ['skull', 'tree', 'trophy', 'star', 'popcorn', 'heart', 'ghost', 'snowflake', 'balloon', 'hourglass', 'teardrop', 'vinyl', 'vhs',
+  'clapper', 'chair', 'reel', 'note', 'masks', 'globe', 'castle', 'tomato', 'cleaver', 'drop', 'claw', 'rocket', 'd20', 'controller',
+  'ufo', 'arrowheart', 'rose', 'glasses3d', 'ticket', 'pumpkin', 'crown'];
 
 export function uid() {
   if (globalThis.crypto && crypto.randomUUID) return crypto.randomUUID();
@@ -311,15 +313,42 @@ const GENX = [
 ];
 
 export const BUILT_IN_FESTIVALS = [
-  { id: 'halloween', name: 'Halloween', icon: 'skull', categoryDie: 6, movieDie: 12, categories: HALLOWEEN },
-  { id: 'christmas', name: 'Christmas', icon: 'tree', categoryDie: 6, movieDie: 12, categories: CHRISTMAS },
-  { id: 'awards', name: 'Awards Season', icon: 'trophy', categoryDie: 6, movieDie: 12, categories: AWARDS },
-  { id: 'kids', name: 'Kids & Family', icon: 'balloon', categoryDie: 6, movieDie: 20, categories: KIDS },
-  { id: 'bucketlist', name: 'Bucket List Cinema', icon: 'hourglass', categoryDie: 6, movieDie: 20, categories: BUCKET_LIST },
-  { id: 'tearjerkers', name: 'Tear Jerkers', icon: 'teardrop', categoryDie: 6, movieDie: 20, categories: TEAR_JERKERS },
-  { id: 'boomer', name: 'Boomer Classics', icon: 'vinyl', categoryDie: 6, movieDie: 12, categories: BOOMER },
-  { id: 'genx', name: 'Gen X Rewind', icon: 'vhs', categoryDie: 6, movieDie: 12, categories: GENX },
+  { id: 'halloween', name: 'Halloween', icon: 'skull', categoryDie: 6, movieDie: 12, categories: HALLOWEEN,
+    shelf: 'holidays', blurb: 'Spooky fun to full-on fright.' },
+  { id: 'christmas', name: 'Christmas', icon: 'tree', categoryDie: 6, movieDie: 12, categories: CHRISTMAS,
+    shelf: 'holidays', blurb: 'Classics, rom-coms, and a little holiday horror.' },
+  { id: 'awards', name: 'Awards Season', icon: 'trophy', categoryDie: 6, movieDie: 12, categories: AWARDS,
+    shelf: 'acclaim', blurb: 'Best Pictures, big performances, and famous snubs.' },
+  { id: 'kids', name: 'Kids & Family', icon: 'balloon', categoryDie: 6, movieDie: 20, categories: KIDS,
+    shelf: 'family', blurb: 'Movie night for all ages.' },
+  { id: 'bucketlist', name: 'Bucket List Cinema', icon: 'hourglass', categoryDie: 6, movieDie: 20, categories: BUCKET_LIST,
+    shelf: 'acclaim', blurb: 'The 100 movies to see before you die.' },
+  { id: 'tearjerkers', name: 'Tear Jerkers', icon: 'teardrop', categoryDie: 6, movieDie: 20, categories: TEAR_JERKERS,
+    shelf: 'moods', blurb: 'Grab the tissues.' },
+  { id: 'boomer', name: 'Boomer Classics', icon: 'vinyl', categoryDie: 6, movieDie: 12, categories: BOOMER,
+    shelf: 'generations', blurb: 'Drive-in epics, rebels, and the first blockbusters.' },
+  { id: 'genx', name: 'Gen X Rewind', icon: 'vhs', categoryDie: 6, movieDie: 12, categories: GENX,
+    shelf: 'generations', blurb: "The Brat Pack, action heroes, and '90s slackers." },
 ];
+
+// New installs start with these. Everything else is in the Festival Library (Roll → festival menu → Browse).
+export const STARTER_FESTIVALS = ['halloween', 'christmas', 'awards', 'kids', 'bucketlist'];
+
+// Festival Library shelves, in order. A shelf with no festivals yet shows "Coming Soon!".
+// Admins can move any official festival to a shelf (Admin Tools → the festival → Library Shelf).
+export const SHELVES = [
+  { id: 'holidays', name: 'Holidays' },
+  { id: 'horror', name: 'Horror' },
+  { id: 'family', name: 'Family' },
+  { id: 'acclaim', name: 'Awards & Acclaim' },
+  { id: 'craft', name: 'Film Craft' },
+  { id: 'generations', name: 'Generations' },
+  { id: 'moods', name: 'Moods' },
+  { id: 'cult', name: 'Cult & Guilty Pleasures' },
+  { id: 'world', name: 'World Cinema' },
+  { id: 'fandoms', name: 'Fandoms' },
+];
+export const shelfName = (id) => (SHELVES.find((s) => s.id === id) || { name: 'Other' }).name;
 
 export function makeCategory(name, color, die, movies = []) {
   return {
@@ -431,7 +460,8 @@ export function buildDefaultState() {
     version: 3,
     settings: { diceMode: 'virtual', diceStyle: 'flat', slotMode: 'keep', sequels: true, tutorialSeen: false, theme: 'classic-dark' },
     activeFestival: 'halloween',
-    festivals: BUILT_IN_FESTIVALS.map(buildBuiltInFestival),
+    festivals: BUILT_IN_FESTIVALS.filter((d) => STARTER_FESTIVALS.includes(d.id)).map(buildBuiltInFestival),
+    librarySeen: BUILT_IN_FESTIVALS.map((d) => d.id),
     history: [],
   };
 }

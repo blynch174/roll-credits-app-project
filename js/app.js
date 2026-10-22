@@ -20,8 +20,9 @@ import * as official from './official.js';
 import { renderBanner } from './screens/updates.js';
 import { renderThemePicker, initThemePicker } from './screens/theme-picker.js';
 import { leaveDraft } from './screens/admin-official.js';
+import { renderLibrary, initLibrary, openLibrary, libraryEntries } from './screens/library.js';
 
-const SCREENS = ['home', 'watched', 'popcorn', 'settings', 'creator', 'edit', 'admin', 'themes'];
+const SCREENS = ['home', 'watched', 'popcorn', 'settings', 'creator', 'edit', 'admin', 'themes', 'library'];
 const TABS = ['home', 'watched', 'popcorn', 'settings'];
 let screen = 'home';
 let lastTab = 'home'; // where "Done" / "Cancel" goes back to
@@ -56,6 +57,7 @@ function render() {
   else if (screen === 'creator') renderCreator();
   else if (screen === 'admin') renderAdmin();
   else if (screen === 'themes') renderThemePicker();
+  else if (screen === 'library') renderLibrary();
   screenOpts = {};
 }
 
@@ -68,16 +70,15 @@ nav.render = render;
 function festivalSheet() {
   const cur = store.activeFestival().id;
   const canDelete = store.festivals().length > 1;
-  const removed = store.removedOfficial()
-    .map((id) => official.get(id) || BUILT_IN_FESTIVALS.find((d) => d.id === id))
-    .filter(Boolean);
+  const seen = new Set(store.librarySeen());
+  const fresh = libraryEntries().filter((e) => !seen.has(e.id) && !store.festival(e.id)).length;
   const sheet = openSheet({
     title: 'Film Festivals',
     body: `
       <ul class="fest-list" id="fest-list">
         ${store.festivals().map((f) => `
           <li class="${canDelete ? 'swipe-row' : ''}">
-            ${canDelete ? '<button type="button" class="swipe-del" tabindex="-1">Delete</button>' : ''}
+            ${canDelete ? `<button type="button" class="swipe-del" tabindex="-1">${f.builtIn ? 'Remove' : 'Delete'}</button>` : ''}
             <div class="fest-row swipe-item ${f.id === cur ? 'on' : ''}" data-id="${f.id}">
               <button type="button" class="fr-pick" data-id="${f.id}">
                 <span class="fest-icon">${iconSVG(f.icon)}</span>
@@ -91,7 +92,7 @@ function festivalSheet() {
       ${store.canCreateFestival(sync.isAdmin())
     ? '<button type="button" class="btn ghost big" id="btn-new-fest">+ Create a Festival</button>'
     : '<button type="button" class="btn ghost big" id="btn-new-fest" disabled>Custom Festival Limit Reached</button>'}
-      ${removed.length ? '<button type="button" class="btn ghost big" id="btn-add-official">+ Add an Official Festival</button>' : ''}`,
+      <button type="button" class="btn ghost big" id="btn-library">+ Browse Festivals${fresh ? `<span class="new-badge">${fresh} New</span>` : ''}</button>`,
     actions: [{ label: 'Close', kind: 'ghost', onClick: closeSheet }],
   });
   const switchTo = (id) => {
@@ -113,8 +114,7 @@ function festivalSheet() {
     go('edit', { part: 'tables' });
   }));
   $('#btn-new-fest', sheet).addEventListener('click', () => { closeSheet(); openCreator(); });
-  const addOff = $('#btn-add-official', sheet);
-  if (addOff) addOff.addEventListener('click', () => addOfficialSheet(removed));
+  $('#btn-library', sheet).addEventListener('click', () => { closeSheet(); openLibrary(); });
   // Swipe a festival left to delete it (Undo in the toast).
   if (canDelete) attachSwipe($('#fest-list', sheet), (id) => {
     const f = store.festival(id);
@@ -124,31 +124,11 @@ function festivalSheet() {
     if (wasActive) resetRoll();
     render();
     festivalSheet();
-    toast(`${f.name} deleted.`, {
+    toast(f.builtIn ? `${f.name} removed.` : `${f.name} deleted.`, {
       action: 'Undo',
       onAction: () => { store.restore(snap); resetRoll(); render(); },
     });
   });
-}
-
-function addOfficialSheet(list) {
-  const sheet = swapSheet({
-    title: 'Add an official festival',
-    body: `<ul class="fest-list">${list.map((p) => `
-      <li><button type="button" class="fest-row add-off" data-id="${p.id}">
-        <span class="fest-icon">${iconSVG(p.icon)}</span>
-        <span class="fr-main"><span class="fr-name">${esc(p.name)}</span></span>
-        <span class="or-go">Add</span>
-      </button></li>`).join('')}</ul>`,
-    actions: [{ label: 'Back', kind: 'ghost', onClick: festivalSheet }],
-  });
-  $$('.add-off', sheet).forEach((b) => b.addEventListener('click', () => {
-    const f = store.restoreOfficialFestival(b.dataset.id, official.get(b.dataset.id));
-    if (!f) return;
-    render();
-    festivalSheet();
-    toast(`${f.name} added.`);
-  }));
 }
 
 // ---------- Boot ----------
@@ -164,6 +144,7 @@ initSettings();
 initEditor();
 initAccount();
 initThemePicker();
+initLibrary();
 initTutorial();
 $('#btn-tutorial').addEventListener('click', () => startTutorial(() => go('home')));
 go('home');

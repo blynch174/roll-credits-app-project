@@ -148,6 +148,7 @@ const parseOfficial = (id, d) => {
   return {
     id, name: d.name, icon: d.icon, rev: d.rev || 1, kind: d.kind || 'version', message: d.message || '',
     hidden: !!d.hidden, order: d.order || 0, tables, publishedAt: d.publishedAt || 0, publishedBy: d.publishedBy || '',
+    shelf: d.shelf || '', blurb: d.blurb || '',
   };
 };
 
@@ -158,12 +159,19 @@ export async function listOfficial() {
   return snap.docs.map((d) => parseOfficial(d.id, d.data())).filter(Boolean).sort((a, b) => a.order - b.order);
 }
 
-export async function publishOfficial(id, { name, icon, tables, rev, kind, message, hidden, order }) {
+export async function publishOfficial(id, { name, icon, tables, rev, kind, message, hidden, order, shelf, blurb }) {
   const { F, db } = fb;
   await F.setDoc(F.doc(db, 'official', id), {
     name, icon, tables: JSON.stringify(tables), rev, kind, message: message || '', hidden: !!hidden, order: order || 0,
+    shelf: shelf || '', blurb: blurb || '',
     publishedAt: Date.now(), publishedBy: fb.auth.currentUser.email,
   });
+}
+
+// Festival Library placement. Takes effect right away (no new version needed).
+export async function setOfficialShelf(id, { shelf, blurb }) {
+  const { F, db } = fb;
+  await F.updateDoc(F.doc(db, 'official', id), { shelf: shelf || '', blurb: String(blurb || '').slice(0, 120) });
 }
 
 export async function setOfficialHidden(id, hidden) {

@@ -6,7 +6,7 @@ import * as store from '../store.js';
 import * as cloud from '../cloud.js';
 import * as official from '../official.js';
 import {
-  BUILT_IN_FESTIVALS, RATING_ICONS, SWATCHES, buildBuiltInFestival, tablesFromFestival, categoriesFromTables, makeCategory,
+  BUILT_IN_FESTIVALS, RATING_ICONS, SWATCHES, SHELVES, shelfName, buildBuiltInFestival, tablesFromFestival, categoriesFromTables, makeCategory,
 } from '../defaults.js';
 import { iconSVG } from '../icons.js';
 import { $, $$, esc, toast, nav, openSheet, closeSheet, confirmSheet, syncSeg } from '../ui.js';
@@ -81,7 +81,7 @@ async function importBuiltIns(defs) {
       // Published as revision 1 = exactly what's built into the app, so nobody sees an update.
       await cloud.publishOfficial(def.id, {
         name: def.name, icon: def.icon, tables: tablesFromFestival(buildBuiltInFestival(def)),
-        rev: 1, kind: 'fix', message: '', hidden: false, order,
+        rev: 1, kind: 'fix', message: '', hidden: false, order, shelf: def.shelf || '', blurb: def.blurb || '',
       });
     }
     toast('Built-in festivals published. Tap one to edit it.');
@@ -218,19 +218,22 @@ export function draftSettingsHTML(f) {
     <button type="button" class="row-btn" id="btn-look"><span>Name &amp; Rating Icon</span></button>
     <button type="button" class="row-btn" id="btn-dice"><span>Festival Dice</span></button>
     <button type="button" class="row-btn accent" id="btn-publish"><span>Publish…</span></button>
-    ${info.published ? `<button type="button" class="row-btn" id="btn-hide"><span>${info.hidden ? 'Unhide' : 'Hide from New Users'}</span></button>` : ''}
+    ${info.published ? '<button type="button" class="row-btn" id="btn-shelf"><span>Library Shelf</span></button>' : ''}
+    ${info.published ? `<button type="button" class="row-btn" id="btn-hide"><span>${info.hidden ? 'Unhide' : 'Hide from Library'}</span></button>` : ''}
     ${info.hasDraft ? '<button type="button" class="row-btn danger" id="btn-discard"><span>Discard Draft</span></button>' : ''}`;
 }
 
 export function wireDraftSettings(f) {
   $('#btn-publish').addEventListener('click', () => publishSheet(f));
+  const shelfBtn = $('#btn-shelf');
+  if (shelfBtn) shelfBtn.addEventListener('click', () => shelfSheet(f));
   const hide = $('#btn-hide');
   if (hide) hide.addEventListener('click', async () => {
     const to = !f.draftInfo.hidden;
     try {
       await cloud.setOfficialHidden(f.officialId, to);
       f.draftInfo.hidden = to;
-      toast(to ? `${f.name} is hidden from new users.` : `${f.name} is visible again.`);
+      toast(to ? `${f.name} is hidden from the Festival Library.` : `${f.name} is visible again.`);
       official.refresh();
       nav.render();
     } catch (e) {
@@ -257,6 +260,39 @@ export function wireDraftSettings(f) {
     },
     true
   ));
+}
+
+const bundled = (id) => BUILT_IN_FESTIVALS.find((d) => d.id === id) || {};
+
+// Where this festival sits in the Festival Library, and its one-line description there.
+function shelfSheet(f) {
+  const pub = official.get(f.officialId) || pubs.find((p) => p.id === f.officialId) || {};
+  const cur = pub.shelf || bundled(f.officialId).shelf || '';
+  const blurb = pub.blurb || bundled(f.officialId).blurb || '';
+  openSheet({
+    title: 'Library Shelf',
+    body: `
+      <label class="field"><span class="label">Shelf</span>
+        <select id="sh-shelf">${SHELVES.map((s) => `<option value="${s.id}" ${s.id === cur ? 'selected' : ''}>${esc(s.name)}</option>`).join('')}</select></label>
+      <label class="field"><span class="label">Description</span>
+        <input id="sh-blurb" type="text" maxlength="120" value="${esc(blurb)}" placeholder="One short line"></label>`,
+    actions: [
+      { label: 'Cancel', kind: 'ghost', onClick: closeSheet },
+      {
+        label: 'Save', kind: 'primary', onClick: async (s) => {
+          const shelf = $('#sh-shelf', s).value;
+          try {
+            await cloud.setOfficialShelf(f.officialId, { shelf, blurb: $('#sh-blurb', s).value.trim() });
+          } catch (e) {
+            return toast(cloud.errorText(e));
+          }
+          closeSheet();
+          official.refresh();
+          toast(`${f.name} is on the ${shelfName(shelf)} shelf.`);
+        },
+      },
+    ],
+  });
 }
 
 function publishSheet(f) {
@@ -315,6 +351,8 @@ async function publish(f, kind, message, sheet) {
       message: kind === 'fix' && info.published ? '' : message,
       hidden: latest ? latest.hidden : false,
       order: latest ? latest.order : info.order,
+      shelf: latest ? latest.shelf : (bundled(f.officialId).shelf || ''),
+      blurb: latest ? latest.blurb : (bundled(f.officialId).blurb || ''),
     });
     await cloud.deleteDraft(f.officialId).catch(() => {});
   } catch (e) {
