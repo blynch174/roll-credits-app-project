@@ -6,7 +6,7 @@
 // vendor/firebase is only downloaded when accounts are set up (js/firebase-config.js).
 // They get saved for offline use the first time the app loads them.
 
-const CACHE_VERSION = 'v22';
+const CACHE_VERSION = 'v23';
 const CACHE_NAME = 'roll-credits-' + CACHE_VERSION;
 
 const FILES = [
@@ -59,7 +59,7 @@ self.addEventListener('install', (event) => {
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
-      Promise.all(keys.filter((k) => k.startsWith('roll-credits-') && k !== CACHE_NAME).map((k) => caches.delete(k)))
+      Promise.all(keys.filter((k) => k.startsWith('roll-credits-') && k !== CACHE_NAME && k !== FONT_CACHE).map((k) => caches.delete(k)))
     )
   );
   self.clients.claim();
@@ -69,7 +69,20 @@ self.addEventListener('activate', (event) => {
 // Falls back to the saved copy when offline.
 // cache: 'no-cache' makes the browser check with GitHub every time instead of reusing its own
 // 10-minute copy, so a new push never shows up as a mix of old and new files.
+// Theme fonts (Google Fonts): saved after the first download, so themes keep their fonts offline.
+const FONT_CACHE = 'roll-credits-fonts';
+const isFont = (url) => url.startsWith('https://fonts.googleapis.com/') || url.startsWith('https://fonts.gstatic.com/');
+
 self.addEventListener('fetch', (event) => {
+  if (event.request.method === 'GET' && isFont(event.request.url)) {
+    event.respondWith(
+      caches.open(FONT_CACHE).then((cache) => cache.match(event.request).then((hit) => hit || fetch(event.request).then((res) => {
+        if (res.ok || res.type === 'opaque') cache.put(event.request, res.clone());
+        return res;
+      })))
+    );
+    return;
+  }
   if (event.request.method !== 'GET' || !event.request.url.startsWith(self.location.origin)) return;
   const fresh = new Request(event.request.url, { cache: 'no-cache', credentials: 'same-origin' });
   event.respondWith(

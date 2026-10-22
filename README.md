@@ -145,6 +145,12 @@ automatically (nothing shows until the file is there).
 One theme for the whole app (`settings.theme`), picked in Settings → Themes. Add or move themes in the
 `THEME_GROUPS` list in `js/themes.js`. Never change a theme's id; saved choices point at it.
 
+A theme sets colors (including a second accent and the Watch it button), card outlines (width, solid / double /
+dashed / striped, glow), corner shape, shadows, a faint background texture, and the title fonts. It all becomes CSS
+variables on the page (`--edge`, `--card-edge`, `--r-lg`, `--font-display`, …); layout never changes. Fonts are Google
+Fonts (OFL/Apache, free to use), downloaded only when a theme that uses them is shown, and kept for offline use.
+Themes retired in v3.18 map to the closest new one (`RETIRED` in `themes.js`).
+
 ## Saved data (version 3)
 
 Stored in localStorage under `roll-credits:data` (sync bookkeeping is in `roll-credits:sync`).

@@ -4,7 +4,7 @@ import {
   BUILT_IN_FESTIVALS, buildBuiltInFestival, buildDefaultState, builtInCategories,
   makeCategory, makeMovie, uid, SWATCHES, BUNDLED_REV, tablesSig, categoriesFromTables, festivalFromOfficial,
 } from './defaults.js';
-import { themeFromOldFestival, DEFAULT_THEME, isThemeId } from './themes.js';
+import { themeFromOldFestival, DEFAULT_THEME, isThemeId, retiredTheme } from './themes.js';
 import { norm, setExtras } from './catalog.js';
 import { ensureSync, baselineOf, stamp, merge, sameData } from './merge.js';
 
@@ -219,6 +219,8 @@ function migrate(d) {
   if (d.settings.tutorialSeen === undefined) d.settings.tutorialSeen = true;
   if (!d.festivals.some((f) => f.id === d.activeFestival)) d.activeFestival = d.festivals[0].id;
   // v3.6: one app-wide theme instead of one per festival. Keep whatever the current festival looked like.
+  // v3.18: themes were redesigned; older picks move to the closest new one.
+  if (retiredTheme(d.settings.theme)) d.settings.theme = retiredTheme(d.settings.theme);
   if (!isThemeId(d.settings.theme)) d.settings.theme = themeFromOldFestival(d.festivals.find((f) => f.id === d.activeFestival));
   // v3.6: built-in festivals remember which published version they came from (the bundled one is revision 1).
   for (const f of d.festivals) {
