@@ -1,0 +1,1421 @@
+{
+ "note": "New catalog movies for the Boomer Classics and Gen X Rewind festivals. tools/catalog.py fetch merges these into curation.json (skipping any already there), then fetches them from TMDB.",
+ "movies": [
+  {
+   "id": "harold-and-maude-1971",
+   "imdbId": null,
+   "title": "Harold and Maude",
+   "releaseYear": 1971,
+   "type": "Feature Film",
+   "moodTone": [
+    "Character-Driven",
+    "Reflective",
+    "Bittersweet"
+   ],
+   "scariness": 1,
+   "comedy": 2,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "the-ten-commandments-1956",
+   "imdbId": null,
+   "title": "The Ten Commandments",
+   "releaseYear": 1956,
+   "type": "Feature Film",
+   "moodTone": [
+    "Cinematic",
+    "Dramatic",
+    "Adventurous"
+   ],
+   "scariness": 1,
+   "comedy": 1,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "around-the-world-in-80-days-1956",
+   "imdbId": null,
+   "title": "Around the World in 80 Days",
+   "releaseYear": 1956,
+   "type": "Feature Film",
+   "moodTone": [
+    "Cinematic",
+    "Dramatic",
+    "Adventurous"
+   ],
+   "scariness": 1,
+   "comedy": 1,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "the-great-escape-1963",
+   "imdbId": null,
+   "title": "The Great Escape",
+   "releaseYear": 1963,
+   "type": "Feature Film",
+   "moodTone": [
+    "Cinematic",
+    "Dramatic",
+    "Adventurous"
+   ],
+   "scariness": 1,
+   "comedy": 1,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "rio-bravo-1959",
+   "imdbId": null,
+   "title": "Rio Bravo",
+   "releaseYear": 1959,
+   "type": "Feature Film",
+   "moodTone": [
+    "Adventurous",
+    "Suspenseful",
+    "Cinematic"
+   ],
+   "scariness": 1,
+   "comedy": 2,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "the-magnificent-seven-1960",
+   "imdbId": null,
+   "title": "The Magnificent Seven",
+   "releaseYear": 1960,
+   "type": "Feature Film",
+   "moodTone": [
+    "Adventurous",
+    "Suspenseful",
+    "Cinematic"
+   ],
+   "scariness": 1,
+   "comedy": 2,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "the-man-who-shot-liberty-valance-1962",
+   "imdbId": null,
+   "title": "The Man Who Shot Liberty Valance",
+   "releaseYear": 1962,
+   "type": "Feature Film",
+   "moodTone": [
+    "Adventurous",
+    "Suspenseful",
+    "Cinematic"
+   ],
+   "scariness": 1,
+   "comedy": 2,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "dr-no-1962",
+   "imdbId": null,
+   "title": "Dr. No",
+   "releaseYear": 1962,
+   "type": "Feature Film",
+   "moodTone": [
+    "Adventurous",
+    "Suspenseful",
+    "Cinematic"
+   ],
+   "scariness": 1,
+   "comedy": 2,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "charade-1963",
+   "imdbId": null,
+   "title": "Charade",
+   "releaseYear": 1963,
+   "type": "Feature Film",
+   "moodTone": [
+    "Adventurous",
+    "Suspenseful",
+    "Cinematic"
+   ],
+   "scariness": 1,
+   "comedy": 2,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "goldfinger-1964",
+   "imdbId": null,
+   "title": "Goldfinger",
+   "releaseYear": 1964,
+   "type": "Feature Film",
+   "moodTone": [
+    "Adventurous",
+    "Suspenseful",
+    "Cinematic"
+   ],
+   "scariness": 1,
+   "comedy": 2,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "the-good-the-bad-and-the-ugly-1966",
+   "imdbId": null,
+   "title": "The Good, the Bad and the Ugly",
+   "releaseYear": 1966,
+   "type": "Feature Film",
+   "moodTone": [
+    "Adventurous",
+    "Suspenseful",
+    "Cinematic"
+   ],
+   "scariness": 1,
+   "comedy": 2,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "the-thomas-crown-affair-1968",
+   "imdbId": null,
+   "title": "The Thomas Crown Affair",
+   "releaseYear": 1968,
+   "type": "Feature Film",
+   "moodTone": [
+    "Adventurous",
+    "Suspenseful",
+    "Cinematic"
+   ],
+   "scariness": 1,
+   "comedy": 2,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "the-pink-panther-1963",
+   "imdbId": null,
+   "title": "The Pink Panther",
+   "releaseYear": 1963,
+   "type": "Feature Film",
+   "moodTone": [
+    "Witty",
+    "Playful"
+   ],
+   "scariness": 1,
+   "comedy": 8,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "animal-house-1978",
+   "imdbId": null,
+   "title": "Animal House",
+   "releaseYear": 1978,
+   "type": "Feature Film",
+   "moodTone": [
+    "Witty",
+    "Playful"
+   ],
+   "scariness": 1,
+   "comedy": 8,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "caddyshack-1980",
+   "imdbId": null,
+   "title": "Caddyshack",
+   "releaseYear": 1980,
+   "type": "Feature Film",
+   "moodTone": [
+    "Witty",
+    "Playful"
+   ],
+   "scariness": 1,
+   "comedy": 8,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "9-to-5-1980",
+   "imdbId": null,
+   "title": "9 to 5",
+   "releaseYear": 1980,
+   "type": "Feature Film",
+   "moodTone": [
+    "Witty",
+    "Playful"
+   ],
+   "scariness": 1,
+   "comedy": 8,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "smokey-and-the-bandit-1977",
+   "imdbId": null,
+   "title": "Smokey and the Bandit",
+   "releaseYear": 1977,
+   "type": "Feature Film",
+   "moodTone": [
+    "Energetic",
+    "Adventurous",
+    "Nostalgic"
+   ],
+   "scariness": 1,
+   "comedy": 3,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "grease-1978",
+   "imdbId": null,
+   "title": "Grease",
+   "releaseYear": 1978,
+   "type": "Feature Film",
+   "moodTone": [
+    "Energetic",
+    "Adventurous",
+    "Nostalgic"
+   ],
+   "scariness": 1,
+   "comedy": 3,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "superman-1978",
+   "imdbId": null,
+   "title": "Superman",
+   "releaseYear": 1978,
+   "type": "Feature Film",
+   "moodTone": [
+    "Energetic",
+    "Adventurous",
+    "Nostalgic"
+   ],
+   "scariness": 1,
+   "comedy": 3,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "footloose-1984",
+   "imdbId": null,
+   "title": "Footloose",
+   "releaseYear": 1984,
+   "type": "Feature Film",
+   "moodTone": [
+    "Energetic",
+    "Adventurous",
+    "Nostalgic"
+   ],
+   "scariness": 1,
+   "comedy": 3,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "top-gun-1986",
+   "imdbId": null,
+   "title": "Top Gun",
+   "releaseYear": 1986,
+   "type": "Feature Film",
+   "moodTone": [
+    "Energetic",
+    "Adventurous",
+    "Nostalgic"
+   ],
+   "scariness": 1,
+   "comedy": 3,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "dirty-dancing-1987",
+   "imdbId": null,
+   "title": "Dirty Dancing",
+   "releaseYear": 1987,
+   "type": "Feature Film",
+   "moodTone": [
+    "Energetic",
+    "Adventurous",
+    "Nostalgic"
+   ],
+   "scariness": 1,
+   "comedy": 3,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "rocky-ii-1979",
+   "imdbId": null,
+   "title": "Rocky II",
+   "releaseYear": 1979,
+   "type": "Feature Film",
+   "moodTone": [
+    "Energetic",
+    "Nostalgic"
+   ],
+   "scariness": 1,
+   "comedy": 3,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "rocky-iii-1982",
+   "imdbId": null,
+   "title": "Rocky III",
+   "releaseYear": 1982,
+   "type": "Feature Film",
+   "moodTone": [
+    "Energetic",
+    "Nostalgic"
+   ],
+   "scariness": 1,
+   "comedy": 3,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "superman-ii-1980",
+   "imdbId": null,
+   "title": "Superman II",
+   "releaseYear": 1980,
+   "type": "Feature Film",
+   "moodTone": [
+    "Energetic",
+    "Nostalgic"
+   ],
+   "scariness": 1,
+   "comedy": 3,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "indiana-jones-and-the-temple-of-doom-1984",
+   "imdbId": null,
+   "title": "Indiana Jones and the Temple of Doom",
+   "releaseYear": 1984,
+   "type": "Feature Film",
+   "moodTone": [
+    "Energetic",
+    "Nostalgic"
+   ],
+   "scariness": 1,
+   "comedy": 3,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "indiana-jones-and-the-last-crusade-1989",
+   "imdbId": null,
+   "title": "Indiana Jones and the Last Crusade",
+   "releaseYear": 1989,
+   "type": "Feature Film",
+   "moodTone": [
+    "Energetic",
+    "Nostalgic"
+   ],
+   "scariness": 1,
+   "comedy": 3,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "smokey-and-the-bandit-ii-1980",
+   "imdbId": null,
+   "title": "Smokey and the Bandit II",
+   "releaseYear": 1980,
+   "type": "Feature Film",
+   "moodTone": [
+    "Energetic",
+    "Nostalgic"
+   ],
+   "scariness": 1,
+   "comedy": 3,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "beverly-hills-cop-ii-1987",
+   "imdbId": null,
+   "title": "Beverly Hills Cop II",
+   "releaseYear": 1987,
+   "type": "Feature Film",
+   "moodTone": [
+    "Energetic",
+    "Nostalgic"
+   ],
+   "scariness": 1,
+   "comedy": 3,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "from-russia-with-love-1963",
+   "imdbId": null,
+   "title": "From Russia with Love",
+   "releaseYear": 1963,
+   "type": "Feature Film",
+   "moodTone": [
+    "Energetic",
+    "Nostalgic"
+   ],
+   "scariness": 1,
+   "comedy": 3,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "thunderball-1965",
+   "imdbId": null,
+   "title": "Thunderball",
+   "releaseYear": 1965,
+   "type": "Feature Film",
+   "moodTone": [
+    "Energetic",
+    "Nostalgic"
+   ],
+   "scariness": 1,
+   "comedy": 3,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "a-shot-in-the-dark-1964",
+   "imdbId": null,
+   "title": "A Shot in the Dark",
+   "releaseYear": 1964,
+   "type": "Feature Film",
+   "moodTone": [
+    "Energetic",
+    "Nostalgic"
+   ],
+   "scariness": 1,
+   "comedy": 3,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "fast-times-at-ridgemont-high-1982",
+   "imdbId": null,
+   "title": "Fast Times at Ridgemont High",
+   "releaseYear": 1982,
+   "type": "Feature Film",
+   "moodTone": [
+    "Nostalgic",
+    "Playful",
+    "Character-Driven"
+   ],
+   "scariness": 1,
+   "comedy": 6,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "the-outsiders-1983",
+   "imdbId": null,
+   "title": "The Outsiders",
+   "releaseYear": 1983,
+   "type": "Feature Film",
+   "moodTone": [
+    "Nostalgic",
+    "Playful",
+    "Character-Driven"
+   ],
+   "scariness": 1,
+   "comedy": 6,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "risky-business-1983",
+   "imdbId": null,
+   "title": "Risky Business",
+   "releaseYear": 1983,
+   "type": "Feature Film",
+   "moodTone": [
+    "Nostalgic",
+    "Playful",
+    "Character-Driven"
+   ],
+   "scariness": 1,
+   "comedy": 6,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "sixteen-candles-1984",
+   "imdbId": null,
+   "title": "Sixteen Candles",
+   "releaseYear": 1984,
+   "type": "Feature Film",
+   "moodTone": [
+    "Nostalgic",
+    "Playful",
+    "Character-Driven"
+   ],
+   "scariness": 1,
+   "comedy": 6,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "the-breakfast-club-1985",
+   "imdbId": null,
+   "title": "The Breakfast Club",
+   "releaseYear": 1985,
+   "type": "Feature Film",
+   "moodTone": [
+    "Nostalgic",
+    "Playful",
+    "Character-Driven"
+   ],
+   "scariness": 1,
+   "comedy": 6,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "st-elmo-s-fire-1985",
+   "imdbId": null,
+   "title": "St. Elmo's Fire",
+   "releaseYear": 1985,
+   "type": "Feature Film",
+   "moodTone": [
+    "Nostalgic",
+    "Playful",
+    "Character-Driven"
+   ],
+   "scariness": 1,
+   "comedy": 6,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "weird-science-1985",
+   "imdbId": null,
+   "title": "Weird Science",
+   "releaseYear": 1985,
+   "type": "Feature Film",
+   "moodTone": [
+    "Nostalgic",
+    "Playful",
+    "Character-Driven"
+   ],
+   "scariness": 1,
+   "comedy": 6,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "pretty-in-pink-1986",
+   "imdbId": null,
+   "title": "Pretty in Pink",
+   "releaseYear": 1986,
+   "type": "Feature Film",
+   "moodTone": [
+    "Nostalgic",
+    "Playful",
+    "Character-Driven"
+   ],
+   "scariness": 1,
+   "comedy": 6,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "ferris-bueller-s-day-off-1986",
+   "imdbId": null,
+   "title": "Ferris Bueller's Day Off",
+   "releaseYear": 1986,
+   "type": "Feature Film",
+   "moodTone": [
+    "Nostalgic",
+    "Playful",
+    "Character-Driven"
+   ],
+   "scariness": 1,
+   "comedy": 6,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "some-kind-of-wonderful-1987",
+   "imdbId": null,
+   "title": "Some Kind of Wonderful",
+   "releaseYear": 1987,
+   "type": "Feature Film",
+   "moodTone": [
+    "Nostalgic",
+    "Playful",
+    "Character-Driven"
+   ],
+   "scariness": 1,
+   "comedy": 6,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "say-anything-1989",
+   "imdbId": null,
+   "title": "Say Anything...",
+   "releaseYear": 1989,
+   "type": "Feature Film",
+   "moodTone": [
+    "Nostalgic",
+    "Playful",
+    "Character-Driven"
+   ],
+   "scariness": 1,
+   "comedy": 6,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "flight-of-the-navigator-1986",
+   "imdbId": null,
+   "title": "Flight of the Navigator",
+   "releaseYear": 1986,
+   "type": "Feature Film",
+   "moodTone": [
+    "Adventurous",
+    "Whimsical",
+    "Nostalgic",
+    "Warm"
+   ],
+   "scariness": 1,
+   "comedy": 5,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "honey-i-shrunk-the-kids-1989",
+   "imdbId": null,
+   "title": "Honey, I Shrunk the Kids",
+   "releaseYear": 1989,
+   "type": "Feature Film",
+   "moodTone": [
+    "Adventurous",
+    "Whimsical",
+    "Nostalgic",
+    "Warm"
+   ],
+   "scariness": 1,
+   "comedy": 5,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "first-blood-1982",
+   "imdbId": null,
+   "title": "First Blood",
+   "releaseYear": 1982,
+   "type": "Feature Film",
+   "moodTone": [
+    "Kinetic",
+    "Energetic",
+    "Tense"
+   ],
+   "scariness": 1,
+   "comedy": 3,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "the-terminator-1984",
+   "imdbId": null,
+   "title": "The Terminator",
+   "releaseYear": 1984,
+   "type": "Feature Film",
+   "moodTone": [
+    "Kinetic",
+    "Energetic",
+    "Tense"
+   ],
+   "scariness": 1,
+   "comedy": 3,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "commando-1985",
+   "imdbId": null,
+   "title": "Commando",
+   "releaseYear": 1985,
+   "type": "Feature Film",
+   "moodTone": [
+    "Kinetic",
+    "Energetic",
+    "Tense"
+   ],
+   "scariness": 1,
+   "comedy": 3,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "predator-1987",
+   "imdbId": null,
+   "title": "Predator",
+   "releaseYear": 1987,
+   "type": "Feature Film",
+   "moodTone": [
+    "Kinetic",
+    "Energetic",
+    "Tense"
+   ],
+   "scariness": 1,
+   "comedy": 3,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "robocop-1987",
+   "imdbId": null,
+   "title": "RoboCop",
+   "releaseYear": 1987,
+   "type": "Feature Film",
+   "moodTone": [
+    "Kinetic",
+    "Energetic",
+    "Tense"
+   ],
+   "scariness": 1,
+   "comedy": 3,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "total-recall-1990",
+   "imdbId": null,
+   "title": "Total Recall",
+   "releaseYear": 1990,
+   "type": "Feature Film",
+   "moodTone": [
+    "Kinetic",
+    "Energetic",
+    "Tense"
+   ],
+   "scariness": 1,
+   "comedy": 3,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "point-break-1991",
+   "imdbId": null,
+   "title": "Point Break",
+   "releaseYear": 1991,
+   "type": "Feature Film",
+   "moodTone": [
+    "Kinetic",
+    "Energetic",
+    "Tense"
+   ],
+   "scariness": 1,
+   "comedy": 3,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "speed-1994",
+   "imdbId": null,
+   "title": "Speed",
+   "releaseYear": 1994,
+   "type": "Feature Film",
+   "moodTone": [
+    "Kinetic",
+    "Energetic",
+    "Tense"
+   ],
+   "scariness": 1,
+   "comedy": 3,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "true-lies-1994",
+   "imdbId": null,
+   "title": "True Lies",
+   "releaseYear": 1994,
+   "type": "Feature Film",
+   "moodTone": [
+    "Kinetic",
+    "Energetic",
+    "Tense"
+   ],
+   "scariness": 1,
+   "comedy": 3,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "groundhog-day-1993",
+   "imdbId": null,
+   "title": "Groundhog Day",
+   "releaseYear": 1993,
+   "type": "Feature Film",
+   "moodTone": [
+    "Romantic",
+    "Warm",
+    "Witty"
+   ],
+   "scariness": 1,
+   "comedy": 6,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "clueless-1995",
+   "imdbId": null,
+   "title": "Clueless",
+   "releaseYear": 1995,
+   "type": "Feature Film",
+   "moodTone": [
+    "Romantic",
+    "Warm",
+    "Witty"
+   ],
+   "scariness": 1,
+   "comedy": 6,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "my-best-friend-s-wedding-1997",
+   "imdbId": null,
+   "title": "My Best Friend's Wedding",
+   "releaseYear": 1997,
+   "type": "Feature Film",
+   "moodTone": [
+    "Romantic",
+    "Warm",
+    "Witty"
+   ],
+   "scariness": 1,
+   "comedy": 6,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "10-things-i-hate-about-you-1999",
+   "imdbId": null,
+   "title": "10 Things I Hate About You",
+   "releaseYear": 1999,
+   "type": "Feature Film",
+   "moodTone": [
+    "Romantic",
+    "Warm",
+    "Witty"
+   ],
+   "scariness": 1,
+   "comedy": 6,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "notting-hill-1999",
+   "imdbId": null,
+   "title": "Notting Hill",
+   "releaseYear": 1999,
+   "type": "Feature Film",
+   "moodTone": [
+    "Romantic",
+    "Warm",
+    "Witty"
+   ],
+   "scariness": 1,
+   "comedy": 6,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "the-blues-brothers-1980",
+   "imdbId": null,
+   "title": "The Blues Brothers",
+   "releaseYear": 1980,
+   "type": "Feature Film",
+   "moodTone": [
+    "Self-aware",
+    "Witty",
+    "Playful"
+   ],
+   "scariness": 1,
+   "comedy": 7,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "real-genius-1985",
+   "imdbId": null,
+   "title": "Real Genius",
+   "releaseYear": 1985,
+   "type": "Feature Film",
+   "moodTone": [
+    "Self-aware",
+    "Witty",
+    "Playful"
+   ],
+   "scariness": 1,
+   "comedy": 7,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "clue-1985",
+   "imdbId": null,
+   "title": "Clue",
+   "releaseYear": 1985,
+   "type": "Feature Film",
+   "moodTone": [
+    "Self-aware",
+    "Witty",
+    "Playful"
+   ],
+   "scariness": 1,
+   "comedy": 7,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "heathers-1989",
+   "imdbId": null,
+   "title": "Heathers",
+   "releaseYear": 1989,
+   "type": "Feature Film",
+   "moodTone": [
+    "Self-aware",
+    "Witty",
+    "Playful"
+   ],
+   "scariness": 1,
+   "comedy": 7,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "bill-ted-s-excellent-adventure-1989",
+   "imdbId": null,
+   "title": "Bill & Ted's Excellent Adventure",
+   "releaseYear": 1989,
+   "type": "Feature Film",
+   "moodTone": [
+    "Self-aware",
+    "Witty",
+    "Playful"
+   ],
+   "scariness": 1,
+   "comedy": 7,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "uhf-1989",
+   "imdbId": null,
+   "title": "UHF",
+   "releaseYear": 1989,
+   "type": "Feature Film",
+   "moodTone": [
+    "Self-aware",
+    "Witty",
+    "Playful"
+   ],
+   "scariness": 1,
+   "comedy": 7,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "pump-up-the-volume-1990",
+   "imdbId": null,
+   "title": "Pump Up the Volume",
+   "releaseYear": 1990,
+   "type": "Feature Film",
+   "moodTone": [
+    "Self-aware",
+    "Witty",
+    "Playful"
+   ],
+   "scariness": 1,
+   "comedy": 7,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "wayne-s-world-1992",
+   "imdbId": null,
+   "title": "Wayne's World",
+   "releaseYear": 1992,
+   "type": "Feature Film",
+   "moodTone": [
+    "Self-aware",
+    "Witty",
+    "Playful"
+   ],
+   "scariness": 1,
+   "comedy": 7,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "the-big-lebowski-1998",
+   "imdbId": null,
+   "title": "The Big Lebowski",
+   "releaseYear": 1998,
+   "type": "Feature Film",
+   "moodTone": [
+    "Self-aware",
+    "Witty",
+    "Playful"
+   ],
+   "scariness": 1,
+   "comedy": 7,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "singles-1992",
+   "imdbId": null,
+   "title": "Singles",
+   "releaseYear": 1992,
+   "type": "Feature Film",
+   "moodTone": [
+    "Reflective",
+    "Witty",
+    "Character-Driven"
+   ],
+   "scariness": 1,
+   "comedy": 6,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "dazed-and-confused-1993",
+   "imdbId": null,
+   "title": "Dazed and Confused",
+   "releaseYear": 1993,
+   "type": "Feature Film",
+   "moodTone": [
+    "Reflective",
+    "Witty",
+    "Character-Driven"
+   ],
+   "scariness": 1,
+   "comedy": 6,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "clerks-1994",
+   "imdbId": null,
+   "title": "Clerks",
+   "releaseYear": 1994,
+   "type": "Feature Film",
+   "moodTone": [
+    "Reflective",
+    "Witty",
+    "Character-Driven"
+   ],
+   "scariness": 1,
+   "comedy": 6,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "reality-bites-1994",
+   "imdbId": null,
+   "title": "Reality Bites",
+   "releaseYear": 1994,
+   "type": "Feature Film",
+   "moodTone": [
+    "Reflective",
+    "Witty",
+    "Character-Driven"
+   ],
+   "scariness": 1,
+   "comedy": 6,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "empire-records-1995",
+   "imdbId": null,
+   "title": "Empire Records",
+   "releaseYear": 1995,
+   "type": "Feature Film",
+   "moodTone": [
+    "Reflective",
+    "Witty",
+    "Character-Driven"
+   ],
+   "scariness": 1,
+   "comedy": 6,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "mallrats-1995",
+   "imdbId": null,
+   "title": "Mallrats",
+   "releaseYear": 1995,
+   "type": "Feature Film",
+   "moodTone": [
+    "Reflective",
+    "Witty",
+    "Character-Driven"
+   ],
+   "scariness": 1,
+   "comedy": 6,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "before-sunrise-1995",
+   "imdbId": null,
+   "title": "Before Sunrise",
+   "releaseYear": 1995,
+   "type": "Feature Film",
+   "moodTone": [
+    "Reflective",
+    "Witty",
+    "Character-Driven"
+   ],
+   "scariness": 1,
+   "comedy": 6,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "swingers-1996",
+   "imdbId": null,
+   "title": "Swingers",
+   "releaseYear": 1996,
+   "type": "Feature Film",
+   "moodTone": [
+    "Reflective",
+    "Witty",
+    "Character-Driven"
+   ],
+   "scariness": 1,
+   "comedy": 6,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "grosse-pointe-blank-1997",
+   "imdbId": null,
+   "title": "Grosse Pointe Blank",
+   "releaseYear": 1997,
+   "type": "Feature Film",
+   "moodTone": [
+    "Reflective",
+    "Witty",
+    "Character-Driven"
+   ],
+   "scariness": 1,
+   "comedy": 6,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "office-space-1999",
+   "imdbId": null,
+   "title": "Office Space",
+   "releaseYear": 1999,
+   "type": "Feature Film",
+   "moodTone": [
+    "Reflective",
+    "Witty",
+    "Character-Driven"
+   ],
+   "scariness": 1,
+   "comedy": 6,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "die-hard-with-a-vengeance-1995",
+   "imdbId": null,
+   "title": "Die Hard with a Vengeance",
+   "releaseYear": 1995,
+   "type": "Feature Film",
+   "moodTone": [
+    "Energetic",
+    "Nostalgic"
+   ],
+   "scariness": 1,
+   "comedy": 3,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "terminator-2-judgment-day-1991",
+   "imdbId": null,
+   "title": "Terminator 2: Judgment Day",
+   "releaseYear": 1991,
+   "type": "Feature Film",
+   "moodTone": [
+    "Energetic",
+    "Nostalgic"
+   ],
+   "scariness": 1,
+   "comedy": 3,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "lethal-weapon-2-1989",
+   "imdbId": null,
+   "title": "Lethal Weapon 2",
+   "releaseYear": 1989,
+   "type": "Feature Film",
+   "moodTone": [
+    "Energetic",
+    "Nostalgic"
+   ],
+   "scariness": 1,
+   "comedy": 3,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "lethal-weapon-3-1992",
+   "imdbId": null,
+   "title": "Lethal Weapon 3",
+   "releaseYear": 1992,
+   "type": "Feature Film",
+   "moodTone": [
+    "Energetic",
+    "Nostalgic"
+   ],
+   "scariness": 1,
+   "comedy": 3,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "lethal-weapon-4-1998",
+   "imdbId": null,
+   "title": "Lethal Weapon 4",
+   "releaseYear": 1998,
+   "type": "Feature Film",
+   "moodTone": [
+    "Energetic",
+    "Nostalgic"
+   ],
+   "scariness": 1,
+   "comedy": 3,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "ghostbusters-ii-1989",
+   "imdbId": null,
+   "title": "Ghostbusters II",
+   "releaseYear": 1989,
+   "type": "Feature Film",
+   "moodTone": [
+    "Energetic",
+    "Nostalgic"
+   ],
+   "scariness": 1,
+   "comedy": 3,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "the-karate-kid-part-ii-1986",
+   "imdbId": null,
+   "title": "The Karate Kid Part II",
+   "releaseYear": 1986,
+   "type": "Feature Film",
+   "moodTone": [
+    "Energetic",
+    "Nostalgic"
+   ],
+   "scariness": 1,
+   "comedy": 3,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "bill-ted-s-bogus-journey-1991",
+   "imdbId": null,
+   "title": "Bill & Ted's Bogus Journey",
+   "releaseYear": 1991,
+   "type": "Feature Film",
+   "moodTone": [
+    "Energetic",
+    "Nostalgic"
+   ],
+   "scariness": 1,
+   "comedy": 3,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "wayne-s-world-2-1993",
+   "imdbId": null,
+   "title": "Wayne's World 2",
+   "releaseYear": 1993,
+   "type": "Feature Film",
+   "moodTone": [
+    "Energetic",
+    "Nostalgic"
+   ],
+   "scariness": 1,
+   "comedy": 3,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "robocop-2-1990",
+   "imdbId": null,
+   "title": "RoboCop 2",
+   "releaseYear": 1990,
+   "type": "Feature Film",
+   "moodTone": [
+    "Energetic",
+    "Nostalgic"
+   ],
+   "scariness": 1,
+   "comedy": 3,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "rambo-first-blood-part-ii-1985",
+   "imdbId": null,
+   "title": "Rambo: First Blood Part II",
+   "releaseYear": 1985,
+   "type": "Feature Film",
+   "moodTone": [
+    "Energetic",
+    "Nostalgic"
+   ],
+   "scariness": 1,
+   "comedy": 3,
+   "franchise": null,
+   "seriesOrder": null
+  },
+  {
+   "id": "honey-i-blew-up-the-kid-1992",
+   "imdbId": null,
+   "title": "Honey, I Blew Up the Kid",
+   "releaseYear": 1992,
+   "type": "Feature Film",
+   "moodTone": [
+    "Energetic",
+    "Nostalgic"
+   ],
+   "scariness": 1,
+   "comedy": 3,
+   "franchise": null,
+   "seriesOrder": null
+  }
+ ]
+}

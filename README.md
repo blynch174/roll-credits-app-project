@@ -109,6 +109,12 @@ The built-in festivals are "official": admins edit and publish them from Setting
 - Each copy stores `sourceRev` (the revision it came from) and `sourceSig` (a fingerprint of its tables then),
   which is how the app tells untouched from edited. The bundled `defaults.js` copy is revision 1.
 
+## New catalog movies in updates
+
+Updates that bring new movies (like the Boomer Classics and Gen X Rewind festivals) ship them in `data/additions/`.
+The next `tools/catalog.py fetch` (the catalog workflow runs it on every push) adds them to `curation.json` once,
+skipping any already there, then fetches their posters and details.
+
 ## Movies that aren't in the catalog
 
 - When a title isn't found while logging a movie or filling a slot, **Search TMDB** looks it up through the relay

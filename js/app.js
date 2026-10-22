@@ -72,7 +72,7 @@ function festivalSheet() {
     .map((id) => official.get(id) || BUILT_IN_FESTIVALS.find((d) => d.id === id))
     .filter(Boolean);
   const sheet = openSheet({
-    title: 'Film festivals',
+    title: 'Film Festivals',
     body: `
       <ul class="fest-list" id="fest-list">
         ${store.festivals().map((f) => `

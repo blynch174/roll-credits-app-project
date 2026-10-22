@@ -33,6 +33,7 @@ OSCAR_CSV_URL = os.environ.get('OSCAR_CSV_URL', 'https://raw.githubusercontent.c
 COLLECTIONS = {  # festival id -> its list of movie ids (the app ranks these first in search)
     'halloween': 'halloween_collection.json', 'christmas': 'christmas_collection.json', 'awards': 'roll_credits_oscars.json',
     'kids': 'kids_family_collection.json', 'bucketlist': 'bucket_list_collection.json', 'tearjerkers': 'tearjerkers_collection.json',
+    'boomer': 'boomer_collection.json', 'genx': 'genx_collection.json',
 }
 
 # Field order in data/all_movies.json
@@ -185,7 +186,31 @@ def find_on_tmdb(m):
 
 # ---------- commands ----------
 
+ADDITIONS = os.path.join(ROOT, 'data', 'additions')
+
+def merge_additions():
+    """New movies shipped with app updates (data/additions/*.json) join curation.json once. Movies already there
+    (same id, or same title + year) are skipped, so this is safe to run every time."""
+    if not os.path.isdir(ADDITIONS):
+        return 0
+    cur = read(CURATION, [])
+    ids = {m['id'] for m in cur}
+    keys = {(m['title'].lower(), m['releaseYear']) for m in cur}
+    added = 0
+    for name in sorted(os.listdir(ADDITIONS)):
+        if not name.endswith('.json'):
+            continue
+        for m in read(os.path.join(ADDITIONS, name), {}).get('movies', []):
+            if m['id'] in ids or (m['title'].lower(), m['releaseYear']) in keys:
+                continue
+            cur.append(m); ids.add(m['id']); keys.add((m['title'].lower(), m['releaseYear'])); added += 1
+    if added:
+        write_lines(CURATION, cur)
+        print(f'Added {added} new movies from data/additions/.')
+    return added
+
 def cmd_fetch(args):
+    merge_additions()
     cur = read(CURATION, [])
     facts = read(FACTS, {})
     refresh = '--refresh' in args

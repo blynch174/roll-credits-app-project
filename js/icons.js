@@ -12,6 +12,8 @@ const ICONS = {
   snowflake: '<path class="s" d="M12 2.5v19M3.8 7.25l16.4 9.5M3.8 16.75l16.4-9.5M9.4 4.3L12 6.5l2.6-2.2M9.4 19.7L12 17.5l2.6 2.2M4.6 11.2l2.9.8-.6 3.3M19.4 12.8l-2.9-.8.6-3.3"/>',
   balloon: '<path class="b" d="M12 2.4c-3.9 0-6.8 3-6.8 6.9 0 4.1 3.2 7.6 6 8.3l-.9 1.7h3.4l-.9-1.7c2.8-.7 6-4.2 6-8.3 0-3.9-2.9-6.9-6.8-6.9z"/><ellipse class="h" cx="9.3" cy="7.9" rx="1.1" ry="2" transform="rotate(28 9.3 7.9)"/><path class="s" d="M12 19.6c-1 .8-1 1.6 0 2.4"/>',
   hourglass: '<path class="b" d="M5.8 2.5h12.4v2.1H17v1.6c0 2.4-1.5 4.3-3.4 5.8 1.9 1.5 3.4 3.4 3.4 5.8v1.6h1.2v2.1H5.8v-2.1H7v-1.6c0-2.4 1.5-4.3 3.4-5.8C8.5 10.5 7 8.6 7 6.2V4.6H5.8z"/><path class="h" d="M9.3 18.9h5.4c-.4-1.7-1.5-2.8-2.7-3.7-1.2.9-2.3 2-2.7 3.7zM9.7 7.3h4.6c-.6.9-1.4 1.7-2.3 2.4-.9-.7-1.7-1.5-2.3-2.4z"/>',
+  vinyl: '<circle class="b" cx="12" cy="12" r="9.8"/><path class="h" d="M12 4.1a7.9 7.9 0 0 1 7.6 5.7l-.9.3A6.9 6.9 0 0 0 12 5.1zM12 19.9a7.9 7.9 0 0 1-7.6-5.7l.9-.3a6.9 6.9 0 0 0 6.7 5z"/><circle class="h" cx="12" cy="12" r="3.3"/><circle class="b" cx="12" cy="12" r="1"/>',
+  vhs: '<rect class="b" x="1.8" y="5" width="20.4" height="14" rx="1.8"/><rect class="h" x="4" y="7" width="16" height="4.2" rx=".8"/><circle class="h" cx="8.2" cy="15.3" r="2.1"/><circle class="h" cx="15.8" cy="15.3" r="2.1"/><rect class="h" x="10.3" y="14.6" width="3.4" height="1.4" rx=".5"/>',
   teardrop: '<path class="b" d="M12 2.4c-.4.5-6.7 8-6.7 12.6a6.7 6.7 0 0 0 13.4 0c0-4.6-6.3-12.1-6.7-12.6z"/><ellipse class="h" cx="9.6" cy="15.2" rx="1.25" ry="2" transform="rotate(-20 9.6 15.2)"/>',
 };
 

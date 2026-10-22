@@ -20,7 +20,7 @@ export const SWATCHES = [
 export const swatchHex = (id) => (SWATCHES.find((s) => s.id === id) || SWATCHES[7]).hex;
 
 // Rating icons a festival can use (drawn in icons.js).
-export const RATING_ICONS = ['skull', 'tree', 'trophy', 'star', 'popcorn', 'heart', 'ghost', 'snowflake', 'balloon', 'hourglass', 'teardrop'];
+export const RATING_ICONS = ['skull', 'tree', 'trophy', 'star', 'popcorn', 'heart', 'ghost', 'snowflake', 'balloon', 'hourglass', 'teardrop', 'vinyl', 'vhs'];
 
 export function uid() {
   if (globalThis.crypto && crypto.randomUUID) return crypto.randomUUID();
@@ -243,6 +243,73 @@ const TEAR_JERKERS = [
   ], 8],
 ];
 
+// The movies each generation grew up with (Boomers about 1955–1988, Gen X about 1977–1999). Light on horror.
+const BOOMER = [
+  ["Rebels & Counterculture", 'crimson', [
+    ["Rebel Without a Cause", 1955], ["The Hustler", 1961], ["Splendor in the Grass", 1961], ["The Graduate", 1967],
+    ["Bonnie and Clyde", 1967], ["Cool Hand Luke", 1967], ["Easy Rider", 1969], ["Midnight Cowboy", 1969],
+    ["Five Easy Pieces", 1970], ["Harold and Maude", 1971], ["American Graffiti", 1973], ["The Big Chill", 1983],
+  ]],
+  ["Epic Matinees", 'gold', [
+    ["The Ten Commandments", 1956], ["Around the World in 80 Days", 1956], ["The Bridge on the River Kwai", 1957], ["Ben-Hur", 1959],
+    ["Spartacus", 1960], ["West Side Story", 1961], ["Lawrence of Arabia", 1962], ["The Great Escape", 1963],
+    ["My Fair Lady", 1964], ["Mary Poppins", 1964], ["The Sound of Music", 1965], ["Doctor Zhivago", 1965],
+  ]],
+  ["Cowboys & Spies", 'teal', [
+    ["The Searchers", 1956], ["North by Northwest", 1959], ["Rio Bravo", 1959], ["The Magnificent Seven", 1960],
+    ["The Man Who Shot Liberty Valance", 1962], ["Dr. No", 1962], ["Charade", 1963], ["Goldfinger", 1964],
+    ["The Good, the Bad and the Ugly", 1966], ["The Thomas Crown Affair", 1968], ["True Grit", 1969], ["Butch Cassidy and the Sundance Kid", 1969],
+  ]],
+  ["Big Laughs", 'pumpkin', [
+    ["Some Like It Hot", 1959], ["The Apartment", 1960], ["The Pink Panther", 1963], ["Dr. Strangelove or: How I Learned to Stop Worrying and Love the Bomb", 1964],
+    ["The Producers", 1967], ["The Odd Couple", 1968], ["Blazing Saddles", 1974], ["Animal House", 1978],
+    ["Airplane!", 1980], ["Caddyshack", 1980], ["9 to 5", 1980], ["Tootsie", 1982],
+  ]],
+  ["New Hollywood", 'violet', [
+    ["The French Connection", 1971], ["The Godfather", 1972], ["The Sting", 1973], ["Chinatown", 1974],
+    ["One Flew Over the Cuckoo's Nest", 1975], ["Dog Day Afternoon", 1975], ["All the President's Men", 1976], ["Network", 1976],
+    ["Taxi Driver", 1976], ["Annie Hall", 1977], ["The Deer Hunter", 1978], ["Kramer vs. Kramer", 1979],
+  ]],
+  ["The Blockbuster Is Born", 'indigo', [
+    ["Jaws", 1975], ["Rocky", 1976], ["Smokey and the Bandit", 1977], ["Close Encounters of the Third Kind", 1977],
+    ["Grease", 1978], ["Superman", 1978], ["Raiders of the Lost Ark", 1981], ["An Officer and a Gentleman", 1982],
+    ["Footloose", 1984], ["Beverly Hills Cop", 1984], ["Top Gun", 1986], ["Dirty Dancing", 1987],
+  ]],
+];
+
+const GENX = [
+  ["The Brat Pack", 'crimson', [
+    ["Fast Times at Ridgemont High", 1982], ["The Outsiders", 1983], ["Risky Business", 1983], ["Sixteen Candles", 1984],
+    ["The Breakfast Club", 1985], ["St. Elmo's Fire", 1985], ["Weird Science", 1985], ["Better Off Dead", 1985],
+    ["Pretty in Pink", 1986], ["Ferris Bueller's Day Off", 1986], ["Some Kind of Wonderful", 1987], ["Say Anything...", 1989],
+  ]],
+  ["Kids on Bikes", 'teal', [
+    ["E.T. the Extra-Terrestrial", 1982], ["WarGames", 1983], ["The NeverEnding Story", 1984], ["Ghostbusters", 1984],
+    ["The Karate Kid", 1984], ["The Goonies", 1985], ["Back to the Future", 1985], ["Stand by Me", 1986],
+    ["Flight of the Navigator", 1986], ["The Princess Bride", 1987], ["Big", 1988], ["Honey, I Shrunk the Kids", 1989],
+  ]],
+  ["Action Heroes", 'pumpkin', [
+    ["First Blood", 1982], ["The Terminator", 1984], ["Commando", 1985], ["Lethal Weapon", 1987],
+    ["Predator", 1987], ["RoboCop", 1987], ["Die Hard", 1988], ["Total Recall", 1990],
+    ["Point Break", 1991], ["The Fugitive", 1993], ["Speed", 1994], ["True Lies", 1994],
+  ]],
+  ["Rom-Coms & Mixtapes", 'violet', [
+    ["When Harry Met Sally...", 1989], ["Pretty Woman", 1990], ["Groundhog Day", 1993], ["Sleepless in Seattle", 1993],
+    ["Four Weddings and a Funeral", 1994], ["While You Were Sleeping", 1995], ["Clueless", 1995], ["Jerry Maguire", 1996],
+    ["My Best Friend's Wedding", 1997], ["You've Got Mail", 1998], ["10 Things I Hate About You", 1999], ["Notting Hill", 1999],
+  ]],
+  ["Cult Classics", 'moss', [
+    ["The Blues Brothers", 1980], ["Blade Runner", 1982], ["This Is Spinal Tap", 1984], ["Real Genius", 1985],
+    ["Clue", 1985], ["Labyrinth", 1986], ["Heathers", 1989], ["Bill & Ted's Excellent Adventure", 1989],
+    ["UHF", 1989], ["Pump Up the Volume", 1990], ["Wayne's World", 1992], ["The Big Lebowski", 1998],
+  ]],
+  ["'90s Slackers", 'gold', [
+    ["Singles", 1992], ["Dazed and Confused", 1993], ["Clerks", 1994], ["Reality Bites", 1994],
+    ["Pulp Fiction", 1994], ["Empire Records", 1995], ["Mallrats", 1995], ["Before Sunrise", 1995],
+    ["Swingers", 1996], ["Grosse Pointe Blank", 1997], ["Good Will Hunting", 1997], ["Office Space", 1999],
+  ]],
+];
+
 export const BUILT_IN_FESTIVALS = [
   { id: 'halloween', name: 'Halloween', icon: 'skull', categoryDie: 6, movieDie: 12, categories: HALLOWEEN },
   { id: 'christmas', name: 'Christmas', icon: 'tree', categoryDie: 6, movieDie: 12, categories: CHRISTMAS },
@@ -250,6 +317,8 @@ export const BUILT_IN_FESTIVALS = [
   { id: 'kids', name: 'Kids & Family', icon: 'balloon', categoryDie: 6, movieDie: 20, categories: KIDS },
   { id: 'bucketlist', name: 'Bucket List Cinema', icon: 'hourglass', categoryDie: 6, movieDie: 20, categories: BUCKET_LIST },
   { id: 'tearjerkers', name: 'Tear Jerkers', icon: 'teardrop', categoryDie: 6, movieDie: 20, categories: TEAR_JERKERS },
+  { id: 'boomer', name: 'Boomer Classics', icon: 'vinyl', categoryDie: 6, movieDie: 12, categories: BOOMER },
+  { id: 'genx', name: 'Gen X Rewind', icon: 'vhs', categoryDie: 6, movieDie: 12, categories: GENX },
 ];
 
 export function makeCategory(name, color, die, movies = []) {
