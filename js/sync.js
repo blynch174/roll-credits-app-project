@@ -10,7 +10,7 @@
 import * as store from './store.js';
 import * as cloud from './cloud.js';
 
-export const APP_VERSION = '3.19';
+export const APP_VERSION = '3.20';
 const META_KEY = 'roll-credits:sync';
 const DEVICE_KEY = 'roll-credits:device';
 const PUSH_DELAY = 1500;
@@ -103,6 +103,7 @@ export async function checkAccess() {
     return failed(e);
   }
   await reconcile();
+  notePresence();
 }
 
 // First contact after signing in: decide whose data wins.
@@ -151,6 +152,23 @@ const parse = (remote) => {
 
 // The account's data replaces this device's. Only used when this device has no unsent changes
 // (or the person chose it), so nothing is lost; a copy is still kept for Restore Previous Data.
+// Lets admins see who's using the app (View Users). At most every few hours per device.
+const PRESENCE_KEY = 'roll-credits:presence';
+function notePresence() {
+  if (!user) return;
+  try {
+    const last = JSON.parse(localStorage.getItem(PRESENCE_KEY) || '{}');
+    if (last.uid === user.uid && Date.now() - last.at < 6 * 3600 * 1000) return;
+  } catch (e) { /* ignore */ }
+  const ua = navigator.userAgent || '';
+  const platform = /iPhone|iPad|iPod/.test(ua) ? 'iPhone/iPad' : /Android/.test(ua) ? 'Android' : /Mac/.test(ua) ? 'Mac' : /Windows/.test(ua) ? 'Windows' : 'Other';
+  const st = store.getState();
+  const uid = user.uid;
+  cloud.touchPresence(user, { appVersion: APP_VERSION, platform, watched: st.history.length, festivals: st.festivals.length })
+    .then(() => { try { localStorage.setItem(PRESENCE_KEY, JSON.stringify({ uid, at: Date.now() })); } catch (e) { /* full */ } })
+    .catch(() => {});
+}
+
 function apply(remote, backup = false) {
   const d = parse(remote);
   if (!d) return set('error');

@@ -7,6 +7,7 @@
 //   official/{id}    { name, icon, rev, kind, message, hidden, order, tables: "<JSON>", publishedAt, publishedBy }
 //                    Published official festivals. Anyone can read (no account needed). Admins write.
 //   drafts/{id}      { name, icon, tables: "<JSON>", baseRev, updatedAt, updatedBy }   Admins only.
+//   presence/{uid}   { email, lastSeen, firstSeen, appVersion, platform, watched, festivals }   Admins can list.
 //   requests/{tmdbId} { tmdbId, title, year, posterPath, count, status, moods, firstAt, lastAt }
 //                    Movies people want in the catalog. Anyone can read (no personal info). Signed-in people add
 //                    one vote each (requests/{tmdbId}/voters/{uid}); admins approve or reject.
@@ -83,6 +84,7 @@ export async function deleteAccount(user, password) {
   const { A, F, db } = fb;
   await A.reauthenticateWithCredential(user, A.EmailAuthProvider.credential(user.email, password));
   await F.deleteDoc(F.doc(db, 'users', user.uid));
+  await F.deleteDoc(F.doc(db, 'presence', user.uid)).catch(() => {});
   await A.deleteUser(user);
 }
 
@@ -134,10 +136,43 @@ export async function listRequests() {
   return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
 }
 
+// Admins: add a movie straight to the catalog (approved in one step). The catalog workflow picks it up.
+export async function adminAddMovie(m, moods) {
+  const { F, db } = fb;
+  const ref = F.doc(db, 'requests', String(m.tmdbId));
+  const now = Date.now();
+  const snap = await F.getDoc(ref);
+  if (snap.exists()) {
+    await F.updateDoc(ref, { status: 'approved', moods: moods || [], reviewedAt: now });
+  } else {
+    await F.setDoc(ref, {
+      tmdbId: m.tmdbId, title: String(m.title).slice(0, 300), year: m.releaseYear || null, posterPath: m.posterPath || null,
+      count: 0, status: 'approved', moods: moods || [], firstAt: now, lastAt: now, reviewedAt: now, addedByAdmin: true,
+    });
+  }
+}
+
 // Admins: status 'approved' | 'rejected' | 'pending', plus the moods it gets in the catalog.
 export function setRequest(id, { status, moods }) {
   const { F, db } = fb;
   return F.updateDoc(F.doc(db, 'requests', String(id)), { status, moods: moods || [], reviewedAt: Date.now() });
+}
+
+// ---------- Who uses the app (Admin Tools → View Users) ----------
+// presence/{uid}: email, when the app was last opened, which version, rough device type, and two counts.
+
+export async function touchPresence(user, info) {
+  const { F, db } = fb;
+  const ref = F.doc(db, 'presence', user.uid);
+  const snap = await F.getDoc(ref).catch(() => null);
+  const firstSeen = snap && snap.exists() ? snap.data().firstSeen || Date.now() : Date.now();
+  await F.setDoc(ref, { email: user.email || '', lastSeen: Date.now(), firstSeen, ...info });
+}
+
+export async function listPresence() {
+  const { F, db } = fb;
+  const snap = await F.getDocs(F.collection(db, 'presence'));
+  return snap.docs.map((d) => ({ uid: d.id, ...d.data() }));
 }
 
 // ---------- Official festivals ----------

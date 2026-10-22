@@ -4,8 +4,7 @@
 import * as sync from '../sync.js';
 import * as cloud from '../cloud.js';
 import { $, esc, toast, nav, openSheet, swapSheet, closeSheet, confirmSheet } from '../ui.js';
-import { renderOfficialSection } from './admin-official.js';
-import { renderRequestsSection, initRequestsSection } from './admin-requests.js';
+import { renderAdmin, adminBack, resetAdmin } from './admin.js';
 
 // ---------- Settings → Account section ----------
 
@@ -50,7 +49,7 @@ export function renderAccountSection() {
       <span>Admin tools</span></button>` : ''}`;
   $('#btn-account').addEventListener('click', () => (sync.isSignedIn() ? accountSheet() : signInSheet()));
   const ab = $('#btn-admin');
-  if (ab) ab.addEventListener('click', () => nav.go('admin'));
+  if (ab) ab.addEventListener('click', () => { resetAdmin(); nav.go('admin'); });
 }
 
 // ---------- Sheets ----------
@@ -270,30 +269,12 @@ export function chooseSideSheet(remote, done) {
 
 // ---------- Admin screen ----------
 
-export async function renderAdmin() {
-  const root = $('#admin');
-  if (!sync.isAdmin()) {
-    root.innerHTML = '<p class="sheet-text">Admin tools are only for admins.</p>';
-    return;
-  }
-  root.innerHTML = `
-    <h2 class="section-title first">Official Festivals</h2>
-    <div id="official-admin"></div>
-
-    <h2 class="section-title">Movie Requests</h2>
-    <div id="requests-admin"></div>
-
-    <h2 class="section-title">Admins</h2>
-    <div class="card admin-soon"><p class="sheet-text">Admins are added in the Firebase console (see FIREBASE_SETUP.md, step 6).</p></div>`;
-  renderOfficialSection();
-  renderRequestsSection();
-}
+export { renderAdmin };
 
 export function initAccount() {
   sync.onStatus(() => {
     if (!$('#screen-settings').hidden) renderAccountSection();
     if (!$('#screen-admin').hidden && !sync.isAdmin()) renderAdmin();
   });
-  $('#admin-done').addEventListener('click', () => nav.go('settings'));
-  initRequestsSection();
+  $('#admin-done').addEventListener('click', adminBack);
 }

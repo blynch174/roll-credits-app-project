@@ -98,7 +98,7 @@ async function search(q, year, env) {
 }
 
 async function movie(id, env) {
-  const d = await tmdb(`/movie/${id}`, { append_to_response: 'release_dates,credits,external_ids' }, env);
+  const d = await tmdb(`/movie/${id}`, { append_to_response: 'release_dates,credits,external_ids,keywords' }, env);
   if (!d) return null;
   const imdbId = (d.external_ids && d.external_ids.imdb_id) || d.imdb_id || null;
   return {
@@ -120,6 +120,7 @@ async function movie(id, env) {
     posterPath: d.poster_path || null,
     overview: trim(d.overview),
     moodTone: [],
+    keywords: ((d.keywords && d.keywords.keywords) || []).slice(0, 40).map((k) => k.name), // used to suggest moods
   };
 }
 
@@ -161,7 +162,7 @@ export default {
       key = `search:${q.toLowerCase()}:${y}`;
       work = async () => ({ results: await search(q, y, env) });
     } else if (m) {
-      key = `movie:${m[1]}`;
+      key = `movie2:${m[1]}`; // movie2: answers include keywords
       work = async () => {
         const mv = await movie(m[1], env);
         return mv ? { movie: mv } : null;
