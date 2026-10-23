@@ -171,11 +171,20 @@ let onSheetClose = null;
 
 export function openSheet({ title, body = '', actions = [], onClose = null }) {
   const sheet = $('#sheet');
+  // The sheet is a still frame; .sheet-scroll inside it does the scrolling. (A sheet that slides in and scrolls
+  // itself gets a misplaced scroll bar on iPhone.)
   sheet.innerHTML = `
     <div class="sheet-grip" aria-hidden="true"></div>
-    <h3 class="sheet-title">${esc(title)}</h3>
-    <div class="sheet-body">${body}</div>
-    <div class="sheet-actions"></div>`;
+    <div class="sheet-scroll">
+      <h3 class="sheet-title">${esc(title)}</h3>
+      <div class="sheet-body">${body}</div>
+      <div class="sheet-actions"></div>
+    </div>`;
+  const scroller = $('.sheet-scroll', sheet);
+  const edge = () => sheet.classList.toggle('more', scroller.scrollHeight - scroller.scrollTop - scroller.clientHeight > 4);
+  scroller.addEventListener('scroll', edge, { passive: true });
+  if (window.ResizeObserver) new ResizeObserver(edge).observe(scroller);
+  if (window.MutationObserver) new MutationObserver(edge).observe(scroller, { childList: true, subtree: true });
   const bar = $('.sheet-actions', sheet);
   for (const a of actions) {
     const b = document.createElement('button');
@@ -191,7 +200,8 @@ export function openSheet({ title, body = '', actions = [], onClose = null }) {
   document.documentElement.classList.add('sheet-open');
   $('#sheet-backdrop').hidden = false;
   sheet.hidden = false;
-  sheet.scrollTop = 0;
+  scroller.scrollTop = 0;
+  requestAnimationFrame(edge);
   requestAnimationFrame(() => {
     $('#sheet-backdrop').classList.add('show');
     sheet.classList.add('show');
@@ -266,7 +276,7 @@ function initSheetSwipe() {
     if (wide.matches || e.touches.length !== 1) return;
     const t = e.target;
     const fromHandle = !!t.closest('.sheet-grip, .sheet-title');
-    if (!fromHandle && (sheet.scrollTop > 0 || t.closest('input, textarea, select, .pp-moods, .chips, .die-chips, .swatches'))) return;
+    if (!fromHandle && (scrollerOf(sheet).scrollTop > 0 || t.closest('input, textarea, select, .pp-moods, .chips, .die-chips, .swatches'))) return;
     const list = t.closest('.af-list');
     if (list && list.scrollTop > 0) return; // scrolling suggestions back up
     tracking = true;
@@ -354,16 +364,19 @@ function initKeyboard() {
   document.addEventListener('focusin', () => setTimeout(keepFocusedInView, 300));
 }
 
+const scrollerOf = (sheet) => $('.sheet-scroll', sheet) || sheet;
+
 // Scrolls the open sheet (not the page) so the box being typed in is visible.
 export function keepFocusedInView() {
   const sheet = $('#sheet');
   const el = document.activeElement;
   if (!sheet || sheet.hidden || !el || !sheet.contains(el) || !el.matches('input, textarea, select')) return;
-  const box = sheet.getBoundingClientRect();
+  const scroller = scrollerOf(sheet);
+  const box = scroller.getBoundingClientRect();
   const r = el.getBoundingClientRect();
   const pad = 12;
-  if (r.top < box.top + pad) sheet.scrollTop -= box.top + pad - r.top;
-  else if (r.bottom > box.bottom - pad) sheet.scrollTop += r.bottom - (box.bottom - pad);
+  if (r.top < box.top + pad) scroller.scrollTop -= box.top + pad - r.top;
+  else if (r.bottom > box.bottom - pad) scroller.scrollTop += r.bottom - (box.bottom - pad);
 }
 
 export function initSheets() {

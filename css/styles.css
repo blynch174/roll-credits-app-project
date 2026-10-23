@@ -1588,3 +1588,49 @@ html.sheet-open, html.sheet-open body { overflow: hidden; }
     border-right: var(--edge);
   }
 }
+
+/* v3.24: the sheet is a still frame and .sheet-scroll scrolls inside it. A fade marks more content below. */
+.sheet {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 10px 0 0;
+}
+.sheet-grip { flex: none; }
+.sheet-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  padding: 0 18px calc(18px + env(safe-area-inset-bottom));
+}
+html.kb-open .sheet { padding-bottom: 0; }
+html.kb-open .sheet-scroll { padding-bottom: 14px; }
+.sheet::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 34px;
+  pointer-events: none;
+  background: linear-gradient(to bottom, transparent, var(--surface) 85%);
+  opacity: 0;
+  transition: opacity .15s;
+  border-radius: inherit;
+}
+.sheet.more::after { opacity: 1; }
+html.kb-open .sheet.show::before {
+  /* thin line where the sheet meets the keyboard */
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  z-index: 1;
+  background: var(--line);
+  pointer-events: none;
+}
+.sheet .field-row:has(#f-title) { top: 0; margin: 0 -18px; padding: 8px 18px; }
