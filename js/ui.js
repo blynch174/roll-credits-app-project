@@ -181,10 +181,6 @@ export function openSheet({ title, body = '', actions = [], onClose = null }) {
       <div class="sheet-actions"></div>
     </div>`;
   const scroller = $('.sheet-scroll', sheet);
-  const edge = () => sheet.classList.toggle('more', scroller.scrollHeight - scroller.scrollTop - scroller.clientHeight > 4);
-  scroller.addEventListener('scroll', edge, { passive: true });
-  if (window.ResizeObserver) new ResizeObserver(edge).observe(scroller);
-  if (window.MutationObserver) new MutationObserver(edge).observe(scroller, { childList: true, subtree: true });
   const bar = $('.sheet-actions', sheet);
   for (const a of actions) {
     const b = document.createElement('button');
@@ -201,7 +197,6 @@ export function openSheet({ title, body = '', actions = [], onClose = null }) {
   $('#sheet-backdrop').hidden = false;
   sheet.hidden = false;
   scroller.scrollTop = 0;
-  requestAnimationFrame(edge);
   requestAnimationFrame(() => {
     $('#sheet-backdrop').classList.add('show');
     sheet.classList.add('show');
