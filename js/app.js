@@ -21,6 +21,8 @@ import { renderBanner } from './screens/updates.js';
 import { renderThemePicker, initThemePicker } from './screens/theme-picker.js';
 import { leaveDraft } from './screens/admin-official.js';
 import { renderLibrary, initLibrary, openLibrary, libraryEntries } from './screens/library.js';
+import { feedbackSheet } from './screens/feedback.js';
+import { configured as cloudConfigured } from './cloud.js';
 
 const SCREENS = ['home', 'watched', 'popcorn', 'settings', 'creator', 'edit', 'admin', 'themes', 'library'];
 const TABS = ['home', 'watched', 'popcorn', 'settings'];
@@ -147,6 +149,8 @@ initThemePicker();
 initLibrary();
 initTutorial();
 $('#btn-tutorial').addEventListener('click', () => startTutorial(() => go('home')));
+$('#btn-feedback').addEventListener('click', feedbackSheet);
+$('#btn-feedback').hidden = !cloudConfigured();
 go('home');
 
 // First time the app is opened on this device: show the quick tour.

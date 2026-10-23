@@ -1535,3 +1535,6 @@ html, body { min-height: 100%; }
 .user-row.idle { opacity: .6; }
 .ur-email { font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ur-sub { font-size: 13px; color: var(--muted); }
+.fb-list { margin-top: 12px; }
+.fb-row { padding: 12px 14px; display: flex; flex-direction: column; gap: 4px; }
+.fb-text { margin: 0 0 4px; white-space: pre-wrap; overflow-wrap: anywhere; }

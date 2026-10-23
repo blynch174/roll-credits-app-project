@@ -158,6 +158,32 @@ export function setRequest(id, { status, moods }) {
   return F.updateDoc(F.doc(db, 'requests', String(id)), { status, moods: moods || [], reviewedAt: Date.now() });
 }
 
+// ---------- Feedback (Settings → Send Feedback; read in Admin Tools → Feedback) ----------
+
+export async function sendFeedback(fields) {
+  const { F, db } = fb;
+  const u = fb.auth.currentUser;
+  await F.addDoc(F.collection(db, 'feedback'), {
+    ...fields, uid: u ? u.uid : null, email: u ? u.email || '' : '', status: 'new', createdAt: Date.now(),
+  });
+}
+
+export async function listFeedback() {
+  const { F, db } = fb;
+  const snap = await F.getDocs(F.collection(db, 'feedback'));
+  return snap.docs.map((d) => ({ id: d.id, ...d.data() })).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+}
+
+export function setFeedbackStatus(id, status) {
+  const { F, db } = fb;
+  return F.updateDoc(F.doc(db, 'feedback', id), { status });
+}
+
+export function deleteFeedback(id) {
+  const { F, db } = fb;
+  return F.deleteDoc(F.doc(db, 'feedback', id));
+}
+
 // ---------- Who uses the app (Admin Tools → View Users) ----------
 // presence/{uid}: email, when the app was last opened, which version, rough device type, and two counts.
 
