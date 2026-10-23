@@ -320,6 +320,15 @@ function initSheetSwipe() {
 function initKeyboard() {
   const vv = window.visualViewport;
   const root = document.documentElement;
+  // Fills the space under an open sheet (around and behind the iPhone keyboard) so the app behind never shows
+  // through, and swallows drags there so the page behind can't scroll.
+  const floor = document.createElement('div');
+  floor.className = 'sheet-floor';
+  floor.setAttribute('aria-hidden', 'true');
+  document.body.appendChild(floor);
+  const stop = (e) => { if (e.cancelable) e.preventDefault(); };
+  floor.addEventListener('touchmove', stop, { passive: false });
+  $('#sheet-backdrop').addEventListener('touchmove', stop, { passive: false });
   if (vv) {
     let queued = false;
     const update = () => {

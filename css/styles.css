@@ -602,7 +602,7 @@ input[type="number"] { -moz-appearance: textfield; }
   transform: translateY(100%);
   transition: transform .22s ease-out;
 }
-.sheet.show { transform: translateY(0); }
+.sheet.show { transform: none; } /* no leftover transform: it puts iPhone's scroll bar in the wrong place */
 .sheet-grip { width: 40px; height: 5px; margin: 0 auto 12px; border-radius: var(--r-pill); background: var(--line); }
 .sheet-title { margin: 0 0 4px; font-size: 20px; font-weight: 800; }
 .sheet-sub { margin: 0 0 14px; color: var(--muted); font-size: 14px; }
@@ -1568,3 +1568,23 @@ html.sheet-open, html.sheet-open body { overflow: hidden; }
   -webkit-overflow-scrolling: touch;
 }
 .af-list .af-item { flex-shrink: 0; }
+
+/* v3.23: nothing from the app shows between the sheet and the keyboard */
+.sheet-backdrop { top: -50vh; bottom: -100vh; }
+.sheet-floor { display: none; }
+@media (max-width: 699px) {
+  html.sheet-open.kb-open .sheet-floor {
+    display: block;
+    position: fixed;
+    left: 0;
+    right: 0;
+    z-index: 21;
+    max-width: 560px;
+    margin: 0 auto;
+    top: calc(100% - var(--kb, 0px) - 1px);
+    height: calc(var(--kb, 0px) + 100vh);
+    background: var(--surface);
+    border-left: var(--edge);
+    border-right: var(--edge);
+  }
+}
