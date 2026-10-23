@@ -742,7 +742,7 @@ input[type="search"] {
   text-transform: uppercase;
   color: var(--muted);
 }
-.filter-grid select { min-height: 42px; font-size: 15px; background-color: var(--surface); }
+.filter-grid select { min-height: 42px; font-size: 16px; background-color: var(--surface); }
 .filter-grid select:disabled { opacity: .5; }
 .watched-summary {
   display: flex;
@@ -1538,3 +1538,33 @@ html, body { min-height: 100%; }
 .fb-list { margin-top: 12px; }
 .fb-row { padding: 12px 14px; display: flex; flex-direction: column; gap: 4px; }
 .fb-text { margin: 0 0 4px; white-space: pre-wrap; overflow-wrap: anywhere; }
+
+/* ---------- v3.22: Keyboard-friendly sheets ---------- */
+/* ui.js sets --kb (keyboard height) and --vvh (visible height). The sheet sits on the keyboard and fits above it. */
+html.sheet-open, html.sheet-open body { overflow: hidden; }
+@media (max-width: 699px) {
+  .sheet {
+    bottom: var(--kb, 0px);
+    max-height: min(88dvh, calc(var(--vvh, 100dvh) - 8px));
+    overscroll-behavior: contain;
+  }
+  html.kb-open .sheet { padding-bottom: 12px; border-radius: 22px 22px 0 0; }
+  html.kb-open .sheet-grip { margin-bottom: 6px; }
+}
+/* The title box stays pinned while suggestions fill in under it. */
+.sheet .field-row:has(#f-title) {
+  position: sticky;
+  top: -10px;
+  z-index: 2;
+  margin: -10px -18px 0;
+  padding: 10px 18px 8px;
+  background: var(--surface);
+}
+.af-list {
+  margin-top: -4px;
+  max-height: min(300px, calc(var(--vvh, 100dvh) * 0.4));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+.af-list .af-item { flex-shrink: 0; }

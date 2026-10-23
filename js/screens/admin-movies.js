@@ -233,7 +233,7 @@ function renderAdd(root) {
   }
   root.innerHTML = `
     <form class="add-search" id="add-form" autocomplete="off">
-      <input type="search" id="add-q" placeholder="Search TMDB" value="${esc(addState.q)}">
+      <input type="search" id="add-q" autocorrect="off" spellcheck="false" enterkeyhint="search" placeholder="Search TMDB" value="${esc(addState.q)}">
       <button type="submit" class="btn primary small">Search</button>
     </form>
     <div id="add-results">${resultsHTML()}</div>`;

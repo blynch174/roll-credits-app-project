@@ -105,9 +105,9 @@ export function editSlotSheet(fId, catId, index, after) {
     body: `
       <div class="field-row">
         <label class="field grow"><span class="label">Title <em>required</em></span>
-          <input id="f-title" type="text" maxlength="120" autocomplete="off" value="${m ? esc(m.title) : ''}" placeholder="Movie title"></label>
+          <input id="f-title" type="text" maxlength="120" autocomplete="off" autocorrect="off" autocapitalize="words" spellcheck="false" enterkeyhint="done" value="${m ? esc(m.title) : ''}" placeholder="Movie title"></label>
         <label class="field year"><span class="label">Year</span>
-          <input id="f-year" type="number" inputmode="numeric" min="1888" max="2999" value="${m && m.year ? m.year : ''}" placeholder="Optional"></label>
+          <input id="f-year" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="4" enterkeyhint="done" value="${m && m.year ? m.year : ''}" placeholder="Optional"></label>
       </div>
       ${autofindBox()}
       ${m ? linksHTML(catalogMovie(m.catalogId)) : ''}
@@ -126,7 +126,7 @@ function editCategorySheet(fId, catId) {
     title: f.mode === 'one' ? 'Edit list' : 'Edit category',
     body: `
       <label class="field"><span class="label">Name</span>
-        <input id="c-name" type="text" maxlength="40" value="${esc(cat.name)}"></label>
+        <input id="c-name" type="text" maxlength="40" autocorrect="off" autocapitalize="words" spellcheck="false" enterkeyhint="done" value="${esc(cat.name)}"></label>
       <div class="field"><span class="label">Color</span>
         <div class="swatches" id="c-swatches">
           ${SWATCHES.map((s) => `<button type="button" class="swatch ${s.id === color ? 'on' : ''}" data-c="${s.id}" style="--sw:${s.hex}" aria-label="${s.id}"></button>`).join('')}

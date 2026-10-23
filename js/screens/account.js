@@ -56,7 +56,7 @@ export function renderAccountSection() {
 
 const field = (id, label, type, auto, value = '') => `
   <label class="field"><span class="label">${label}</span>
-    <input id="${id}" type="${type}" autocomplete="${auto}" autocapitalize="off" spellcheck="false" value="${esc(value)}"></label>`;
+    <input id="${id}" type="${type}" autocomplete="${auto}" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="${type === 'password' ? 'go' : 'next'}" value="${esc(value)}"></label>`;
 
 function busy(sheet, btnId, on, label) {
   const b = $('#' + btnId, sheet);

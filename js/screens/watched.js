@@ -74,7 +74,7 @@ export function renderWatched() {
   history.forEach((e) => { if (!festChoices.has(e.festivalId)) festChoices.set(e.festivalId, store.historyGroupName(e.festivalId)); });
 
   $('#watched-filters').innerHTML = `
-    <input id="wf-q" type="search" placeholder="Search titles and notes" value="${esc(filters.q)}" autocomplete="off">
+    <input id="wf-q" type="search" autocorrect="off" spellcheck="false" enterkeyhint="search" placeholder="Search titles and notes" value="${esc(filters.q)}" autocomplete="off">
     <div class="filter-grid">
       <label><span>Festival</span><select id="wf-festival">
         ${opt('all', 'All festivals', filters.festival)}
@@ -271,9 +271,9 @@ export function logSheet(after) {
       <p class="sheet-sub">For anything you watched without rolling for it.</p>
       <div class="field-row">
         <label class="field grow"><span class="label">Title <em>required</em></span>
-          <input id="f-title" type="text" maxlength="120" autocomplete="off" placeholder="Start typing to search"></label>
+          <input id="f-title" type="text" maxlength="120" autocomplete="off" autocorrect="off" autocapitalize="words" spellcheck="false" enterkeyhint="done" placeholder="Start typing to search"></label>
         <label class="field year"><span class="label">Year</span>
-          <input id="f-year" type="number" inputmode="numeric" min="1888" max="2999" placeholder="Optional"></label>
+          <input id="f-year" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="4" enterkeyhint="done" placeholder="Optional"></label>
       </div>
       ${autofindBox()}
       <div class="field-row">

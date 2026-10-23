@@ -111,6 +111,14 @@ export function attachAutofind(sheet, { festivalId, onPick } = {}) {
     if (m) choose(m);
   });
   titleEl.addEventListener('input', show);
+  // Year is a plain text box (cleaner number pad on iPhone), so keep it to four digits.
+  yearEl.addEventListener('input', () => {
+    const v = yearEl.value.replace(/\D/g, '').slice(0, 4);
+    if (v !== yearEl.value) yearEl.value = v;
+  });
+  // Moving into the year box hides the suggestions so they don't cover it.
+  yearEl.addEventListener('focus', () => { if (!box.querySelector('.af-hit, .af-note')) { box.hidden = true; } });
+  titleEl.addEventListener('focus', () => { if (titleEl.value.trim().length >= 2 && box.hidden && !picked) show(); });
   if (!catalog.isReady()) catalog.onReady(() => { if (document.activeElement === titleEl) show(); });
 
   return (commit = false) => {

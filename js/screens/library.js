@@ -66,7 +66,7 @@ export function renderLibrary() {
       </div>`;
   }).join('');
   box.innerHTML = `
-    <input type="search" class="lib-search" id="lib-search" placeholder="Search festivals" value="${esc(query)}" autocomplete="off">
+    <input type="search" autocorrect="off" spellcheck="false" enterkeyhint="search" class="lib-search" id="lib-search" placeholder="Search festivals" value="${esc(query)}" autocomplete="off">
     ${shelves || '<p class="hint">No festivals match that.</p>'}`;
   const input = $('#lib-search', box);
   input.addEventListener('input', () => {

@@ -188,6 +188,7 @@ export function openSheet({ title, body = '', actions = [], onClose = null }) {
   }
   onSheetClose = onClose;
   $('#toast').classList.remove('show');
+  document.documentElement.classList.add('sheet-open');
   $('#sheet-backdrop').hidden = false;
   sheet.hidden = false;
   sheet.scrollTop = 0;
@@ -208,6 +209,7 @@ export function closeSheet() {
   setTimeout(() => {
     if (sheet.classList.contains('show')) return; // another sheet opened meanwhile
     sheet.hidden = true;
+    document.documentElement.classList.remove('sheet-open');
     $('#sheet-backdrop').hidden = true;
     sheet.innerHTML = '';
   }, 220);
@@ -240,7 +242,7 @@ export function typedConfirm(title, text, onOk) {
     body: `
       <p class="sheet-text">${esc(text)}</p>
       <label class="field"><span class="label">Type DELETE to confirm</span>
-        <input id="typed-confirm" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false"></label>`,
+        <input id="typed-confirm" type="text" autocomplete="off" autocorrect="off" enterkeyhint="done" autocapitalize="characters" spellcheck="false"></label>`,
     actions: [
       { label: 'Cancel', kind: 'ghost', onClick: closeSheet },
       { label: 'Delete', kind: 'danger', id: 'typed-ok', onClick: () => { closeSheet(); onOk(); } },
@@ -265,6 +267,8 @@ function initSheetSwipe() {
     const t = e.target;
     const fromHandle = !!t.closest('.sheet-grip, .sheet-title');
     if (!fromHandle && (sheet.scrollTop > 0 || t.closest('input, textarea, select, .pp-moods, .chips, .die-chips, .swatches'))) return;
+    const list = t.closest('.af-list');
+    if (list && list.scrollTop > 0) return; // scrolling suggestions back up
     tracking = true;
     dragging = false;
     startY = e.touches[0].clientY;
@@ -309,8 +313,53 @@ function initSheetSwipe() {
   sheet.addEventListener('touchcancel', end);
 }
 
+// ---------- Keyboard ----------
+// The iPhone keyboard covers the page instead of shrinking it. visualViewport tells us how much is still visible,
+// so the open sheet sits right on top of the keyboard and never grows taller than the space that's left.
+
+function initKeyboard() {
+  const vv = window.visualViewport;
+  const root = document.documentElement;
+  if (vv) {
+    let queued = false;
+    const update = () => {
+      queued = false;
+      const kb = Math.max(0, Math.round(window.innerHeight - vv.height - vv.offsetTop));
+      root.style.setProperty('--kb', kb + 'px');
+      root.style.setProperty('--vvh', Math.round(vv.height) + 'px');
+      root.classList.toggle('kb-open', kb > 80);
+      if (kb > 80) keepFocusedInView();
+    };
+    const queue = () => { if (!queued) { queued = true; requestAnimationFrame(update); } };
+    vv.addEventListener('resize', queue);
+    vv.addEventListener('scroll', queue);
+    window.addEventListener('resize', queue);
+    update();
+  }
+  // Return on a one-line box closes the keyboard (forms with a submit button still submit first).
+  document.addEventListener('keydown', (e) => {
+    const t = e.target;
+    if (e.key !== 'Enter' || !(t instanceof HTMLInputElement)) return;
+    if (['done', 'search'].includes(t.getAttribute('enterkeyhint')) && !t.form) setTimeout(() => t.blur(), 0);
+  });
+  document.addEventListener('focusin', () => setTimeout(keepFocusedInView, 300));
+}
+
+// Scrolls the open sheet (not the page) so the box being typed in is visible.
+export function keepFocusedInView() {
+  const sheet = $('#sheet');
+  const el = document.activeElement;
+  if (!sheet || sheet.hidden || !el || !sheet.contains(el) || !el.matches('input, textarea, select')) return;
+  const box = sheet.getBoundingClientRect();
+  const r = el.getBoundingClientRect();
+  const pad = 12;
+  if (r.top < box.top + pad) sheet.scrollTop -= box.top + pad - r.top;
+  else if (r.bottom > box.bottom - pad) sheet.scrollTop += r.bottom - (box.bottom - pad);
+}
+
 export function initSheets() {
   initSheetSwipe();
+  initKeyboard();
   $('#sheet-backdrop').addEventListener('click', closeSheet);
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') closeSheet();

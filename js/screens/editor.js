@@ -99,7 +99,7 @@ function lookSheet(fId) {
   const sheet = openSheet({
     title: 'Name & rating icon',
     body: `
-      <label class="field"><span class="label">Name</span><input id="l-name" type="text" maxlength="40" value="${esc(f.name)}"></label>
+      <label class="field"><span class="label">Name</span><input id="l-name" type="text" maxlength="40" autocorrect="off" autocapitalize="words" spellcheck="false" enterkeyhint="done" value="${esc(f.name)}"></label>
       <div class="field"><span class="label">Rating icon</span>
         <div class="icon-grid" id="l-icon">${RATING_ICONS.map((n) => `<button type="button" class="icon-pick ${n === icon ? 'on' : ''}" data-i="${n}" aria-label="${n}">${iconSVG(n)}</button>`).join('')}</div>
       </div>`,

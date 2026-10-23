@@ -34,7 +34,7 @@ export function renderCreator() {
         </select>
       </label>
       <label class="field"><span class="label">Name</span>
-        <input id="cr-name" type="text" maxlength="40" placeholder="Summer Blockbusters, Bond Marathon…" value="${esc(form.name)}"></label>
+        <input id="cr-name" type="text" maxlength="40" autocorrect="off" autocapitalize="words" spellcheck="false" enterkeyhint="done" placeholder="Summer Blockbusters, Bond Marathon…" value="${esc(form.name)}"></label>
     </div>
 
     <h3 class="section-title">Rating icon</h3>

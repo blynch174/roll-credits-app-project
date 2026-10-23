@@ -97,7 +97,7 @@ function newFestivalSheet() {
   const sheet = openSheet({
     title: 'New official festival',
     body: `
-      <label class="field"><span class="label">Name</span><input id="nf-name" type="text" maxlength="40" placeholder="Thanksgiving, Summer Blockbusters…"></label>
+      <label class="field"><span class="label">Name</span><input id="nf-name" type="text" maxlength="40" autocorrect="off" autocapitalize="words" spellcheck="false" enterkeyhint="done" placeholder="Thanksgiving, Summer Blockbusters…"></label>
       <div class="field"><span class="label">Rating icon</span>
         <div class="icon-grid" id="nf-icon">${RATING_ICONS.map((n) => `<button type="button" class="icon-pick ${n === icon ? 'on' : ''}" data-i="${n}" aria-label="${n}">${iconSVG(n)}</button>`).join('')}</div>
       </div>`,
@@ -275,7 +275,7 @@ function shelfSheet(f) {
       <label class="field"><span class="label">Shelf</span>
         <select id="sh-shelf">${SHELVES.map((s) => `<option value="${s.id}" ${s.id === cur ? 'selected' : ''}>${esc(s.name)}</option>`).join('')}</select></label>
       <label class="field"><span class="label">Description</span>
-        <input id="sh-blurb" type="text" maxlength="120" value="${esc(blurb)}" placeholder="One short line"></label>`,
+        <input id="sh-blurb" type="text" maxlength="120" enterkeyhint="done" value="${esc(blurb)}" placeholder="One short line"></label>`,
     actions: [
       { label: 'Cancel', kind: 'ghost', onClick: closeSheet },
       {
