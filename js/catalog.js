@@ -71,6 +71,21 @@ export function setExtras(movies) {
   }
 }
 
+// Admins' fixes (moods, scare factor) from the database, shown before the nightly update bakes them in.
+let edits = {};
+function patch(map) {
+  for (const [id, e] of Object.entries(map || {})) {
+    const m = byId.get(id);
+    if (!m || !e) continue;
+    if (Array.isArray(e.moods)) m.moodTone = e.moods.slice();
+    if (Number.isInteger(e.scariness)) m.scariness = e.scariness;
+  }
+}
+export function applyEdits(map, replace = false) {
+  edits = replace ? { ...(map || {}) } : { ...edits, ...(map || {}) };
+  if (status === 'ready') patch(map);
+}
+
 export function onReady(cb) {
   if (status === 'ready') cb();
   else readyCallbacks.push(cb);
@@ -99,6 +114,7 @@ export function load() {
         }
       }
       for (const arr of franchises.values()) arr.sort((a, b) => (a.seriesOrder || 0) - (b.seriesOrder || 0));
+      patch(edits);
       status = 'ready';
       readyCallbacks.splice(0).forEach((cb) => cb());
     })

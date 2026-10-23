@@ -6,14 +6,16 @@ import * as cloud from '../cloud.js';
 import * as catalog from '../catalog.js';
 import * as tmdb from '../tmdb.js';
 import { suggestMoods } from '../moodmatch.js';
+import { scarePickerHTML, wireScarePicker, editMovieSheet } from './movie-edit.js';
 import { $, $$, esc, toast } from '../ui.js';
 
 const POSTER = 'https://image.tmdb.org/t/p/w92';
-const TITLES = { movies: 'Movie Manager', 'movies:pending': 'Pending', 'movies:approved': 'Approved', 'movies:rejected': 'Rejected', 'movies:add': 'Add New' };
+const TITLES = { movies: 'Movie Manager', 'movies:pending': 'Pending', 'movies:approved': 'Approved', 'movies:rejected': 'Rejected', 'movies:add': 'Add New', 'movies:edit': 'Edit Movies' };
 
 let requests = null; // null = not loaded
 let moodPick = new Map(); // movie id -> Set of moods chosen on screen
 let suggested = new Map(); // movie id -> moods suggested from TMDB
+let scarePick = new Map(); // movie id -> scare factor chosen, 1–10
 let addState = { q: '', results: null, picked: null, busy: false };
 let go = () => {};
 
@@ -41,6 +43,7 @@ export async function renderMovies(root, view, goFn) {
   go = goFn;
   root.onclick = null;
   if (view === 'movies:add') return renderAdd(root);
+  if (view === 'movies:edit') return renderEdit(root);
   root.innerHTML = '<p class="hint">Loading…</p>';
   await catalog.load();
   try {
@@ -62,6 +65,7 @@ function renderMenu(root) {
       <button type="button" class="row-btn" data-go="movies:approved"><span>Approved</span><small>${n('approved')}${waiting ? ` · ${waiting} waiting for the next catalog update` : ''}</small></button>
       <button type="button" class="row-btn" data-go="movies:rejected"><span>Rejected</span><small>${n('rejected')}</small></button>
       <button type="button" class="row-btn" data-go="movies:add"><span>Add New</span></button>
+      <button type="button" class="row-btn" data-go="movies:edit"><span>Edit Movies</span><small>Moods and scare factor</small></button>
     </div>`;
   $$('[data-go]', root).forEach((b) => b.addEventListener('click', () => go(b.dataset.go)));
 }
@@ -70,6 +74,13 @@ function renderMenu(root) {
 
 function moodChips(id, chosen) {
   return `<div class="req-moods" data-for="${esc(id)}">${moodList().map((m) => `<button type="button" data-mood="${esc(m)}" class="${chosen.has(m) ? 'on' : ''}${(suggested.get(id) || []).includes(m) ? ' sug' : ''}">${esc(m)}</button>`).join('')}</div>`;
+}
+
+// Scare factor (1–10, or not set) chosen on screen for each request: movie id -> value.
+const scareSet = (id, v) => scarePick.set(id, v);
+const scareOf = (id) => scarePick.get(id) || null;
+function scarePicker(id) {
+  return `<div class="field req-scare"><span class="label">Scare Factor</span>${scarePickerHTML(id, scareOf(id))}</div>`;
 }
 
 function renderList(root, status) {
@@ -84,11 +95,12 @@ function renderList(root, status) {
   root.innerHTML = `<div class="req-list">${list.map((r) => {
     const chosen = moodPick.get(r.id) || new Set(r.moods || []);
     moodPick.set(r.id, chosen);
+    if (!scarePick.has(r.id)) scarePick.set(r.id, Number.isInteger(r.scariness) ? r.scariness : null);
     const inCat = !!catalog.byTmdbId(r.tmdbId);
     const sub = status === 'pending'
       ? `${r.count || 1} request${(r.count || 1) === 1 ? '' : 's'}`
       : status === 'approved'
-        ? `${inCat ? 'In the catalog' : 'Joins the catalog on the next update'}${r.addedByAdmin ? ' · Added by an admin' : ''}${(r.moods || []).length ? ` · ${r.moods.join(', ')}` : ''}`
+        ? `${inCat ? 'In the catalog' : 'Joins the catalog on the next update'}${r.addedByAdmin ? ' · Added by an admin' : ''}${(r.moods || []).length ? ` · ${r.moods.join(', ')}` : ''}${Number.isInteger(r.scariness) ? ` · Scare ${r.scariness}/10` : ''}`
         : `${r.count || 1} request${(r.count || 1) === 1 ? '' : 's'}`;
     const actions = status === 'pending'
       ? `<button type="button" class="btn primary small" data-act="approved">Approve</button><button type="button" class="btn ghost small" data-act="rejected">Reject</button>`
@@ -102,18 +114,20 @@ function renderList(root, status) {
         <span class="req-title">${esc(r.title)}${r.year ? ` <span class="year">(${r.year})</span>` : ''}</span>
         <span class="req-sub">${esc(sub)}</span>
         ${status !== 'approved' ? `<button type="button" class="req-mood-toggle" data-toggle="1">${chosen.size ? `Moods: ${esc([...chosen].join(', '))}` : '+ Moods'}</button>
-        ${moodChips(r.id, chosen).replace('class="req-moods"', 'class="req-moods" hidden')}` : ''}
+        ${moodChips(r.id, chosen).replace('class="req-moods"', 'class="req-moods" hidden')}
+        ${scarePicker(r.id)}` : ''}
         ${actions ? `<div class="req-actions">${actions}</div>` : ''}
       </div>
     </div>`;
   }).join('')}</div>`;
   wireRows(root, status);
+  root.querySelectorAll('.scare-pick').forEach((box) => wireScarePicker(box, scareOf(box.dataset.for), (v) => scareSet(box.dataset.for, v)));
 }
 
 function wireRows(root, status) {
   root.onclick = async (e) => {
     const row = e.target.closest('.req-row');
-    if (!row) return;
+    if (!row || e.target.closest('.scare-pick')) return;
     const id = row.dataset.id;
     const mood = e.target.closest('[data-mood]');
     if (mood) return toggleMood(row, id, mood);
@@ -128,14 +142,15 @@ function wireRows(root, status) {
     const r = requests.find((x) => x.id === id);
     const to = b.dataset.act;
     const moods = to === 'approved' ? [...(moodPick.get(id) || [])] : r.moods || [];
+    const scariness = to === 'approved' ? scareOf(id) : r.scariness || null;
     b.disabled = true;
     try {
-      await cloud.setRequest(id, { status: to, moods });
+      await cloud.setRequest(id, { status: to, moods, scariness });
     } catch (err) {
       b.disabled = false;
       return toast(cloud.errorText(err));
     }
-    Object.assign(r, { status: to, moods, reviewedAt: Date.now() });
+    Object.assign(r, { status: to, moods, scariness, reviewedAt: Date.now() });
     toast(to === 'approved' ? `${r.title} approved.` : to === 'rejected' ? `${r.title} rejected.` : `${r.title} is back in Pending.`);
     renderList(root, status);
   };
@@ -174,6 +189,37 @@ async function suggestFor(row, id) {
   if (t) t.textContent = set.size ? `Moods: ${[...set].join(', ')}` : '+ Moods';
 }
 
+// ---------- Edit Movies (moods and scare factor of movies already in the catalog) ----------
+
+let editQ = '';
+
+async function renderEdit(root) {
+  root.innerHTML = `
+    <input type="search" class="lib-search" id="edit-q" placeholder="Search the catalog" value="${esc(editQ)}" autocomplete="off" autocorrect="off" spellcheck="false" enterkeyhint="search">
+    <div id="edit-results"><p class="hint">Loading…</p></div>`;
+  await catalog.load();
+  const box = $('#edit-results', root);
+  const show = () => {
+    const hits = catalog.search(editQ, null, 25).filter((m) => catalog.get(m.id) === m);
+    box.innerHTML = editQ.trim().length < 2
+      ? '<p class="hint">Type a title to find a movie.</p>'
+      : hits.length ? `<div class="req-list">${hits.map((m) => `
+        <button type="button" class="card req-row edit-row" data-id="${esc(m.id)}">
+          ${poster(m.posterPath)}
+          <span class="req-main">
+            <span class="req-title">${esc(m.title)} <span class="year">(${m.releaseYear})</span></span>
+            <span class="req-sub">Scare ${Number.isInteger(m.scariness) ? `${m.scariness}/10` : 'not set'}${(m.moodTone || []).length ? ` · ${esc(m.moodTone.join(', '))}` : ''}</span>
+          </span>
+        </button>`).join('')}</div>` : '<p class="hint">No catalog movies match.</p>';
+  };
+  show();
+  $('#edit-q', root).addEventListener('input', (e) => { editQ = e.target.value; show(); });
+  box.addEventListener('click', (e) => {
+    const b = e.target.closest('.edit-row');
+    if (b) editMovieSheet(catalog.get(b.dataset.id), show);
+  });
+}
+
 // ---------- Add New ----------
 
 function renderAdd(root) {
@@ -200,6 +246,8 @@ function renderAdd(root) {
       </div>
       <h2 class="section-title">Moods</h2>
       ${moodChips(String(p.tmdbId), chosen)}
+      <h2 class="section-title">Scare Factor</h2>
+      ${scarePickerHTML(String(p.tmdbId), scareOf(String(p.tmdbId)))}
       <div class="add-actions">
         <button type="button" class="btn ghost big" id="add-back">Back</button>
         <button type="button" class="btn primary big" id="add-go">Add to Catalog</button>
@@ -211,6 +259,7 @@ function renderAdd(root) {
       moodPick.set(String(p.tmdbId), set);
       b.classList.toggle('on', set.has(b.dataset.mood));
     });
+    wireScarePicker($('.scare-pick', root), scareOf(String(p.tmdbId)), (v) => scareSet(String(p.tmdbId), v));
     $('#add-back', root).addEventListener('click', () => { addState.picked = null; renderAdd(root); });
     $('#add-go', root).addEventListener('click', async (e) => {
       const btn = e.currentTarget;
@@ -218,7 +267,7 @@ function renderAdd(root) {
       btn.textContent = 'Adding…';
       const moods = [...(moodPick.get(String(p.tmdbId)) || [])];
       try {
-        await cloud.adminAddMovie(p, moods);
+        await cloud.adminAddMovie(p, moods, scareOf(String(p.tmdbId)));
       } catch (err) {
         btn.disabled = false;
         btn.textContent = 'Add to Catalog';

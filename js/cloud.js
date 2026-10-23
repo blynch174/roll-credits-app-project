@@ -137,25 +137,44 @@ export async function listRequests() {
 }
 
 // Admins: add a movie straight to the catalog (approved in one step). The catalog workflow picks it up.
-export async function adminAddMovie(m, moods) {
+export async function adminAddMovie(m, moods, scariness = null) {
   const { F, db } = fb;
   const ref = F.doc(db, 'requests', String(m.tmdbId));
   const now = Date.now();
   const snap = await F.getDoc(ref);
   if (snap.exists()) {
-    await F.updateDoc(ref, { status: 'approved', moods: moods || [], reviewedAt: now });
+    await F.updateDoc(ref, { status: 'approved', moods: moods || [], scariness: scariness || null, reviewedAt: now });
   } else {
     await F.setDoc(ref, {
       tmdbId: m.tmdbId, title: String(m.title).slice(0, 300), year: m.releaseYear || null, posterPath: m.posterPath || null,
-      count: 0, status: 'approved', moods: moods || [], firstAt: now, lastAt: now, reviewedAt: now, addedByAdmin: true,
+      count: 0, status: 'approved', moods: moods || [], scariness: scariness || null, firstAt: now, lastAt: now, reviewedAt: now, addedByAdmin: true,
     });
   }
 }
 
-// Admins: status 'approved' | 'rejected' | 'pending', plus the moods it gets in the catalog.
-export function setRequest(id, { status, moods }) {
+// Admins: status 'approved' | 'rejected' | 'pending', plus the moods and scare factor (1-10) it gets in the catalog.
+export function setRequest(id, { status, moods, scariness = null }) {
   const { F, db } = fb;
-  return F.updateDoc(F.doc(db, 'requests', String(id)), { status, moods: moods || [], reviewedAt: Date.now() });
+  return F.updateDoc(F.doc(db, 'requests', String(id)), { status, moods: moods || [], scariness: scariness || null, reviewedAt: Date.now() });
+}
+
+// ---------- Catalog edits (admins fix a movie's moods and scare factor) ----------
+
+// Everyone can read these, signed in or not: { movieId: { moods, scariness } }.
+export async function listCatalogEdits() {
+  const { F, db } = fb;
+  const snap = await F.getDocs(F.collection(db, 'catalogEdits'));
+  const out = {};
+  snap.docs.forEach((d) => { const x = d.data(); out[d.id] = { moods: Array.isArray(x.moods) ? x.moods : null, scariness: Number.isInteger(x.scariness) ? x.scariness : null }; });
+  return out;
+}
+
+export function setCatalogEdit(id, { moods, scariness, title }) {
+  const { F, db } = fb;
+  return F.setDoc(F.doc(db, 'catalogEdits', String(id)), {
+    moods: (moods || []).slice(0, 8), scariness: Number.isInteger(scariness) ? scariness : null,
+    title: String(title || '').slice(0, 200), at: Date.now(), by: fb.auth.currentUser.email,
+  });
 }
 
 // ---------- Feedback (Settings → Send Feedback; read in Admin Tools → Feedback) ----------

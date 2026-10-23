@@ -22,6 +22,8 @@ import { renderThemePicker, initThemePicker } from './screens/theme-picker.js';
 import { leaveDraft } from './screens/admin-official.js';
 import { renderLibrary, initLibrary, openLibrary, libraryEntries } from './screens/library.js';
 import { feedbackSheet } from './screens/feedback.js';
+import * as movieEdits from './movieedits.js';
+import { initMovieEdit } from './screens/movie-edit.js';
 import { configured as cloudConfigured } from './cloud.js';
 
 const SCREENS = ['home', 'watched', 'popcorn', 'settings', 'creator', 'edit', 'admin', 'themes', 'library'];
@@ -182,6 +184,8 @@ sync.start({
 
 // Official festivals: newer published versions (cached copy first, then the database).
 official.start({ changed: () => render() });
+movieEdits.start();
+initMovieEdit();
 
 catalog.load().then(() => {
   if (!catalog.isReady()) return;

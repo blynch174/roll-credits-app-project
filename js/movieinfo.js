@@ -3,6 +3,8 @@
 
 import * as catalog from './catalog.js';
 import { esc, openSheet, closeSheet } from './ui.js';
+import { iconSVG } from './icons.js';
+import * as sync from './sync.js';
 
 const IMG = 'https://image.tmdb.org/t/p/';
 
@@ -33,6 +35,31 @@ export function metaLine(m) {
   return [m.releaseYear, m.runtimeMinutes ? `${m.runtimeMinutes} min` : '', m.contentRating].filter(Boolean).join(' · ');
 }
 
+// Scare factor: the catalog's 1–10 scariness as five skulls and a word. Hidden for movies that aren't scary.
+const SCARE_WORDS = ['Mild', 'Spooky', 'Creepy', 'Scary', 'Terrifying'];
+
+export function scareLevel(m) {
+  const s = m && Number(m.scariness);
+  if (!s || s < 2) return null;
+  const skulls = Math.min(5, Math.ceil(s / 2));
+  return { skulls, word: SCARE_WORDS[skulls - 1] };
+}
+
+export function scareHTML(m, cls = '') {
+  const lv = scareLevel(m);
+  if (!lv) return '';
+  // Five skulls, one point = half a skull: 7 shows three and a half.
+  const s = Math.min(10, Math.round(Number(m.scariness)));
+  const svg = iconSVG('skull');
+  let icons = '';
+  for (let i = 1; i <= 5; i++) {
+    if (s >= i * 2) icons += `<span class="sk on">${svg}</span>`;
+    else if (s === i * 2 - 1) icons += `<span class="sk half">${svg}<span class="sk-fill">${svg}</span></span>`;
+    else icons += `<span class="sk">${svg}</span>`;
+  }
+  return `<p class="scare ${cls}" aria-label="Scare factor ${s} out of 10: ${lv.word}"><span class="sk-row" aria-hidden="true">${icons}</span><span class="sk-word" aria-hidden="true">${lv.word}</span></p>`;
+}
+
 // Poster + facts + summary + links, for sheets.
 export function infoBlock(m) {
   if (!m) return '';
@@ -43,7 +70,9 @@ export function infoBlock(m) {
         <p class="mi-meta">${esc(metaLine(m))}</p>
         ${m.directors && m.directors.length ? `<p class="mi-dir">Directed by ${esc(m.directors.join(', '))}</p>` : ''}
         ${m.genres && m.genres.length ? `<p class="mi-dir">${esc(m.genres.slice(0, 3).join(' · '))}</p>` : ''}
+        ${scareHTML(m, 'mi-scare')}
         ${linksHTML(m)}
+        ${sync.isAdmin() && catalog.get(m.id) === m ? `<button type="button" class="link mi-edit" data-edit-movie="${esc(m.id)}">Edit Movie</button>` : ''}
       </div>
     </div>
     ${m.overview ? `<p class="mi-overview">${esc(m.overview)}</p>` : ''}`;

@@ -209,6 +209,33 @@ def merge_additions():
         print(f'Added {added} new movies from data/additions/.')
     return added
 
+SCARES = os.path.join(ROOT, 'data', 'scares')
+
+def apply_scares():
+    """Scare factor reviews shipped with app updates (data/scares/*.json: {"scores": {movieId: 1-10}}). Each movie
+    takes a file's score once; the row remembers which file set it (scareRev), so a later hand edit isn't undone."""
+    if not os.path.isdir(SCARES):
+        return 0
+    cur = read(CURATION, [])
+    by_id = {m['id']: m for m in cur}
+    changed = 0
+    for name in sorted(os.listdir(SCARES)):
+        if not name.endswith('.json'):
+            continue
+        rev = name[:-5]
+        for mid, v in (read(os.path.join(SCARES, name), {}).get('scores') or {}).items():
+            m = by_id.get(mid)
+            v = scare_value(v)
+            if not m or v is None or m.get('scareRev') in (rev, 'admin'):  # an admin's edit in the app wins
+                continue
+            m['scariness'] = v
+            m['scareRev'] = rev
+            changed += 1
+    if changed:
+        write_lines(CURATION, cur)
+        print(f'Applied {changed} scare factor scores from data/scares/.')
+    return changed
+
 def cmd_fetch(args):
     merge_additions()
     cur = read(CURATION, [])
@@ -336,10 +363,65 @@ def approved_requests(pid):
         if not token:
             return out
 
+def scare_value(v):
+    """Scare factor an admin picked when approving (1-10), or None."""
+    try:
+        v = int(v)
+    except (TypeError, ValueError):
+        return None
+    return v if 1 <= v <= 10 else None
+
+def catalog_edits(pid):
+    """Admins' edits to catalog movies from the app (catalogEdits/{movieId}: moods, scariness). Public to read."""
+    out, token = [], ''
+    while True:
+        url = f'{FIRESTORE}/v1/projects/{pid}/databases/(default)/documents/catalogEdits?pageSize=300'
+        if token:
+            url += '&pageToken=' + urllib.parse.quote(token)
+        with urllib.request.urlopen(url, timeout=30) as r:
+            d = json.loads(r.read().decode('utf-8'))
+        for doc in d.get('documents', []):
+            f = {k: fs_value(v) for k, v in doc.get('fields', {}).items()}
+            f['id'] = doc['name'].rsplit('/', 1)[-1]
+            out.append(f)
+        token = d.get('nextPageToken')
+        if not token:
+            return out
+
+def apply_catalog_edits(pid):
+    """Copies admins' mood and scare factor edits into curation.json."""
+    try:
+        edits = catalog_edits(pid)
+    except urllib.error.HTTPError as e:
+        print(f'Could not read catalog edits ({e.code}). Are the latest firestore.rules published?')
+        return 0
+    cur = read(CURATION, [])
+    by_id = {m['id']: m for m in cur}
+    changed = 0
+    for e in edits:
+        m = by_id.get(e['id'])
+        if not m:
+            continue
+        before = (list(m.get('moodTone') or []), m.get('scariness'))
+        moods = e.get('moods')
+        if isinstance(moods, list):
+            m['moodTone'] = [x for x in moods if isinstance(x, str)][:8]
+        v = scare_value(e.get('scariness'))
+        if v is not None:
+            m['scariness'] = v
+            m['scareRev'] = 'admin'
+        if (list(m.get('moodTone') or []), m.get('scariness')) != before:
+            changed += 1
+    if changed:
+        write_lines(CURATION, cur)
+    print(f'Admin catalog edits: {len(edits)}. Changed in curation.json: {changed}.')
+    return changed
+
 def cmd_requests(args):
     pid = firebase_project()
     if not pid:
         sys.exit('No Firebase project id (set FIREBASE_PROJECT_ID, or fill in js/firebase-config.js).')
+    apply_catalog_edits(pid)
     try:
         approved = approved_requests(pid)
     except urllib.error.HTTPError as e:
@@ -366,7 +448,8 @@ def cmd_requests(args):
             mid = f'{mid}-{tid}'
         cur.append({'id': mid, 'imdbId': f.get('imdbId'), 'tmdbId': tid, 'title': title, 'releaseYear': year,
                     'type': 'Feature Film', 'moodTone': [m for m in (r.get('moods') or []) if isinstance(m, str)],
-                    'scariness': None, 'comedy': None, 'franchise': None, 'seriesOrder': None, 'requested': True})
+                    'scariness': scare_value(r.get('scariness')), 'comedy': None, 'franchise': None, 'seriesOrder': None,
+                    'requested': True})
         facts[mid] = f
         ids.add(mid); have_tmdb.add(tid)
         added += 1
@@ -413,6 +496,7 @@ def cmd_oscars(args):
     cmd_build([])
 
 def cmd_build(args):
+    apply_scares()
     cur = read(CURATION, [])
     facts = read(FACTS, {})
     osc = read(OSCARS, {})

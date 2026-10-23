@@ -47,6 +47,18 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
+    // Admins' fixes to catalog movies (moods, scare factor). Everyone reads them so the app shows them right
+    // away; the nightly catalog update copies them into data/catalog/curation.json.
+    match /catalogEdits/{movieId} {
+      allow read: if true;
+      allow write: if isAdmin()
+        && request.resource.data.keys().hasOnly(['moods', 'scariness', 'title', 'at', 'by'])
+        && request.resource.data.moods is list && request.resource.data.moods.size() <= 8
+        && (request.resource.data.scariness == null
+          || (request.resource.data.scariness is int && request.resource.data.scariness >= 1 && request.resource.data.scariness <= 10));
+      allow delete: if isAdmin();
+    }
+
     // Admins' unpublished edits to official festivals.
     match /drafts/{id} {
       allow read, write: if isAdmin();
