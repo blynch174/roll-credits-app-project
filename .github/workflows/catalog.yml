@@ -48,7 +48,7 @@ jobs:
             echo "Skipped (needs the TMDB_TOKEN secret and js/firebase-config.js)."
             exit 0
           fi
-          python3 tools/catalog.py requests || echo "::warning::Couldn't read movie requests this time."
+          python3 -u tools/catalog.py requests || echo "::warning::Couldn't read movie requests this time."
 
       - name: Fetch new movies from TMDB
         env:
@@ -61,20 +61,20 @@ jobs:
           flags=""
           if [ "${{ inputs.refresh }}" = "true" ]; then flags="$flags --refresh"; fi
           if [ "${{ inputs.retry }}" = "true" ]; then flags="$flags --retry"; fi
-          python3 tools/catalog.py fetch $flags
+          python3 -u tools/catalog.py fetch $flags
 
       - name: Build data/all_movies.json
-        run: python3 tools/catalog.py build
+        run: python3 -u tools/catalog.py build
 
       - name: Commit catalog changes
         run: |
-          if git diff --quiet -- data/catalog/curation.json data/catalog/facts.json data/all_movies.json; then
+          if git diff --quiet -- data/catalog/curation.json data/catalog/facts.json data/all_movies.json && [ -z "$(git status --porcelain -- data/streaming)" ]; then
             echo "Catalog already up to date."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/catalog/curation.json data/catalog/facts.json data/all_movies.json
+          git add data/catalog/curation.json data/catalog/facts.json data/all_movies.json data/streaming
           git commit -m "Update movie catalog from TMDB"
           git pull --rebase origin "${GITHUB_REF_NAME}"
           git push origin "HEAD:${GITHUB_REF_NAME}"
