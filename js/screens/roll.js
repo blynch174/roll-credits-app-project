@@ -8,7 +8,7 @@ import * as dice3d from '../dice3d.js';
 import { $, $$, esc, toast, nav, dieHTML, movieLabel, syncSeg, attachSwipe, openSheet, closeSheet } from '../ui.js';
 import { editSlotSheet } from './tables.js';
 import { entrySheet, entryRow, swipeDelete } from './watched.js';
-import { posterImg, metaLine, catalogMovie, movieInfoSheet, scareHTML } from '../movieinfo.js';
+import { posterImg, metaLine, catalogMovie, movieInfoSheet, scareHTML, watchSlot } from '../movieinfo.js';
 
 const idle = () => ({ phase: 'idle', catRoll: null, movieRoll: null, catId: null, wild: false });
 let r = idle();
@@ -171,6 +171,7 @@ function renderRollArea() {
           <p class="pick-title">${movieLabel(movie)}</p>
           ${cm ? `<p class="pick-meta">${esc(metaLine(cm))}</p>` : ''}
           ${scareHTML(cm, 'pick-scare')}
+          ${watchSlot(cm, true)}
           ${movie.note ? `<p class="pick-note">Last time: ${esc(movie.note)}</p>` : ''}
           ${cm ? '<button type="button" class="link pick-info" data-act="info">Details, IMDb &amp; TMDB</button>' : ''}
         </div>

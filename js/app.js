@@ -24,6 +24,7 @@ import { renderLibrary, initLibrary, openLibrary, libraryEntries } from './scree
 import { feedbackSheet } from './screens/feedback.js';
 import * as movieEdits from './movieedits.js';
 import { initMovieEdit } from './screens/movie-edit.js';
+import { initWatchSlots } from './movieinfo.js';
 import { configured as cloudConfigured } from './cloud.js';
 
 const SCREENS = ['home', 'watched', 'popcorn', 'settings', 'creator', 'edit', 'admin', 'themes', 'library'];
@@ -186,6 +187,7 @@ sync.start({
 official.start({ changed: () => render() });
 movieEdits.start();
 initMovieEdit();
+initWatchSlots();
 
 catalog.load().then(() => {
   if (!catalog.isReady()) return;

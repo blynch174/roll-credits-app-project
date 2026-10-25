@@ -6,6 +6,7 @@ import { applyTheme, themeById } from '../themes.js';
 import * as dice3d from '../dice3d.js';
 import * as sync from '../sync.js';
 import { renderAccountSection } from './account.js';
+import { servicesSheet } from './services.js';
 import {
   $, esc, toast, nav, openSheet, closeSheet, confirmSheet, typedConfirm, syncSeg,
 } from '../ui.js';
@@ -25,6 +26,8 @@ export function renderSettings() {
   $('#sequel-hint').textContent = s.sequels === false ? '' : 'Seen Scream? Rolling it offers Scream 2.';
   $('#storage-warning').hidden = store.canSave();
   $('#theme-current').textContent = themeById(store.themeId()).name;
+  const nServices = Array.isArray(s.myServices) ? s.myServices.length : 0;
+  $('#services-count').textContent = nServices ? `${nServices} picked` : 'Off';
   renderAccountSection();
   const b = store.syncBackup();
   $('#btn-restore-sync').hidden = !b;
@@ -113,6 +116,7 @@ export function initSettings() {
     renderSettings();
   });
   $('#btn-clear-history').addEventListener('click', clearHistorySheet);
+  $('#btn-services').addEventListener('click', () => servicesSheet(renderSettings));
   $('#btn-themes').addEventListener('click', () => nav.go('themes'));
   $('#btn-export').addEventListener('click', async () => { if (await exportBackup()) toast('Backup saved.'); });
   $('#btn-import').addEventListener('click', () => $('#import-file').click());

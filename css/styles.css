@@ -1639,3 +1639,37 @@ html.kb-open .sheet-scroll { padding-bottom: 14px; }
 .pick-scare { justify-content: center; }
 .pick-card.has-poster .pick-scare { justify-content: flex-start; }
 #edit-results { margin-top: 10px; }
+
+/* ---------- v3.28: Where to watch ---------- */
+.watch:empty { display: none; }
+.watch { margin-top: 14px; display: flex; flex-direction: column; gap: 8px; }
+.w-title { font-size: 13px; font-weight: 750; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.w-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.w-chip { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 4px 12px 4px 4px; border: var(--edge); border-radius: var(--r-md); background: var(--surface-2); color: var(--text); text-decoration: none; font-size: 14px; font-weight: 650; }
+.w-chip img { width: 32px; height: 32px; border-radius: 8px; }
+.w-chip small { padding: 1px 7px; border-radius: var(--r-pill); background: color-mix(in srgb, var(--accent) 18%, transparent); color: var(--accent); font-size: 11px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; }
+.w-chip.mine { border-color: var(--accent); }
+.w-none { margin: 0; font-size: 14px; font-weight: 650; color: var(--muted); }
+.w-credit { margin: 0; font-size: 12px; color: var(--muted); }
+.w-credit a { color: inherit; font-weight: 700; }
+.watch.compact { margin-top: 8px; gap: 4px; }
+.w-logos { display: flex; align-items: center; gap: 5px; }
+.w-logo { display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 7px; overflow: hidden; background: var(--surface-2); font-size: 10px; font-weight: 800; }
+.w-logo img { width: 100%; height: 100%; }
+.w-logo.mine { outline: 2px solid var(--accent); outline-offset: 1px; }
+.w-more { font-size: 12px; font-weight: 750; color: var(--muted); }
+.w-line { margin: 0; font-size: 13px; font-weight: 650; color: var(--muted); }
+.watch.compact .w-none { font-size: 13px; }
+.ticket .watch.compact { align-items: center; }
+.ticket .w-line, .ticket .w-none, .ticket .w-more { color: #2a1d05; opacity: .8; }
+.ticket .w-logo.mine { outline-color: #2a1d05; }
+.pick-card:not(.has-poster) .watch.compact { align-items: center; }
+
+/* My Streaming Services */
+.sv-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; }
+.sv-item { display: flex; align-items: center; gap: 8px; min-height: 48px; padding: 6px 10px 6px 6px; border: var(--edge); border-radius: var(--r-md); background: var(--surface-2); color: var(--text); font: inherit; font-size: 14px; font-weight: 650; text-align: left; }
+.sv-item img, .sv-blank { flex: none; width: 34px; height: 34px; border-radius: 8px; background: var(--surface); }
+.sv-item span { min-width: 0; overflow-wrap: anywhere; }
+.sv-item.on { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 16%, var(--surface-2)); }
+.pp-services { display: flex; justify-content: center; margin-bottom: 10px; }
+.pp-svc.on { box-shadow: 0 0 0 2px var(--accent); }

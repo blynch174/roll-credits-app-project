@@ -5,6 +5,7 @@ import * as catalog from './catalog.js';
 import { esc, openSheet, closeSheet } from './ui.js';
 import { iconSVG } from './icons.js';
 import * as sync from './sync.js';
+import * as streaming from './streaming.js';
 
 const IMG = 'https://image.tmdb.org/t/p/';
 
@@ -60,6 +61,57 @@ export function scareHTML(m, cls = '') {
   return `<p class="scare ${cls}" aria-label="Scare factor ${s} out of 10: ${lv.word}"><span class="sk-row" aria-hidden="true">${icons}</span><span class="sk-word" aria-hidden="true">${lv.word}</span></p>`;
 }
 
+// ---------- Where to watch ----------
+// Cards drop in a placeholder (watchSlot); fillWatch() fills every one on screen once the data has loaded.
+
+export const watchSlot = (m, compact = false) =>
+  (m && m.id ? `<div class="watch${compact ? ' compact' : ''}" data-watch-id="${esc(m.id)}"></div>` : '');
+
+const initials = (name) => esc(name.replace(/[^A-Za-z0-9+ ]/g, '').split(' ').map((w) => w[0]).join('').slice(0, 2) || name.slice(0, 2));
+// A logo that can't load turns into the service's initials.
+const logoImg = (p, chip = false) => (p.logo ? (chip ? `<img src="${p.logo}" alt="" loading="lazy" onerror="this.remove()">` : `<img src="${p.logo}" alt="${initials(p.name)}" loading="lazy" onerror="this.replaceWith(this.alt)">`) : '');
+
+function watchInner(m, compact) {
+  const w = streaming.forMovie(m);
+  if (!w) return '';
+  const list = [...w.subs, ...w.free];
+  const freeIds = new Set(w.free.map((p) => p.id));
+  const mineIds = new Set(w.mine.map((p) => p.id));
+  const none = w.rentBuy ? 'Not streaming · Rent or buy only' : 'Not streaming right now';
+  if (compact) {
+    if (!list.length) return `<p class="w-none">${none}</p>`;
+    const shown = list.slice(0, 4);
+    return `<div class="w-logos">${shown.map((p) => `<span class="w-logo${mineIds.has(p.id) ? ' mine' : ''}" title="${esc(p.name)}">${logoImg(p) || initials(p.name)}</span>`).join('')}${list.length > 4 ? `<span class="w-more">+${list.length - 4}</span>` : ''}</div>
+      <p class="w-line">${w.mine.length ? `On your ${esc(w.mine.map((p) => p.name).slice(0, 2).join(' and '))}` : `On ${esc(list[0].name)}${list.length > 1 ? ` and ${list.length - 1} more` : ''}`}</p>`;
+  }
+  const chips = list.map((p) => `<a class="w-chip${mineIds.has(p.id) ? ' mine' : ''}" href="${w.link || '#'}" target="_blank" rel="noopener">${logoImg(p, true)}<span>${esc(p.name)}</span>${mineIds.has(p.id) ? '<small>Yours</small>' : freeIds.has(p.id) ? '<small>Free</small>' : ''}</a>`).join('');
+  return `<span class="w-title">Where to Watch</span>
+    ${list.length ? `<div class="w-row">${chips}</div>` : `<p class="w-none">${none}</p>`}
+    <p class="w-credit">${w.link ? `<a href="${w.link}" target="_blank" rel="noopener">All options ↗</a> · ` : ''}Streaming data from JustWatch</p>`;
+}
+
+export function fillWatch(root = document) {
+  if (!streaming.isReady()) return;
+  root.querySelectorAll('.watch[data-watch-id]:not(.filled)').forEach((el) => {
+    const m = catalog.get(el.dataset.watchId);
+    el.innerHTML = watchInner(m, el.classList.contains('compact'));
+    el.classList.add('filled');
+    if (!el.innerHTML.trim()) el.hidden = true;
+  });
+}
+
+// Refill after My Services changes.
+export function refreshWatch() {
+  document.querySelectorAll('.watch.filled').forEach((el) => el.classList.remove('filled'));
+  fillWatch();
+}
+
+export function initWatchSlots() {
+  streaming.load().then(() => fillWatch());
+  catalog.onReady(() => fillWatch());
+  new MutationObserver(() => fillWatch()).observe(document.body, { childList: true, subtree: true });
+}
+
 // Poster + facts + summary + links, for sheets.
 export function infoBlock(m) {
   if (!m) return '';
@@ -75,7 +127,8 @@ export function infoBlock(m) {
         ${sync.isAdmin() && catalog.get(m.id) === m ? `<button type="button" class="link mi-edit" data-edit-movie="${esc(m.id)}">Edit Movie</button>` : ''}
       </div>
     </div>
-    ${m.overview ? `<p class="mi-overview">${esc(m.overview)}</p>` : ''}`;
+    ${m.overview ? `<p class="mi-overview">${esc(m.overview)}</p>` : ''}
+    ${watchSlot(m)}`;
 }
 
 // The catalog movie behind a table slot or history entry, if it's linked.

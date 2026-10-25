@@ -278,7 +278,97 @@ def cmd_fetch(args):
         print(f'\nNo TMDB match for {len(missing)}: ' + ', '.join(missing[:20]) + (' …' if len(missing) > 20 else ''))
         print('These are skipped next time. Fix their IMDb id or title in curation.json, then run fetch --retry.')
         print('Add "tmdbId": <number> to those lines in curation.json and run fetch again.')
+    try:
+        update_streaming()
+    except Exception as e:  # streaming is extra: never let it stop the catalog update
+        print(f'::warning::Could not update where-to-watch data: {e}')
     cmd_build([])
+
+# ---------- Where to watch (TMDB's watch providers, data from JustWatch) ----------
+# One file per country: data/streaming/<REGION>.json. Only subscription and free services are kept per movie,
+# plus whether it can be rented or bought. To add a country later, add it to STREAM_REGIONS.
+STREAM_REGIONS = ['US']
+STREAM_DIR = os.path.join(ROOT, 'data', 'streaming')
+_SUFFIX = re.compile(r'\s+(amazon channel|apple tv channel|roku premium channel|standard with ads|basic with ads|with ads|premium plus|premium)$', re.I)
+_RENAME = {'paramount plus': 'Paramount+', 'hbo max': 'Max', 'peacock premium': 'Peacock'}
+
+def provider_family(name):
+    """'Shudder Amazon Channel' -> 'Shudder', 'Netflix Standard with Ads' -> 'Netflix'."""
+    n = (name or '').strip()
+    while True:
+        m = _SUFFIX.search(n)
+        if not m:
+            break
+        n = n[:m.start()].strip()
+    return _RENAME.get(n.lower(), n)
+
+def update_streaming(regions=None):
+    from concurrent.futures import ThreadPoolExecutor
+    cur = read(CURATION, [])
+    facts = read(FACTS, {})
+    todo = [(m['id'], facts[m['id']]['tmdbId']) for m in cur
+            if facts.get(m['id'], {}).get('tmdbId') and facts[m['id']].get('tmdbType', 'movie') == 'movie']
+    os.makedirs(STREAM_DIR, exist_ok=True)
+    for region in regions or STREAM_REGIONS:
+        listing = (tmdb('/watch/providers/movie', watch_region=region, language='en-US') or {}).get('results', [])
+        fam_id, providers, canon = {}, {}, {}
+        listing.sort(key=lambda p: (p.get('display_priorities') or {}).get(region, p.get('display_priority', 999)))
+        for p in listing:  # most popular first, so each family keeps its main service's id
+            fam = provider_family(p.get('provider_name'))
+            pid = fam_id.setdefault(fam.lower(), p['provider_id'])
+            canon[p['provider_id']] = pid
+            if pid == p['provider_id']:
+                providers[str(pid)] = {'n': fam, 'l': p.get('logo_path'),
+                                       'p': (p.get('display_priorities') or {}).get(region, p.get('display_priority', 999))}
+        def one(item):
+            mid, tid = item
+            try:
+                d = tmdb(f'/movie/{tid}/watch/providers') or {}
+            except Exception:
+                return mid, None
+            r = (d.get('results') or {}).get(region) or {}
+            def ids(*keys):
+                out = []
+                for k in keys:
+                    for p in r.get(k) or []:
+                        pid = canon.get(p['provider_id'])
+                        if pid is None:  # not in the region's list: keep it under its own name
+                            fam = provider_family(p.get('provider_name'))
+                            pid = fam_id.setdefault(fam.lower(), p['provider_id'])
+                            canon[p['provider_id']] = pid
+                            providers.setdefault(str(pid), {'n': fam, 'l': p.get('logo_path'), 'p': 999})
+                        if pid not in out:
+                            out.append(pid)
+                return out
+            rec = {}
+            subs, free = ids('flatrate'), ids('free', 'ads')
+            if subs: rec['s'] = subs
+            if free: rec['f'] = [x for x in free if x not in subs]
+            if r.get('rent') or r.get('buy'): rec['rb'] = 1
+            return mid, rec
+        movies, failed = {}, 0
+        with ThreadPoolExecutor(max_workers=8) as pool:
+            for i, (mid, rec) in enumerate(pool.map(one, todo), 1):
+                if rec is None:
+                    failed += 1
+                elif rec:
+                    movies[mid] = rec
+                if i % 500 == 0:
+                    print(f'  streaming {region}: {i}/{len(todo)}')
+        path = os.path.join(STREAM_DIR, f'{region}.json')
+        if failed > len(todo) // 4 and os.path.exists(path):
+            print(f'Streaming {region}: {failed} lookups failed, so the old file was kept.')
+            continue
+        used = {str(x) for rec in movies.values() for x in rec.get('s', []) + rec.get('f', [])}
+        out = {'region': region, 'updated': time.strftime('%Y-%m-%d'), 'source': 'JustWatch via TMDB',
+               'providers': {k: v for k, v in providers.items() if k in used or v['p'] < 60},
+               'movies': dict(sorted(movies.items()))}
+        with open(path, 'w', encoding='utf-8') as fh:
+            json.dump(out, fh, ensure_ascii=False, separators=(',', ':'))
+        print(f'Streaming {region}: {len(movies)} of {len(todo)} movies have a service listed.')
+
+def cmd_streaming(args):
+    update_streaming([a.upper() for a in args] or None)
 
 def cmd_add(args):
     if len(args) < 2 or not args[1].isdigit():
@@ -571,7 +661,7 @@ def cmd_check(args):
     show('TMDB uses a different title (yours is kept)', renamed)
     show('TMDB year is 2+ years off (check the IMDb id)', year_off)
 
-COMMANDS = {'fetch': cmd_fetch, 'add': cmd_add, 'oscars': cmd_oscars, 'build': cmd_build, 'check': cmd_check,
+COMMANDS = {'fetch': cmd_fetch, 'streaming': cmd_streaming, 'add': cmd_add, 'oscars': cmd_oscars, 'build': cmd_build, 'check': cmd_check,
             'requests': cmd_requests}
 
 if __name__ == '__main__':

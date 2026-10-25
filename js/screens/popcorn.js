@@ -3,7 +3,8 @@
 
 import * as store from '../store.js';
 import * as catalog from '../catalog.js';
-import { posterImg, linksHTML, infoBlock, catalogMovie, scareHTML } from '../movieinfo.js';
+import { posterImg, linksHTML, infoBlock, catalogMovie, scareHTML, watchSlot } from '../movieinfo.js';
+import * as streaming from '../streaming.js';
 import { randInt, wait } from '../dice.js';
 import { $, $$, esc, toast, attachSwipe, openSheet, closeSheet } from '../ui.js';
 
@@ -12,6 +13,7 @@ let moods = new Set(); // empty = any mood. Several = movies with ANY of them (a
 let current = null; // the movie on the ticket
 let currentMoods = []; // the moods selected when it was popped
 let busy = false;
+let servicesOnly = false; // "My Services Only": shown once someone has picked their services in Settings
 
 const reducedMotion = () => window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -29,8 +31,11 @@ const BUCKET = `<svg viewBox="0 0 120 120" aria-hidden="true">
   <path class="b-rim" d="M14 34h92v8H14z"/>
 </svg>`;
 
+const useServices = () => servicesOnly && streaming.myServices().length > 0 && streaming.hasData();
+
 function pickMovie() {
-  const pool = moods.size ? catalog.all().filter((m) => (m.moodTone || []).some((t) => moods.has(t))) : catalog.all();
+  let pool = moods.size ? catalog.all().filter((m) => (m.moodTone || []).some((t) => moods.has(t))) : catalog.all();
+  if (useServices()) pool = pool.filter((m) => streaming.onMyServices(m));
   if (!pool.length) return null;
   return pool[randInt(0, pool.length - 1)];
 }
@@ -43,6 +48,7 @@ function ticketHTML(m) {
       <p class="t-title">${esc(m.title)}</p>
       <p class="t-meta">${esc(bits.join(' · '))}</p>
       ${scareHTML(m, 't-scare')}
+      ${watchSlot(m, true)}
       ${m.directors && m.directors.length ? `<p class="t-dir">Directed by ${esc(m.directors.join(', '))}</p>` : ''}
       ${m.moodTone && m.moodTone.length ? `<p class="t-moods">${[...new Set([...moods, ...m.moodTone].filter((t) => m.moodTone.includes(t)))].slice(0, 3).map((t) => `<span>${esc(t)}</span>`).join('')}</p>` : ''}
       ${m.overview ? `<p class="t-overview">${esc(m.overview)}</p>` : ''}
@@ -58,6 +64,7 @@ export async function renderPopcorn() {
   root.classList.remove('picked');
   root.innerHTML = `
     <h2 class="section-title first">Popcorn Pick</h2>
+    <div class="pp-services" id="pp-services" hidden></div>
     <div class="pp-moods" id="pp-moods"><p class="hint">Loading the movie list…</p></div>
     <div class="pp-stage" id="pp-stage">
       <div class="pp-bucket" id="pp-bucket" role="button" tabindex="0" aria-label="Pop some popcorn">${BUCKET}</div>
@@ -76,6 +83,11 @@ export async function renderPopcorn() {
   if (!wired) {
     wired = true;
     root.addEventListener('click', (e) => {
+      if (e.target.closest('#pp-svc') && !busy) {
+        servicesOnly = !servicesOnly;
+        drawServices();
+        return;
+      }
       const chip = e.target.closest('.pp-chip');
       if (chip && !busy) {
         const t = chip.dataset.mood;
@@ -115,6 +127,16 @@ export async function renderPopcorn() {
     return;
   }
   drawMoods();
+  streaming.load().then(drawServices);
+}
+
+function drawServices() {
+  const box = $('#pp-services');
+  if (!box) return;
+  const n = streaming.myServices().length;
+  box.hidden = !(n && streaming.hasData());
+  if (box.hidden) return;
+  box.innerHTML = `<button type="button" class="pp-chip pp-svc${servicesOnly ? ' on' : ''}" id="pp-svc" aria-pressed="${servicesOnly}">My Services Only</button>`;
 }
 
 function drawMoods() {
@@ -210,7 +232,7 @@ async function popcorn(root) {
   if (busy) return;
   if (!catalog.isReady()) return;
   const movie = pickMovie();
-  if (!movie) return toast('No movies match those moods.');
+  if (!movie) return toast(useServices() ? 'None of those are on your services right now.' : 'No movies match those moods.');
   busy = true;
   current = movie;
   currentMoods = [...moods].sort();
