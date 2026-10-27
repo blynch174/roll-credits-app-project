@@ -65,7 +65,7 @@ With an account you can also:
 
 - **Request a movie** that isn't in the catalog. Search TMDB for it when filling a slot or logging a movie, and admins review it for the next catalog update.
 
-Found a bug or have an idea? **Settings → Send Feedback**.
+Found a bug or have an idea? **Settings → Send Feedback** (sign in first).
 
 ## Privacy
 
@@ -81,6 +81,12 @@ Admins can see your email, when you last opened the app, and how many movies you
 - Oscar data from [DLu/oscar_data](https://github.com/DLu/oscar_data).
 
 Built by Brandon Lynch.
+
+## License
+
+© 2026 Brandon Lynch. All rights reserved. The code is public so testers can see how it works, but it isn't open source: please don't copy, reuse, or redistribute it without permission. See [LICENSE](LICENSE).
+
+Found a security problem? See [SECURITY.md](SECURITY.md) and report it through **Settings → Send Feedback**.
 
 ---
 

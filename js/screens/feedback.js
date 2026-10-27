@@ -3,6 +3,7 @@
 import * as cloud from '../cloud.js';
 import * as store from '../store.js';
 import { APP_VERSION } from '../sync.js';
+import * as sync from '../sync.js';
 import { $, toast, openSheet, closeSheet } from '../ui.js';
 
 let draft = ''; // kept if sending fails, so nothing typed is lost
@@ -13,6 +14,17 @@ const platform = () => {
 };
 
 export function feedbackSheet() {
+  // Feedback needs an account: it keeps out spam and lets us follow up.
+  if (!sync.isSignedIn()) {
+    return openSheet({
+      title: 'Send Feedback',
+      body: '<p class="sheet-text">Sign in to send feedback. It keeps out spam, and lets us follow up if we have questions.</p>',
+      actions: [
+        { label: 'Cancel', kind: 'ghost', onClick: closeSheet },
+        { label: 'Sign In', kind: 'primary', onClick: async () => { const a = await import('./account.js'); a.signInSheet(); } },
+      ],
+    });
+  }
   openSheet({
     title: 'Send Feedback',
     body: `<label class="field"><span class="label">What should we fix or add?</span>

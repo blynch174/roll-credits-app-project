@@ -64,7 +64,7 @@ service cloud.firestore {
       allow read, write: if isAdmin();
     }
 
-    // Beta feedback from Settings → Send Feedback. Anyone can send (signed in or not); only admins read it.
+    // Beta feedback from Settings → Send Feedback. Signed-in people can send; only admins read it.
     match /feedback/{id} {
       function fb() {
         return request.resource.data;
@@ -73,17 +73,17 @@ service cloud.firestore {
       function shortText(k, n) {
         return !(k in fb()) || (fb()[k] is string && fb()[k].size() <= n);
       }
-      // Signed out: no user id and no email. Signed in: your own id and the email you signed in with.
+      // Signed in only (keeps out anonymous spam): your own user id and the email you signed in with.
       // createdAt must be within a day of now (a clock that's a little off is fine).
-      allow create: if fb().keys().hasOnly(['text', 'appVersion', 'platform', 'screen', 'theme', 'uid', 'email', 'status', 'createdAt'])
+      allow create: if signedIn()
+        && fb().keys().hasOnly(['text', 'appVersion', 'platform', 'screen', 'theme', 'uid', 'email', 'status', 'createdAt'])
         && fb().keys().hasAll(['text', 'uid', 'email', 'status', 'createdAt'])
         && fb().text is string && fb().text.size() > 0 && fb().text.size() <= 2000
         && fb().status == 'new'
         && fb().createdAt is int
         && fb().createdAt > request.time.toMillis() - 86400000 && fb().createdAt < request.time.toMillis() + 86400000
         && shortText('appVersion', 20) && shortText('platform', 20) && shortText('screen', 20) && shortText('theme', 40)
-        && ((fb().uid == null && fb().email == '')
-          || (signedIn() && fb().uid == request.auth.uid && fb().email == request.auth.token.get('email', '')));
+        && fb().uid == request.auth.uid && fb().email == request.auth.token.get('email', '');
       allow read, update, delete: if isAdmin();
     }
 

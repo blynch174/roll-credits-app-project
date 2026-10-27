@@ -1,0 +1,22 @@
+Copyright (c) 2026 Brandon Lynch. All rights reserved.
+
+Roll Credits, including its source code, design, artwork, app icon, festival lists, and curated movie data
+(moods, scare factor scores, and collections), is the property of Brandon Lynch.
+
+The source code is public so people can read it and help test the app. That does not grant permission to
+copy, modify, publish, distribute, sublicense, or sell any part of it, or to run your own copy of the app
+or its services, without written permission from the copyright holder.
+
+You may:
+  - use the app at https://blynch174.github.io/roll-credits-app-project/
+  - read the source code to understand how it works, and report problems with it
+
+Third-party parts keep their own licenses and are not covered by this notice:
+  - dice-box (vendor/dice-box/), MIT License
+  - Firebase JavaScript SDK (vendor/firebase/), Apache License 2.0
+  - Theme fonts from Google Fonts, SIL Open Font License or Apache License 2.0
+  - Movie data and images from TMDB, used under TMDB's terms; where-to-watch data from JustWatch via TMDB
+  - Oscar data from DLu/oscar_data, under that project's license
+
+THE APP IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND.
+For permission or questions, use Settings → Send Feedback in the app.

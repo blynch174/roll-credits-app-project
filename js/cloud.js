@@ -182,8 +182,9 @@ export function setCatalogEdit(id, { moods, scariness, title }) {
 export async function sendFeedback(fields) {
   const { F, db } = fb;
   const u = fb.auth.currentUser;
+  if (!u) throw new Error('signed-out');
   await F.addDoc(F.collection(db, 'feedback'), {
-    ...fields, uid: u ? u.uid : null, email: u ? u.email || '' : '', status: 'new', createdAt: Date.now(),
+    ...fields, uid: u.uid, email: u.email || '', status: 'new', createdAt: Date.now(),
   });
 }
 
