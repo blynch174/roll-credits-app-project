@@ -1,0 +1,27 @@
+# Runs the test suite (tests/) on every push and pull request.
+# No dependencies to install: the tests use Node's built-in test runner.
+# Pushes made by the catalog workflow don't start this (GitHub doesn't trigger workflows from its own token).
+
+name: Tests
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      matrix:
+        node: [20, 22]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      - run: npm test
