@@ -46,12 +46,12 @@ The app comes with a few to get you started:
 | Festival | What's on it |
 |---|---|
 | **Halloween** | Five tables of horror plus a Wild Card, from *Light Halloween Fun* to *Sleep with the Lights On* |
-| **Christmas** | Certified classics, rom-coms, North Pole magic, holiday action, and a little holiday horror |
+| **Christmas** | Certified classics, rom-coms, North Pole magic, holiday action, and a little merry mayhem |
 | **Awards Season** | Oscar winners and nominees |
 | **Kids & Family** | Picks for every age |
 | **Bucket List Cinema** | Time Out's 100 best movies of all time, in rank order |
 
-The **Festival Library** has more to add, like *Tear Jerkers*, *Boomer Classics*, and *Gen X Rewind*, with new ones landing over time. You can also **make your own festival** with your own categories, movies, and dice (up to 3 for now).
+The **Festival Library** has more to add, like *Tear Jerkers*, *Boomer Classics*, and *Gen X Rewind*, with new ones landing over time. You can also **make your own festival** with your own categories, movies, and dice (up to 5 for now).
 
 Every festival can be edited. Swap movies, rename categories, change the dice (coin, d4, d6, d8, d12, or d20), or start fresh when you've worked through it.
 
@@ -126,7 +126,7 @@ flowchart LR
 - **Catalog:** title matching, search ranking, sequel lookups, mood suggestions
 - **Repo checks:** every data file parses, festival lists point at real movies, and every module is in the offline file list
 
-That last check failed the first time it ran: five modules had been added without being listed for offline use, which would have broken the app for anyone who opened it offline right after an update. It's fixed, and CI now stops it from happening again.
+Fun Bug Fact: That last check failed the first time it ran - five modules had been added without being listed for offline use, which would have broken the app for anyone who opened it offline right after an update. It's fixed, and CI now stops it from happening again.
 
 To run the app locally: `python3 -m http.server 8000`, then open http://localhost:8000. More detail is in [DEVELOPER.md](DEVELOPER.md).
 
