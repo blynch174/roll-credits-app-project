@@ -1,2 +1,8 @@
 # TMDB key
 tools/tmdb_key.txt
+
+# macOS Finder files
+.DS_Store
+
+# Node (only used to run the tests)
+node_modules/

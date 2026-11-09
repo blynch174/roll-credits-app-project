@@ -48,7 +48,33 @@ Then open http://localhost:8000. (The JS loads as modules, which don't run from 
 1. Make your changes.
 2. If you added a new file under `js/`, add it to the `FILES` list in `sw.js`.
 3. Bump `CACHE_VERSION` in `sw.js` (`v15` → `v16`).
-4. `git add .`, `git commit -m "what changed"`, `git push`.
+4. Run `npm test` (see below). Everything should pass.
+5. `git add .`, `git commit -m "what changed"`, `git push`.
+
+## Running the tests
+
+```
+npm test
+```
+
+Needs Node 20 or newer, and nothing else: no `npm install`, the tests use Node's built-in test runner. They run in
+about a second. GitHub runs the same tests on every push (`.github/workflows/test.yml`); the Tests badge at the top
+of the README shows the latest result.
+
+| File | What it checks |
+|---|---|
+| `tests/setup.js` | Not tests: stand-ins for `localStorage` and `fetch` so the browser modules run in Node unchanged |
+| `tests/merge.test.js` | Sync merging: newest edit wins, deletions stick, edits after a deletion survive |
+| `tests/store.test.js` | Saved data: first launch, upgrading old data, bad imports, watching, removing, editing tables |
+| `tests/dice.test.js` | Dice stay in range and are fair (chi-square) |
+| `tests/catalog.test.js` | Title matching, search, sequels, mood suggestions, against the real `all_movies.json` |
+| `tests/data.test.js` | Data files parse, festival lists point at real movies, built-in festivals are well formed, every `js/` file is in `sw.js` |
+
+Adding a module under `js/` without listing it in `sw.js` fails `data.test.js` on purpose: it would break the app
+offline.
+
+Only modules that don't touch the page are tested (`store`, `merge`, `dice`, `catalog`, `defaults`, `moodmatch`).
+The screens, Firebase calls, and `firestore.rules` aren't covered yet. Rules tests need the Firebase emulator.
 
 `data/` and `vendor/` are deliberately not in `FILES`. They're too big to download at install, and get saved for
 offline use the first time the app loads them.

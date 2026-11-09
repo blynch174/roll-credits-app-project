@@ -1,0 +1,12 @@
+{
+  "name": "roll-credits",
+  "private": true,
+  "type": "module",
+  "description": "Roll Credits: pick tonight's movie with a dice roll. The app itself has no build step; this file only runs the tests.",
+  "scripts": {
+    "test": "node --import ./tests/setup.js --test tests/*.test.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
