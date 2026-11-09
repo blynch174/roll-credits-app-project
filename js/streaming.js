@@ -40,9 +40,12 @@ export function allProviders() {
   return Object.keys(data.providers).map(provider).filter(Boolean).sort((a, b) => a.priority - b.priority || a.name.localeCompare(b.name));
 }
 
+// Picked services, with any that were folded into another service counted as that one.
 export const myServices = () => {
   const v = store.getState().settings.myServices;
-  return Array.isArray(v) ? v.map(Number) : [];
+  if (!Array.isArray(v)) return [];
+  const alias = (data && data.aliases) || {};
+  return [...new Set(v.map((id) => Number(alias[String(id)] ?? id)))];
 };
 
 // For one catalog movie: null when there's no data for it (not loaded, or not a catalog movie).

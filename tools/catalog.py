@@ -290,7 +290,13 @@ def cmd_fetch(args):
 STREAM_REGIONS = ['US']
 STREAM_DIR = os.path.join(ROOT, 'data', 'streaming')
 _SUFFIX = re.compile(r'\s+(amazon channel|apple tv channel|roku premium channel|standard with ads|basic with ads|with ads|premium plus|premium)$', re.I)
-_RENAME = {'paramount plus': 'Paramount+', 'hbo max': 'Max', 'peacock premium': 'Peacock'}
+# Same service under two names on TMDB: fold into one.
+_RENAME = {'paramount plus': 'Paramount+', 'paramount plus essential': 'Paramount+', 'paramount+ essential': 'Paramount+',
+           'hbo max': 'Max', 'peacock premium': 'Peacock', 'amc plus': 'AMC+', 'mgm plus': 'MGM+',
+           'acorntv': 'Acorn TV', 'youtube free': 'YouTube', 'netflix kids': 'Netflix', 'disney plus': 'Disney+'}
+# Names that look alike but are different services: say which one in the picker.
+_LABEL = {'YouTube': 'YouTube (free with ads)', 'Apple TV': 'Apple TV (subscription)',
+          'AMC': 'AMC (needs a TV provider)', 'Fandango at Home Free': 'Fandango at Home (free with ads)'}
 
 def provider_family(name):
     """'Shudder Amazon Channel' -> 'Shudder', 'Netflix Standard with Ads' -> 'Netflix'."""
@@ -361,7 +367,10 @@ def update_streaming(regions=None):
             continue
         used = {str(x) for rec in movies.values() for x in rec.get('s', []) + rec.get('f', [])}
         out = {'region': region, 'updated': time.strftime('%Y-%m-%d'), 'source': 'JustWatch via TMDB',
-               'providers': {k: v for k, v in providers.items() if k in used or v['p'] < 60},
+               # Only services that have at least one catalog movie (no rent/buy stores, nothing empty).
+               'providers': {k: {**v, 'n': _LABEL.get(v['n'], v['n'])} for k, v in providers.items() if k in used},
+               # Ids folded into another service, so people who picked the old one keep it.
+               'aliases': {str(k): v for k, v in sorted(canon.items()) if k != v and str(v) in used},
                'movies': dict(sorted(movies.items()))}
         with open(path, 'w', encoding='utf-8') as fh:
             json.dump(out, fh, ensure_ascii=False, separators=(',', ':'))
