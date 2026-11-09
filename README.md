@@ -13,9 +13,9 @@ It's free and runs in your phone's browser. Nothing to download from an app stor
 
 *Here for the code? Skip to [How it's built](#how-its-built).*
 
-<!-- SCREENSHOTS: put images in docs/screenshots/ with these names, then delete this comment line and the two below it.
-<p align="center"><img src="docs/screenshots/roll.png" width="230" alt="Rolling the dice on the Halloween festival">&nbsp;&nbsp;<img src="docs/screenshots/tables.png" width="230" alt="A festival's movie tables">&nbsp;&nbsp;<img src="docs/screenshots/history.png" width="230" alt="Watch history with ratings"></p>
-<p align="center"><img src="docs/screenshots/demo.gif" width="300" alt="A full roll, from festival to movie pick"></p> -->
+
+<p align="center"><img src="docs/screenshots/roll.png" width="230" alt="Rolled the dice on the Halloween festival">&nbsp;&nbsp;<img src="docs/screenshots/tables.png" width="230" alt="A festival's movie tables">&nbsp;&nbsp;<img src="docs/screenshots/history.png" width="230" alt="Watch history with ratings"></p>
+<p align="center"><img src="docs/screenshots/demo.gif" width="300" alt="A full roll, from festival to movie pick"></p>
 
 ---
 
@@ -84,7 +84,7 @@ Admins can see your email, when you last opened the app, and how many movies you
 
 ## How it's built
 
-I built Roll Credits on my own, starting in October 2026. It's a phone-first web app that works offline, with optional accounts that sync across devices. About 7,800 lines of JavaScript in 40 modules, with no framework and no build step.
+I built Roll Credits using both my own knowledge and some AI-assited building for the gaps (Claude), starting in October 2026. The reason for this was to truly understand and learn the structure of how web applications are built from the ground up, and learn from any mistakes and bugs. This was a personal project I have been toying with for the past couple years. It's a phone-first web app that works offline, with optional accounts that sync across devices. About 7,800 lines of JavaScript in 40 modules, with no framework and no build step.
 
 ```mermaid
 flowchart LR
