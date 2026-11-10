@@ -37,7 +37,7 @@ Roll Credits works best saved to your home screen, where it opens full-screen li
 
 Rate it afterward and it goes in your watch history. Already seen the movie you rolled? Roll Credits can offer the next one in the series instead.
 
-Got real dice on the coffee table? Switch to **Physical Dice**, roll them yourself, and type in what you got.
+Got real dice on the table? Switch to **Physical Dice**, roll them yourself, and type in what you got.
 
 ## Festivals
 
