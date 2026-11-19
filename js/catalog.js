@@ -29,11 +29,11 @@ const ALIASES = {
 
 let status = 'idle'; // idle | loading | ready | failed
 let loading = null;
-let byId = new Map();
-let byKey = new Map(); // normalized title|year -> movie
-let byTmdb = new Map(); // TMDB id -> catalog movie
+const byId = new Map();
+const byKey = new Map(); // normalized title|year -> movie
+const byTmdb = new Map(); // TMDB id -> catalog movie
 let extras = new Map(); // this person's movies from TMDB search that aren't in the catalog yet: 'tmdb-123' -> movie
-let franchises = new Map(); // franchise -> movies sorted by seriesOrder
+const franchises = new Map(); // franchise -> movies sorted by seriesOrder
 let list = [];
 const collections = new Map(); // festival id -> Set of catalog ids
 const readyCallbacks = [];
@@ -42,7 +42,8 @@ const readyCallbacks = [];
 export function norm(s) {
   return String(s || '')
     .toLowerCase()
-    .normalize('NFD').replace(/[̀-ͯ]/g, '')
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
     .replace(/&/g, 'and')
     .replace(/^(the|a|an) /, '')
     .replace(/[^a-z0-9]/g, '');
@@ -204,3 +205,10 @@ export function moodCounts() {
   for (const m of list) for (const t of m.moodTone || []) c.set(t, (c.get(t) || 0) + 1);
   return [...c.entries()].sort((a, b) => b[1] - a[1]);
 }
+
+// The moods worth offering as choices: used by at least 10 catalog movies, A to Z.
+export const moodList = () =>
+  moodCounts()
+    .filter(([, n]) => n >= 10)
+    .map(([t]) => t)
+    .sort();

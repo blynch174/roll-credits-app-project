@@ -124,10 +124,13 @@ export function merge(local, remote, { remoteWinsTies = true, savedMax = 3, now 
 
   // Official festivals someone removed: only those that are still gone.
   const present = new Set(out.festivals.map((f) => f.id));
-  out.removedOfficial = [...new Set([...(L.removedOfficial || []), ...(R.removedOfficial || [])])].filter((id) => !present.has(id));
+  out.removedOfficial = [...new Set([...(L.removedOfficial || []), ...(R.removedOfficial || [])])].filter(
+    (id) => !present.has(id),
+  );
 
   // Which festival is open is up to this device.
-  if (!present.has(out.activeFestival)) out.activeFestival = out.festivals[0] ? out.festivals[0].id : out.activeFestival;
+  if (!present.has(out.activeFestival))
+    out.activeFestival = out.festivals[0] ? out.festivals[0].id : out.activeFestival;
   out.sync = sync;
   return out;
 }

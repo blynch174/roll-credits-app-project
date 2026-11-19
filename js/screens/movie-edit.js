@@ -10,9 +10,7 @@ import { scareLevel, scareHTML } from '../movieinfo.js';
 import { $, esc, toast, openSheet, closeSheet } from '../ui.js';
 
 // Moods used by at least 10 catalog movies, A–Z.
-export const moodList = () => catalog.moodCounts().filter(([, n]) => n >= 10).map(([t]) => t).sort();
-
-// ---------- Scare factor picker (1–10) ----------
+export // ---------- Scare factor picker (1–10) ----------
 
 function scareNote(v) {
   if (!v) return '<span class="sp-note">Not set</span>';
@@ -23,7 +21,8 @@ function scareNote(v) {
 // value: 1–10, or null for "not set". allowUnset: tapping the chosen number again clears it.
 export function scarePickerHTML(id, value) {
   let nums = '';
-  for (let i = 1; i <= 10; i++) nums += `<button type="button" data-scare="${i}" class="${i === value ? 'on' : ''}" aria-pressed="${i === value}">${i}</button>`;
+  for (let i = 1; i <= 10; i++)
+    nums += `<button type="button" data-scare="${i}" class="${i === value ? 'on' : ''}" aria-pressed="${i === value}">${i}</button>`;
   return `<div class="scare-pick" data-for="${esc(id)}">
     <div class="sp-nums" role="group" aria-label="Scare factor, 1 to 10">${nums}</div>
     <div class="sp-out">${scareNote(value)}</div>
@@ -52,7 +51,7 @@ export function editMovieSheet(m, after) {
   if (!m || !sync.isAdmin()) return;
   const moods = new Set(m.moodTone || []);
   let scare = Number.isInteger(m.scariness) ? m.scariness : null;
-  const all = [...new Set([...moodList(), ...moods])].sort();
+  const all = [...new Set([...catalog.moodList(), ...moods])].sort();
   const sheet = openSheet({
     title: `Edit ${m.title} (${m.releaseYear})`,
     body: `
@@ -86,7 +85,14 @@ export function editMovieSheet(m, after) {
       },
     ],
   });
-  wireScarePicker($('.scare-pick', sheet), scare, (v) => { scare = v; }, false);
+  wireScarePicker(
+    $('.scare-pick', sheet),
+    scare,
+    (v) => {
+      scare = v;
+    },
+    false,
+  );
   $('#em-moods', sheet).addEventListener('click', (e) => {
     const b = e.target.closest('[data-mood]');
     if (!b) return;
@@ -95,14 +101,5 @@ export function editMovieSheet(m, after) {
     else if (moods.size >= 8) return toast('Up to 8 moods.');
     else moods.add(t);
     b.classList.toggle('on', moods.has(t));
-  });
-}
-
-// "Edit Movie" links in movie details (data-edit-movie="<catalog id>") open the editor from any sheet.
-export function initMovieEdit() {
-  document.addEventListener('click', (e) => {
-    const b = e.target.closest('[data-edit-movie]');
-    if (!b) return;
-    editMovieSheet(catalog.get(b.dataset.editMovie));
   });
 }

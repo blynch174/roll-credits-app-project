@@ -7,7 +7,9 @@
   python3 tools/catalog.py add "Terrifier" 2016 --to halloween
                                             Add a movie (finds it on TMDB, then builds)
   python3 tools/catalog.py oscars           Re-download the Oscar data and rebuild every movie's Oscar fields
-  python3 tools/catalog.py requests         Add movies admins approved in the app (Admin Tools → Movie Requests)
+  python3 tools/catalog.py streaming        Update where-to-watch (data/streaming/US.json); fetch also does this
+  python3 tools/catalog.py requests         Add movies admins approved in the app, and apply their movie edits
+                                            (Admin Tools → Movie Manager)
   python3 tools/catalog.py build            Merge everything into data/all_movies.json (the file the app reads)
   python3 tools/catalog.py check            List movies missing a poster, moods, or a TMDB match
 
@@ -16,10 +18,13 @@ Files (in data/catalog/):
                  Optional "overrides": {"contentRating": "PG"} beats anything TMDB says.
   facts.json     Written by `fetch`: runtime, rating, countries, languages, genres, directors, poster, summary.
   oscars.json    Written by `oscars`: nominations and wins.
+Also read: data/additions/*.json (movies added by hand), data/scares/*.json (reviewed scare scores).
+Also written: data/streaming/US.json (where to watch), data/all_movies.json (what the app loads).
 Only Python 3 is needed (no installs). Your key is read from tools/tmdb_key.txt or the TMDB_TOKEN variable.
 """
 import csv, io, json, os, re, sys, time, unicodedata, urllib.error, urllib.parse, urllib.request
 from collections import defaultdict
+
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CAT = os.path.join(ROOT, 'data', 'catalog')
@@ -51,6 +56,7 @@ GENRE_NAMES = {'Science Fiction': 'Sci-Fi'}
 # ---------- files ----------
 
 def read(path, default):
+    """Reads a JSON file, or returns default if it is missing."""
     try:
         with open(path, encoding='utf-8') as f:
             return json.load(f)
@@ -67,6 +73,7 @@ def write_lines(path, obj):
                                        for k, v in obj.items()) + '\n}\n')
 
 def slug(title, year):
+    """A movie's catalog id from its title and year: 'The Thing', 1982 -> 'the-thing-1982'."""
     s = unicodedata.normalize('NFKD', title).encode('ascii', 'ignore').decode().lower()
     s = s.replace('&', ' ')  # "Marley & Me" -> marley-me, like the rest of the catalog
     s = re.sub(r'[^a-z0-9]+', '-', s).strip('-')
@@ -76,6 +83,7 @@ def slug(title, year):
 # ---------- TMDB ----------
 
 def token():
+    """The TMDB key: the TMDB_TOKEN variable (GitHub Actions) or tools/tmdb_key.txt (your computer)."""
     t = os.environ.get('TMDB_TOKEN', '').strip()
     if not t and os.path.exists(KEY_FILE):
         t = open(KEY_FILE, encoding='utf-8').read().strip()
@@ -84,6 +92,7 @@ def token():
     return t
 
 def tmdb(path, **params):
+    """One TMDB API call. Retries when rate-limited or on a network hiccup; stops on a bad key."""
     t = token()
     headers = {'Accept': 'application/json'}
     if t.startswith('eyJ'):  # the long "API Read Access Token"
@@ -116,6 +125,7 @@ def tmdb(path, **params):
     return None
 
 def us_rating(release_dates):
+    """The US content rating (PG-13, R...) from TMDB's release dates."""
     for r in (release_dates or {}).get('results', []):
         if r.get('iso_3166_1') != 'US':
             continue
@@ -126,6 +136,7 @@ def us_rating(release_dates):
     return None
 
 def movie_facts(tid):
+    """Everything the app shows about a movie, from TMDB: runtime, rating, genres, poster, summary..."""
     d = tmdb(f'/movie/{tid}', append_to_response='release_dates,credits,external_ids')
     if not d:
         return None
@@ -148,6 +159,7 @@ def movie_facts(tid):
     }
 
 def tv_facts(tid):
+    """Like movie_facts, for the few catalog entries that are TV specials or series."""
     d = tmdb(f'/tv/{tid}', append_to_response='content_ratings,external_ids')
     if not d:
         return None
@@ -162,6 +174,7 @@ def tv_facts(tid):
     }
 
 def trim(text, n=420):
+    """Shortens a summary to about n characters, ending at a word."""
     text = (text or '').strip()
     if len(text) <= n:
         return text or None
@@ -184,7 +197,7 @@ def find_on_tmdb(m):
     return None
 
 
-# ---------- commands ----------
+# ---------- Update steps: hand-added movies and reviewed scare scores ----------
 
 ADDITIONS = os.path.join(ROOT, 'data', 'additions')
 
@@ -236,53 +249,6 @@ def apply_scares():
         print(f'Applied {changed} scare factor scores from data/scares/.')
     return changed
 
-def cmd_fetch(args):
-    merge_additions()
-    cur = read(CURATION, [])
-    facts = read(FACTS, {})
-    refresh = '--refresh' in args
-    retry = refresh or '--retry' in args
-    def needs(m):
-        f = facts.get(m['id'], {})
-        if refresh:
-            return True
-        if f.get('source') == 'tmdb':
-            return False  # already has its details and poster
-        return retry or not f.get('tmdbMissing')  # no match last time: skip unless asked to retry
-    todo = [m for m in cur if needs(m)]
-    print(f'Fetching {len(todo)} of {len(cur)} movies from TMDB…')
-    missing = []
-    for i, m in enumerate(todo, 1):
-        hit = find_on_tmdb(m)
-        f = None
-        if hit:
-            f = movie_facts(hit[1]) if hit[0] == 'movie' else tv_facts(hit[1])
-        if not f:
-            missing.append(m['id'])
-            facts[m['id']] = {**facts.get(m['id'], {}), 'tmdbMissing': True}  # remembered, so the next run skips it
-        else:
-            old = facts.get(m['id'], {})
-            # keep earlier hand-entered values where TMDB has nothing
-            for k in FACT_KEYS:
-                if f.get(k) in (None, [], '') and old.get(k) not in (None, [], ''):
-                    f[k] = old[k]
-            if f.get('imdbId') and m.get('imdbId') and f['imdbId'] != m['imdbId']:
-                print(f"  ! {m['id']}: TMDB links a different IMDb id ({f['imdbId']}). Check it.")
-            facts[m['id']] = f
-        if i % 25 == 0 or i == len(todo):
-            print(f'  {i}/{len(todo)}')
-            write_lines(FACTS, facts)  # save as we go, so stopping halfway loses nothing
-        time.sleep(0.03)
-    write_lines(FACTS, facts)
-    if missing:
-        print(f'\nNo TMDB match for {len(missing)}: ' + ', '.join(missing[:20]) + (' …' if len(missing) > 20 else ''))
-        print('These are skipped next time. Fix their IMDb id or title in curation.json, then run fetch --retry.')
-        print('Add "tmdbId": <number> to those lines in curation.json and run fetch again.')
-    try:
-        update_streaming()
-    except Exception as e:  # streaming is extra: never let it stop the catalog update
-        print(f'::warning::Could not update where-to-watch data: {e}')
-    cmd_build([])
 
 # ---------- Where to watch (TMDB's watch providers, data from JustWatch) ----------
 # One file per country: data/streaming/<REGION>.json. Only subscription and free services are kept per movie,
@@ -309,6 +275,7 @@ def provider_family(name):
     return _RENAME.get(n.lower(), n)
 
 def update_streaming(regions=None):
+    """Looks up where every catalog movie streams (per region) and writes data/streaming/<REGION>.json."""
     from concurrent.futures import ThreadPoolExecutor
     cur = read(CURATION, [])
     facts = read(FACTS, {})
@@ -376,57 +343,13 @@ def update_streaming(regions=None):
             json.dump(out, fh, ensure_ascii=False, separators=(',', ':'))
         print(f'Streaming {region}: {len(movies)} of {len(todo)} movies have a service listed.')
 
-def cmd_streaming(args):
-    update_streaming([a.upper() for a in args] or None)
 
-def cmd_add(args):
-    if len(args) < 2 or not args[1].isdigit():
-        sys.exit('Usage: python3 tools/catalog.py add "Title" YEAR [--to halloween]')
-    title, year = args[0], int(args[1])
-    fest = args[args.index('--to') + 1] if '--to' in args else None
-    r = tmdb('/search/movie', query=title, year=year) or {}
-    results = r.get('results', [])[:6]
-    if not results:
-        sys.exit(f'Nothing on TMDB for "{title}" ({year}). Check the spelling and year.')
-    pick = results[0]
-    exact = [x for x in results if x.get('title', '').lower() == title.lower() and (x.get('release_date') or '')[:4] == str(year)]
-    if len(exact) == 1:
-        pick = exact[0]
-    elif len(results) > 1:
-        for n, x in enumerate(results, 1):
-            print(f"  {n}. {x.get('title')} ({(x.get('release_date') or '????')[:4]})  tmdb {x['id']}")
-        choice = input('Which one? [1] ').strip() or '1'
-        pick = results[int(choice) - 1]
-    f = movie_facts(pick['id'])
-    cur = read(CURATION, [])
-    mid = slug(title, year)
-    existing = next((m for m in cur if m['id'] == mid or (f.get('imdbId') and m.get('imdbId') == f['imdbId'])), None)
-    if existing:
-        mid = existing['id']
-        print(f'{title} ({year}) is already in the catalog as "{mid}".')
-    else:
-        cur.append({'id': mid, 'imdbId': f.get('imdbId'), 'tmdbId': f['tmdbId'], 'title': title, 'releaseYear': year,
-                    'type': 'Feature Film', 'moodTone': [], 'scariness': None, 'comedy': None, 'franchise': None, 'seriesOrder': None})
-        write_lines(CURATION, cur)
-        facts = read(FACTS, {})
-        facts[mid] = f
-        write_lines(FACTS, facts)
-        print(f'Added {title} ({year}) as "{mid}". Give it moods (and scariness/comedy) in data/catalog/curation.json.')
-    if fest:
-        path = os.path.join(ROOT, 'data', COLLECTIONS.get(fest, f'{fest}_collection.json'))
-        col = read(path, {'id': fest, 'name': fest, 'movieIds': []})
-        if mid not in col['movieIds']:
-            col['movieIds'].append(mid)
-            with open(path, 'w', encoding='utf-8') as fh:
-                json.dump(col, fh, ensure_ascii=False, indent=2); fh.write('\n')
-            print(f'Added to the {fest} list.')
-    cmd_build([])
-
-# ---------- approved movie requests (Firestore) ----------
+# ---------- The app's database: approved movie requests and admin edits (Firestore, public reads) ----------
 
 FIRESTORE = os.environ.get('FIRESTORE_BASE', 'https://firestore.googleapis.com')
 
 def firebase_project():
+    """The Firebase project id, read from js/firebase-config.js."""
     pid = os.environ.get('FIREBASE_PROJECT_ID', '').strip()
     if pid:
         return pid
@@ -438,6 +361,7 @@ def firebase_project():
     return None
 
 def fs_value(v):
+    """Turns a Firestore REST value ({"stringValue": "x"}) into a plain Python value."""
     if 'stringValue' in v: return v['stringValue']
     if 'integerValue' in v: return int(v['integerValue'])
     if 'doubleValue' in v: return v['doubleValue']
@@ -516,7 +440,111 @@ def apply_catalog_edits(pid):
     print(f'Admin catalog edits: {len(edits)}. Changed in curation.json: {changed}.')
     return changed
 
+
+# ---------- Commands ----------
+
+def cmd_fetch(args):
+    """fetch: merge hand-added movies, get TMDB details for movies that need them, update streaming, build."""
+    merge_additions()
+    cur = read(CURATION, [])
+    facts = read(FACTS, {})
+    refresh = '--refresh' in args
+    retry = refresh or '--retry' in args
+    def needs(m):
+        f = facts.get(m['id'], {})
+        if refresh:
+            return True
+        if f.get('source') == 'tmdb':
+            return False  # already has its details and poster
+        return retry or not f.get('tmdbMissing')  # no match last time: skip unless asked to retry
+    todo = [m for m in cur if needs(m)]
+    print(f'Fetching {len(todo)} of {len(cur)} movies from TMDB…')
+    missing = []
+    for i, m in enumerate(todo, 1):
+        hit = find_on_tmdb(m)
+        f = None
+        if hit:
+            f = movie_facts(hit[1]) if hit[0] == 'movie' else tv_facts(hit[1])
+        if not f:
+            missing.append(m['id'])
+            facts[m['id']] = {**facts.get(m['id'], {}), 'tmdbMissing': True}  # remembered, so the next run skips it
+        else:
+            old = facts.get(m['id'], {})
+            # keep earlier hand-entered values where TMDB has nothing
+            for k in FACT_KEYS:
+                if f.get(k) in (None, [], '') and old.get(k) not in (None, [], ''):
+                    f[k] = old[k]
+            if f.get('imdbId') and m.get('imdbId') and f['imdbId'] != m['imdbId']:
+                print(f"  ! {m['id']}: TMDB links a different IMDb id ({f['imdbId']}). Check it.")
+            facts[m['id']] = f
+        if i % 25 == 0 or i == len(todo):
+            print(f'  {i}/{len(todo)}')
+            write_lines(FACTS, facts)  # save as we go, so stopping halfway loses nothing
+        time.sleep(0.03)
+    write_lines(FACTS, facts)
+    if missing:
+        print(f'\nNo TMDB match for {len(missing)}: ' + ', '.join(missing[:20]) + (' …' if len(missing) > 20 else ''))
+        print('These are skipped next time. Fix their IMDb id or title in curation.json, then run fetch --retry.')
+        print('Add "tmdbId": <number> to those lines in curation.json and run fetch again.')
+    try:
+        update_streaming()
+    except Exception as e:  # streaming is extra: never let it stop the catalog update
+        print(f'::warning::Could not update where-to-watch data: {e}')
+    cmd_build([])
+
+
+def cmd_streaming(args):
+    """streaming [REGION ...]: just the where-to-watch update."""
+    update_streaming([a.upper() for a in args] or None)
+
+
+def cmd_add(args):
+    """add "Title" YEAR [--to FESTIVAL]: find a movie on TMDB, add it to the catalog, build."""
+    if len(args) < 2 or not args[1].isdigit():
+        sys.exit('Usage: python3 tools/catalog.py add "Title" YEAR [--to halloween]')
+    title, year = args[0], int(args[1])
+    fest = args[args.index('--to') + 1] if '--to' in args else None
+    r = tmdb('/search/movie', query=title, year=year) or {}
+    results = r.get('results', [])[:6]
+    if not results:
+        sys.exit(f'Nothing on TMDB for "{title}" ({year}). Check the spelling and year.')
+    pick = results[0]
+    exact = [x for x in results if x.get('title', '').lower() == title.lower() and (x.get('release_date') or '')[:4] == str(year)]
+    if len(exact) == 1:
+        pick = exact[0]
+    elif len(results) > 1:
+        for n, x in enumerate(results, 1):
+            print(f"  {n}. {x.get('title')} ({(x.get('release_date') or '????')[:4]})  tmdb {x['id']}")
+        choice = input('Which one? [1] ').strip() or '1'
+        pick = results[int(choice) - 1]
+    f = movie_facts(pick['id'])
+    cur = read(CURATION, [])
+    mid = slug(title, year)
+    existing = next((m for m in cur if m['id'] == mid or (f.get('imdbId') and m.get('imdbId') == f['imdbId'])), None)
+    if existing:
+        mid = existing['id']
+        print(f'{title} ({year}) is already in the catalog as "{mid}".')
+    else:
+        cur.append({'id': mid, 'imdbId': f.get('imdbId'), 'tmdbId': f['tmdbId'], 'title': title, 'releaseYear': year,
+                    'type': 'Feature Film', 'moodTone': [], 'scariness': None, 'comedy': None, 'franchise': None, 'seriesOrder': None})
+        write_lines(CURATION, cur)
+        facts = read(FACTS, {})
+        facts[mid] = f
+        write_lines(FACTS, facts)
+        print(f'Added {title} ({year}) as "{mid}". Give it moods (and scariness/comedy) in data/catalog/curation.json.')
+    if fest:
+        path = os.path.join(ROOT, 'data', COLLECTIONS.get(fest, f'{fest}_collection.json'))
+        col = read(path, {'id': fest, 'name': fest, 'movieIds': []})
+        if mid not in col['movieIds']:
+            col['movieIds'].append(mid)
+            with open(path, 'w', encoding='utf-8') as fh:
+                json.dump(col, fh, ensure_ascii=False, indent=2); fh.write('\n')
+            print(f'Added to the {fest} list.')
+    cmd_build([])
+
+
 def cmd_requests(args):
+    """requests: add movies admins approved in the app, and apply their catalog edits."""
     pid = firebase_project()
     if not pid:
         sys.exit('No Firebase project id (set FIREBASE_PROJECT_ID, or fill in js/firebase-config.js).')
@@ -558,11 +586,13 @@ def cmd_requests(args):
         write_lines(FACTS, facts)
     print(f'Approved requests: {len(approved)}. Newly added to the catalog: {added}.')
 
+
 MAJOR = {'BEST PICTURE': 'picture', 'DIRECTING': 'director', 'ACTOR IN A LEADING ROLE': 'actor', 'ACTRESS IN A LEADING ROLE': 'actress',
          'ACTOR IN A SUPPORTING ROLE': 'supportingActor', 'ACTRESS IN A SUPPORTING ROLE': 'supportingActress',
          'WRITING (Original Screenplay)': 'originalScreenplay', 'WRITING (Adapted Screenplay)': 'adaptedScreenplay'}
 
 def cmd_oscars(args):
+    """oscars: download the Oscar data again and rebuild every movie's Oscar fields."""
     src = args[args.index('--csv') + 1] if '--csv' in args else None
     if src:
         text = open(src, encoding='utf-8').read()
@@ -594,7 +624,9 @@ def cmd_oscars(args):
     print(f'Oscar data for {len(out)} movies.')
     cmd_build([])
 
+
 def cmd_build(args):
+    """build: merge curation, facts, Oscars, and scare scores into data/all_movies.json (what the app loads)."""
     apply_scares()
     cur = read(CURATION, [])
     facts = read(FACTS, {})
@@ -648,7 +680,9 @@ def cmd_build(args):
     print(f'Built data/all_movies.json: {len(out)} movies, {posters} with posters, {len(auto)} given a franchise from TMDB.')
     print('Next: bump CACHE_VERSION in sw.js, then commit and push.')
 
+
 def cmd_check(args):
+    """check: list movies missing a poster, moods, or a TMDB match."""
     cur = read(CURATION, [])
     facts = read(FACTS, {})
     no_tmdb = [m['id'] for m in cur if facts.get(m['id'], {}).get('source') != 'tmdb' and not m.get('tmdbId')]
@@ -669,6 +703,9 @@ def cmd_check(args):
     show('No moods (Popcorn Pick can only find them with no mood picked)', no_moods)
     show('TMDB uses a different title (yours is kept)', renamed)
     show('TMDB year is 2+ years off (check the IMDb id)', year_off)
+
+
+# ---------- Command line ----------
 
 COMMANDS = {'fetch': cmd_fetch, 'streaming': cmd_streaming, 'add': cmd_add, 'oscars': cmd_oscars, 'build': cmd_build, 'check': cmd_check,
             'requests': cmd_requests}

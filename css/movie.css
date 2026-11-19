@@ -1,0 +1,350 @@
+/* Movie details
+   Posters, details, links, scare factor, where to watch, and title search.
+   Sections: Details, Links, Scare factor, Where to watch, Title search (autofind) */
+
+/* ---------- Details ---------- */
+.movie-info {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  margin: 12px 0 0;
+}
+.mi-poster {
+  width: 96px;
+  aspect-ratio: 2 / 3;
+  flex: none;
+  border-radius: var(--r-sm);
+  object-fit: cover;
+  background: var(--surface-2);
+}
+.mi-text {
+  flex: 1;
+  min-width: 0;
+}
+.mi-meta {
+  margin: 0;
+  font-weight: 700;
+}
+.mi-dir {
+  margin: 4px 0 0;
+  font-size: var(--size-ui);
+  color: var(--muted);
+}
+.mi-text .movie-links {
+  margin-top: 10px;
+}
+.mi-overview {
+  margin: 12px 0 4px;
+  font-size: 15px;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+/* ---------- Links ---------- */
+.movie-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 10px 0 0;
+}
+.mlink {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 4px 12px;
+  border: var(--edge);
+  border-radius: var(--r-pill);
+  color: var(--accent);
+  font-size: var(--size-small);
+  font-weight: 750;
+  text-decoration: none;
+}
+.tmdb-logo {
+  display: block;
+  height: 14px;
+  width: auto;
+  margin-bottom: 10px;
+}
+
+/* ---------- Scare factor ---------- */
+.scare {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 6px 0 0;
+}
+.sk-row {
+  display: inline-flex;
+  gap: 2px;
+}
+.sk {
+  display: inline-grid;
+  width: 16px;
+  height: 16px;
+  color: var(--muted);
+  opacity: 0.3;
+}
+.sk svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.sk.on {
+  color: var(--accent);
+  opacity: 1;
+}
+.sk.half {
+  position: relative;
+  opacity: 1;
+}
+.sk.half > svg {
+  opacity: 0.3;
+}
+.sk-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 50%;
+  overflow: hidden;
+  color: var(--accent);
+}
+.sk-fill svg {
+  display: block;
+  width: 16px;
+  height: 16px;
+}
+
+.sk-word {
+  font-size: var(--size-small);
+  font-weight: 750;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* ---------- Where to watch ---------- */
+.watched-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+.watched-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border: var(--edge);
+  border-left: 5px solid var(--cat);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  text-align: left;
+}
+.watched-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 14px 2px 8px;
+  font-size: var(--size-ui);
+  color: var(--muted);
+}
+.watch:empty {
+  display: none;
+}
+.watch {
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.w-title {
+  font-size: var(--size-small);
+  font-weight: 750;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.w-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.w-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 4px 12px 4px 4px;
+  border: var(--edge);
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+  color: var(--text);
+  text-decoration: none;
+  font-size: var(--size-ui);
+  font-weight: 650;
+}
+.w-chip img {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+}
+.w-chip small {
+  padding: 1px 7px;
+  border-radius: var(--r-pill);
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+  color: var(--accent);
+  font-size: var(--size-tiny);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.w-chip.mine {
+  border-color: var(--accent);
+}
+.w-none {
+  margin: 0;
+  font-size: var(--size-ui);
+  font-weight: 650;
+  color: var(--muted);
+}
+.w-credit {
+  margin: 0;
+  font-size: var(--size-caption);
+  color: var(--muted);
+}
+.w-credit a {
+  color: inherit;
+  font-weight: 700;
+}
+.watch.compact {
+  margin-top: 8px;
+  gap: 4px;
+}
+.w-logos {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.w-logo {
+  display: inline-grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
+  overflow: hidden;
+  background: var(--surface-2);
+  font-size: 10px;
+  font-weight: 800;
+}
+.w-logo img {
+  width: 100%;
+  height: 100%;
+}
+.w-logo.mine {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+.w-more {
+  font-size: var(--size-caption);
+  font-weight: 750;
+  color: var(--muted);
+}
+.w-line {
+  margin: 0;
+  font-size: var(--size-small);
+  font-weight: 650;
+  color: var(--muted);
+}
+.watch.compact .w-none {
+  font-size: var(--size-small);
+}
+
+/* ---------- Title search (autofind) ---------- */
+/* ================= v3 additions ================= */
+/* Autofind suggestions */
+.af-list {
+  display: grid;
+  border: var(--edge);
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+  overflow: hidden;
+  margin-top: -4px;
+  max-height: min(300px, calc(var(--vvh, 100dvh) * 0.4));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+.af-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1px;
+  min-height: 48px;
+  padding: 8px 12px;
+  border: 0;
+  background: transparent;
+  text-align: left;
+}
+.af-item + .af-item {
+  border-top: 1px solid var(--line);
+}
+.af-item:active,
+.af-item:hover {
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+}
+.af-title {
+  font-weight: 650;
+}
+.af-sub {
+  font-size: var(--size-small);
+  color: var(--muted);
+}
+.af-sub:empty {
+  display: none;
+}
+#lg-match:empty {
+  display: none;
+}
+.af-tmdb .af-title {
+  color: var(--accent);
+}
+.af-note {
+  margin: 0;
+  padding: 12px 14px;
+  font-size: var(--size-ui);
+  color: var(--muted);
+}
+.af-item.af-hit {
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+.af-poster {
+  flex: none;
+  width: 34px;
+  height: 51px;
+  border-radius: 4px;
+  object-fit: cover;
+  background: var(--surface-2);
+}
+.af-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.af-hit .af-sub {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.af-item.loading {
+  opacity: 0.5;
+}
+
+.af-list .af-item {
+  flex-shrink: 0;
+}

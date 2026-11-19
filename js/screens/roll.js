@@ -10,14 +10,15 @@ import { editSlotSheet } from './tables.js';
 import { entrySheet, entryRow, swipeDelete } from './watched.js';
 import { posterImg, metaLine, catalogMovie, movieInfoSheet, scareHTML, watchSlot } from '../movieinfo.js';
 
+// The roll in progress: which step it's on, what each die showed, and the category it landed in.
 const idle = () => ({ phase: 'idle', catRoll: null, movieRoll: null, catId: null, wild: false });
-let r = idle();
+let roll = idle();
 
 export function resetRoll() {
-  r = idle();
+  roll = idle();
 }
 
-const f = () => store.activeFestival();
+const festival = () => store.activeFestival();
 
 // ---------- Rendering ----------
 
@@ -32,12 +33,16 @@ function catKey(fest) {
   if (fest.mode !== 'two') return '';
   return `
     <ol class="cat-key">
-      ${fest.categories.map((c, i) => `
+      ${fest.categories
+        .map(
+          (c, i) => `
         <li style="--cat:${swatchHex(c.color)}">
           <span class="k">${esc(faceLabel(fest.categoryDie, i + 1))}</span>
           <span class="kn">${esc(c.name)}${store.isWild(fest, c) ? ' <em>(Wild Card: pick any)</em>' : ''}</span>
           <span class="kd">${dieName(c.die)}</span>
-        </li>`).join('')}
+        </li>`,
+        )
+        .join('')}
     </ol>`;
 }
 
@@ -84,86 +89,138 @@ function wirePhysical(id, sides, cb) {
   $('#' + id).addEventListener('keydown', (e) => e.key === 'Enter' && go());
 }
 
+// One renderer per step of a roll; renderRollArea() draws whichever step the roll is on.
+// Steps: idle → (rolling) → pickCategory (Wild Card) → movieInput (physical dice) → result.
 function renderRollArea() {
-  const area = $('#roll-area');
-  const fest = f();
-  const mode = store.getState().settings.diceMode;
+  const view = { area: $('#roll-area'), fest: festival(), mode: store.getState().settings.diceMode };
+  if (roll.phase === 'rolling') return; // the dice animation owns the area while it runs
+  const step =
+    { idle: renderIdle, pickCategory: renderPickCategory, movieInput: renderMovieInput }[roll.phase] || renderResult;
+  step(view);
+}
+
+// Before rolling: the dice (or physical-dice inputs) and the Roll button.
+function renderIdle({ area, fest, mode }) {
   const single = fest.mode === 'one' ? fest.categories[0] : null;
-
-  if (r.phase === 'idle') {
-    if (mode === 'physical') {
-      if (single) {
-        area.innerHTML = physicalInput(single.die, 'Movie', 'in-movie') + catKey(fest);
-        wirePhysical('in-movie', single.die, (v) => showResult(single.id, v));
-      } else {
-        area.innerHTML = physicalInput(fest.categoryDie, 'Category', 'in-cat') + catKey(fest);
-        wirePhysical('in-cat', fest.categoryDie, (v) => { afterCategory(v); renderRollArea(); });
-      }
-      return;
+  if (mode === 'physical') {
+    if (single) {
+      area.innerHTML = physicalInput(single.die, 'Movie', 'in-movie') + catKey(fest);
+      wirePhysical('in-movie', single.die, (v) => showResult(single.id, v));
+    } else {
+      area.innerHTML = physicalInput(fest.categoryDie, 'Category', 'in-cat') + catKey(fest);
+      wirePhysical('in-cat', fest.categoryDie, (v) => {
+        afterCategory(v);
+        renderRollArea();
+      });
     }
-    area.innerHTML = `
-      ${diceRow(fest, { cat: single || fest.categories[0], showMovie: !!single })}
-      <button type="button" class="btn primary big" id="btn-roll">Roll the Dice</button>
-      ${catKey(fest)}`;
-    $('#btn-roll').addEventListener('click', rollAll);
     return;
   }
+  area.innerHTML = `
+    ${diceRow(fest, { cat: single || fest.categories[0], showMovie: !!single })}
+    <button type="button" class="btn primary big" id="btn-roll">Roll the Dice</button>
+    ${catKey(fest)}`;
+  $('#btn-roll').addEventListener('click', rollAll);
+}
 
-  if (r.phase === 'rolling') return; // animation owns the DOM
-
-  if (r.phase === 'pickCategory') {
-    const choices = fest.categories.filter((c) => !store.isWild(fest, c));
-    area.innerHTML = `
-      ${mode === 'virtual' ? diceRow(fest, { catVal: r.catRoll }) : ''}
-      <p class="wild-title">Wild Card!</p>
-      <p class="roll-hint">Pick any category.</p>
-      <div class="pick-grid">
-        ${choices.map((c) => `<button type="button" class="pick" data-cat="${c.id}" style="--cat:${swatchHex(c.color)}">${esc(c.name)}</button>`).join('')}
-      </div>
-      ${choices.length ? '' : '<p class="roll-hint">Every category is empty. Add some movies in Tables first.</p>'}
-      <button type="button" class="btn ghost" id="btn-cancel">Cancel</button>`;
-    $$('.pick', area).forEach((b) => b.addEventListener('click', () => {
-      r.catId = b.dataset.cat;
-      r.wild = true;
+// The category die landed on an empty category: the Wild Card lets the person pick any category.
+function renderPickCategory({ area, fest, mode }) {
+  const choices = fest.categories.filter((c) => !store.isWild(fest, c));
+  area.innerHTML = `
+    ${mode === 'virtual' ? diceRow(fest, { catVal: roll.catRoll }) : ''}
+    <p class="wild-title">Wild Card!</p>
+    <p class="roll-hint">Pick any category.</p>
+    <div class="pick-grid">
+      ${choices.map((c) => `<button type="button" class="pick" data-cat="${c.id}" style="--cat:${swatchHex(c.color)}">${esc(c.name)}</button>`).join('')}
+    </div>
+    ${choices.length ? '' : '<p class="roll-hint">Every category is empty. Add some movies in Tables first.</p>'}
+    <button type="button" class="btn ghost" id="btn-cancel">Cancel</button>`;
+  $$('.pick', area).forEach((b) =>
+    b.addEventListener('click', () => {
+      roll.catId = b.dataset.cat;
+      roll.wild = true;
       if (mode === 'virtual') rollMovie();
-      else { r.phase = 'movieInput'; renderRollArea(); }
-    }));
-    $('#btn-cancel').addEventListener('click', () => { resetRoll(); renderRollArea(); });
-    return;
-  }
+      else {
+        roll.phase = 'movieInput';
+        renderRollArea();
+      }
+    }),
+  );
+  $('#btn-cancel').addEventListener('click', () => {
+    resetRoll();
+    renderRollArea();
+  });
+}
 
-  if (r.phase === 'movieInput') {
-    const cat = store.category(fest, r.catId);
-    area.innerHTML = `
-      <p class="roll-hint">Category: <strong style="color:${swatchHex(cat.color)}">${esc(cat.name)}</strong></p>
-      ${physicalInput(cat.die, 'Movie', 'in-movie')}
-      <button type="button" class="btn ghost" id="btn-cancel">Start Over</button>`;
-    wirePhysical('in-movie', cat.die, (v) => showResult(cat.id, v));
-    $('#btn-cancel').addEventListener('click', () => { resetRoll(); renderRollArea(); });
-    return;
-  }
+// Physical dice, second roll: type in what the movie die shows.
+function renderMovieInput({ area, fest }) {
+  const cat = store.category(fest, roll.catId);
+  area.innerHTML = `
+    <p class="roll-hint">Category: <strong style="color:${swatchHex(cat.color)}">${esc(cat.name)}</strong></p>
+    ${physicalInput(cat.die, 'Movie', 'in-movie')}
+    <button type="button" class="btn ghost" id="btn-cancel">Start Over</button>`;
+  wirePhysical('in-movie', cat.die, (v) => showResult(cat.id, v));
+  $('#btn-cancel').addEventListener('click', () => {
+    resetRoll();
+    renderRollArea();
+  });
+}
 
-  // phase === 'result'
-  const cat = store.category(fest, r.catId);
-  if (!cat) { resetRoll(); return renderRollArea(); }
-  const idx = r.movieRoll - 1;
+// The rolled movie, with Watch it / Reroll it. Four cases: a new movie, a seen one with an unseen sequel,
+// a seen one, or an empty slot.
+function renderResult({ area, fest, mode }) {
+  const cat = store.category(fest, roll.catId);
+  if (!cat) {
+    resetRoll();
+    return renderRollArea();
+  }
+  const idx = roll.movieRoll - 1;
   const movie = cat.slots[idx];
   const seen = movie && store.isSeen(fest, movie);
   // Sequel switching: if this one's been seen, offer the next unseen entry in its series.
   let sequel = null;
   if (seen && store.getState().settings.sequels && movie.catalogId && catalog.isReady()) {
-    sequel = catalog.nextInFranchise(movie.catalogId,
-      (x) => !store.isCatalogSeen(fest, x.id) && !store.onTables(fest, x.id), fest.id);
+    sequel = catalog.nextInFranchise(
+      movie.catalogId,
+      (x) => !store.isCatalogSeen(fest, x.id) && !store.onTables(fest, x.id),
+      fest.id,
+    );
   }
   const color = swatchHex(cat.color);
-  const label = `${esc(cat.name)} · ${esc(faceLabel(cat.die, r.movieRoll))}`;
-
-  let card, actions;
-  // Two buttons side by side: the main action, and Reroll (which asks: this movie, or everything).
-  const pair = (main) => `<div class="pair-actions">${main}<button type="button" class="btn ghost big" data-act="reroll">Reroll it</button></div>`;
   const cm = movie ? catalogMovie(movie.catalogId) : null;
+  const { card, actions } = resultCard({ cat, movie, seen, sequel, cm, color });
+
+  area.innerHTML = `
+    ${
+      mode === 'virtual'
+        ? diceRow(fest, {
+            catVal: roll.wild ? null : roll.catRoll,
+            catColor: color,
+            cat,
+            movieVal: roll.movieRoll,
+            showMovie: true,
+          })
+        : `<p class="phys-echo">You rolled ${fest.mode === 'two' ? (roll.wild ? 'Wild Card' : esc(faceLabel(fest.categoryDie, roll.catRoll))) + ' and ' : ''}${esc(faceLabel(cat.die, roll.movieRoll))}</p>`
+    }
+    ${card}
+    <div class="roll-actions">${actions}</div>`;
+  if (mode === 'virtual' && roll.wild) setWild();
+  const info = area.querySelector('.pick-info');
+  if (info) info.addEventListener('click', () => movieInfoSheet(cm));
+  area.querySelector('.roll-actions').addEventListener('click', (e) => {
+    const b = e.target.closest('button');
+    if (b) resultAction(b.dataset.act, { fest, cat, idx, sequel, mode });
+  });
+}
+
+// Markup for the result card and its buttons.
+function resultCard({ cat, movie, seen, sequel, cm, color }) {
+  const label = `${esc(cat.name)} · ${esc(faceLabel(cat.die, roll.movieRoll))}`;
+  // Two buttons side by side: the main action, and Reroll (which asks: this movie, or everything).
+  const pair = (main) =>
+    `<div class="pair-actions">${main}<button type="button" class="btn ghost big" data-act="reroll">Reroll it</button></div>`;
   if (movie && !seen) {
-    card = `
+    return {
+      card: `
       <div class="pick-card${cm && cm.posterPath ? ' has-poster' : ''}" style="--cat:${color}">
         ${posterImg(cm, 'pick-poster')}
         <div class="pick-body">
@@ -176,95 +233,117 @@ function renderRollArea() {
           ${cm ? '<button type="button" class="link pick-info" data-act="info">Details, IMDb &amp; TMDB</button>' : ''}
         </div>
       </div>
-      <p class="roll-q">Watching it tonight?</p>`;
-    actions = pair('<button type="button" class="btn big btn-watch" data-act="watch">Watch it</button>');
-  } else if (movie && sequel) {
-    card = `
+      <p class="roll-q">Watching it tonight?</p>`,
+      actions: pair('<button type="button" class="btn big btn-watch" data-act="watch">Watch it</button>'),
+    };
+  }
+  if (movie && sequel) {
+    return {
+      card: `
       <div class="pick-card" style="--cat:${color}">
         <p class="pick-cat">${label}</p>
         <p class="pick-was">Already seen <s>${movieLabel(movie)}</s></p>
         <p class="pick-title">${esc(sequel.title)} <span class="year">(${sequel.releaseYear})</span></p>
         <p class="pick-flag">Next in the ${esc(sequel.franchise)} series</p>
       </div>
-      <p class="roll-q">Watch the sequel instead?</p>`;
-    actions = `${pair('<button type="button" class="btn big btn-watch" data-act="sequel">Watch it</button>')}
-      <button type="button" class="link rewatch-link" data-act="watch">Rewatch ${esc(movie.title)} Instead</button>`;
-  } else if (movie) {
-    card = `
+      <p class="roll-q">Watch the sequel instead?</p>`,
+      actions: `${pair('<button type="button" class="btn big btn-watch" data-act="sequel">Watch it</button>')}
+      <button type="button" class="link rewatch-link" data-act="watch">Rewatch ${esc(movie.title)} Instead</button>`,
+    };
+  }
+  if (movie) {
+    return {
+      card: `
       <div class="pick-card seen" style="--cat:${color}">
         <p class="pick-cat">${label}</p>
         <p class="pick-title">${movieLabel(movie)}</p>
         <p class="pick-flag">Already watched at this festival</p>
-      </div>`;
-    actions = pair('<button type="button" class="btn big btn-watch" data-act="watch">Rewatch</button>');
-  } else {
-    card = `
+      </div>`,
+      actions: pair('<button type="button" class="btn big btn-watch" data-act="watch">Rewatch</button>'),
+    };
+  }
+  return {
+    card: `
       <div class="pick-card empty" style="--cat:${color}">
         <p class="pick-cat">${label}</p>
         <p class="pick-title">Slot open</p>
         <p class="pick-flag">Fill it with a movie, or reroll.</p>
-      </div>`;
-    actions = pair('<button type="button" class="btn primary big" data-act="fill">Fill Slot</button>');
+      </div>`,
+    actions: pair('<button type="button" class="btn primary big" data-act="fill">Fill Slot</button>'),
+  };
+}
+
+// What the result card's buttons do: watch, watch the sequel, reroll, or fill an empty slot.
+function resultAction(act, { fest, cat, idx, sequel, mode }) {
+  if (act === 'watch' || act === 'sequel') {
+    if (act === 'sequel') store.stepToSequel(fest.id, cat.id, idx, sequel);
+    const entry = store.watchMovie(fest.id, cat.id, idx);
+    resetRoll();
+    renderRoll();
+    if (entry) toast(`${entry.title} added to your watched list. Enjoy!`);
+  } else if (act === 'reroll') {
+    const rerollMovie = () => {
+      if (mode === 'virtual') rollMovie();
+      else {
+        roll.phase = 'movieInput';
+        renderRollArea();
+      }
+    };
+    const rerollAll = () => {
+      if (mode === 'virtual') rollAll();
+      else {
+        resetRoll();
+        renderRollArea();
+      }
+    };
+    if (fest.mode !== 'two') return rerollMovie(); // one die: nothing to choose between
+    openSheet({
+      title: 'Reroll',
+      actions: [
+        {
+          label: 'Reroll Movie',
+          kind: 'primary',
+          onClick: () => {
+            closeSheet();
+            rerollMovie();
+          },
+        },
+        {
+          label: 'Reroll All',
+          kind: 'primary',
+          onClick: () => {
+            closeSheet();
+            rerollAll();
+          },
+        },
+        { label: 'Cancel', kind: 'ghost', onClick: closeSheet },
+      ],
+    });
+  } else if (act === 'fill') {
+    editSlotSheet(fest.id, cat.id, idx, () => renderRollArea());
   }
-
-  area.innerHTML = `
-    ${mode === 'virtual'
-      ? diceRow(fest, { catVal: r.wild ? null : r.catRoll, catColor: color, cat, movieVal: r.movieRoll, showMovie: true })
-      : `<p class="phys-echo">You rolled ${fest.mode === 'two' ? (r.wild ? 'Wild Card' : esc(faceLabel(fest.categoryDie, r.catRoll))) + ' and ' : ''}${esc(faceLabel(cat.die, r.movieRoll))}</p>`}
-    ${card}
-    <div class="roll-actions">${actions}</div>`;
-  if (mode === 'virtual' && r.wild) setWild();
-  const info = area.querySelector('.pick-info');
-  if (info) info.addEventListener('click', () => movieInfoSheet(cm));
-
-  area.querySelector('.roll-actions').addEventListener('click', (e) => {
-    const b = e.target.closest('button');
-    if (!b) return;
-    const act = b.dataset.act;
-    if (act === 'watch' || act === 'sequel') {
-      if (act === 'sequel') store.stepToSequel(fest.id, cat.id, idx, sequel);
-      const entry = store.watchMovie(fest.id, cat.id, idx);
-      resetRoll();
-      renderRoll();
-      if (entry) toast(`${entry.title} added to your watched list. Enjoy!`);
-    } else if (act === 'reroll') {
-      const rerollMovie = () => { if (mode === 'virtual') rollMovie(); else { r.phase = 'movieInput'; renderRollArea(); } };
-      const rerollAll = () => { if (mode === 'virtual') rollAll(); else { resetRoll(); renderRollArea(); } };
-      if (fest.mode !== 'two') return rerollMovie(); // one die: nothing to choose between
-      openSheet({
-        title: 'Reroll',
-        actions: [
-          { label: 'Reroll Movie', kind: 'primary', onClick: () => { closeSheet(); rerollMovie(); } },
-          { label: 'Reroll All', kind: 'primary', onClick: () => { closeSheet(); rerollAll(); } },
-          { label: 'Cancel', kind: 'ghost', onClick: closeSheet },
-        ],
-      });
-    } else if (act === 'fill') {
-      editSlotSheet(fest.id, cat.id, idx, () => renderRollArea());
-    }
-  });
 }
 
 // ---------- Rolling ----------
 
 function afterCategory(catRoll) {
-  const fest = f();
+  const fest = festival();
   const cat = fest.categories[catRoll - 1];
-  r.catRoll = catRoll;
+  roll.catRoll = catRoll;
   if (!cat || store.isWild(fest, cat)) {
-    r.phase = 'pickCategory';
-    r.catId = null;
+    roll.phase = 'pickCategory';
+    roll.catId = null;
   } else {
-    r.catId = cat.id;
-    r.wild = false;
-    r.phase = store.getState().settings.diceMode === 'virtual' ? 'rolling' : 'movieInput';
+    roll.catId = cat.id;
+    roll.wild = false;
+    roll.phase = store.getState().settings.diceMode === 'virtual' ? 'rolling' : 'movieInput';
   }
 }
 
 function showResult(catId, movieRoll) {
-  r.catId = catId;
-  r.movieRoll = movieRoll;
-  r.phase = 'result';
+  roll.catId = catId;
+  roll.movieRoll = movieRoll;
+  roll.phase = 'result';
   renderRollArea();
 }
 
@@ -296,16 +375,16 @@ async function throwDie(el, sides, color, flatDuration) {
 }
 
 async function rollAll() {
-  const fest = f();
-  r = idle();
+  const fest = festival();
+  roll = idle();
   if (fest.mode === 'one') return rollMovie(fest.categories[0].id);
 
-  r.phase = 'rolling';
+  roll.phase = 'rolling';
   const area = $('#roll-area');
   area.innerHTML = diceRow(fest, {}) + '<button type="button" class="btn primary big" disabled>Rolling…</button>';
   const catRoll = await throwDie($('#die-cat'), fest.categoryDie, accentColor(), 850);
   afterCategory(catRoll);
-  if (r.phase === 'pickCategory') {
+  if (roll.phase === 'pickCategory') {
     dice3d.settle();
     await wait(350);
     return renderRollArea();
@@ -315,15 +394,19 @@ async function rollAll() {
 }
 
 async function rollMovie(catId) {
-  const fest = f();
-  if (catId) r.catId = catId;
-  const cat = store.category(fest, r.catId);
-  r.phase = 'rolling';
+  const fest = festival();
+  if (catId) roll.catId = catId;
+  const cat = store.category(fest, roll.catId);
+  roll.phase = 'rolling';
   const area = $('#roll-area');
-  area.innerHTML = diceRow(fest, {
-    catVal: r.wild ? null : r.catRoll, catColor: swatchHex(cat.color), cat, showMovie: true,
-  }) + '<button type="button" class="btn primary big" disabled>Rolling…</button>';
-  if (r.wild && fest.mode === 'two') setWild();
+  area.innerHTML =
+    diceRow(fest, {
+      catVal: roll.wild ? null : roll.catRoll,
+      catColor: swatchHex(cat.color),
+      cat,
+      showMovie: true,
+    }) + '<button type="button" class="btn primary big" disabled>Rolling…</button>';
+  if (roll.wild && fest.mode === 'two') setWild();
   const movieRoll = await throwDie($('#die-movie'), cat.die, accentColor(), 1000);
   dice3d.settle();
   await wait(300);
@@ -334,25 +417,32 @@ async function rollMovie(catId) {
 
 function renderOpenSlots() {
   const box = $('#open-slots');
-  const fest = f();
+  const fest = festival();
   const open = store.openSlots(fest);
-  if (!open.length) { box.innerHTML = ''; return; }
+  if (!open.length) {
+    box.innerHTML = '';
+    return;
+  }
   const total = open.reduce((n, o) => n + o.count, 0);
   box.innerHTML = `
     <div class="card reminder">
       <p class="reminder-title">${total} slot${total === 1 ? '' : 's'} to fill</p>
       <ul>
-        ${open.map((o) => `
+        ${open
+          .map(
+            (o) => `
           <li><button type="button" data-cat="${o.cat.id}" style="--cat:${swatchHex(o.cat.color)}">
             <span>${esc(o.cat.name)}</span><span class="n">${o.count} open ›</span>
-          </button></li>`).join('')}
+          </button></li>`,
+          )
+          .join('')}
       </ul>
     </div>`;
   $$('button', box).forEach((b) => b.addEventListener('click', () => nav.go('edit', { cat: b.dataset.cat })));
 }
 
 function renderRecent() {
-  const fest = f();
+  const fest = festival();
   const list = store.getState().history.filter((e) => e.festivalId === fest.id);
   const box = $('#recent');
   const items = list.slice(0, 3);
@@ -365,10 +455,11 @@ function renderRecent() {
       ${items.length ? items.map((e) => entryRow(e, false)).join('') : '<li class="empty-state">Nothing yet. Roll something and hit Watch it.</li>'}
     </ul>`;
   const all = $('#see-all', box);
-  if (all) all.addEventListener('click', () => {
-    nav.filters = { festival: fest.id };
-    nav.go('watched');
-  });
+  if (all)
+    all.addEventListener('click', () => {
+      nav.filters = { festival: fest.id };
+      nav.go('watched');
+    });
   $$('.watched-item', box).forEach((b) => b.addEventListener('click', () => entrySheet(b.dataset.id, renderRoll)));
   attachSwipe($('.watched-list', box), (id) => swipeDelete(id, renderRoll));
 }
@@ -378,7 +469,7 @@ function renderRecent() {
 export function initRoll() {
   $('#dice-mode').addEventListener('click', (e) => {
     const b = e.target.closest('button');
-    if (!b || r.phase === 'rolling') return;
+    if (!b || roll.phase === 'rolling') return;
     store.setSetting('diceMode', b.dataset.value);
     resetRoll();
     renderRoll();

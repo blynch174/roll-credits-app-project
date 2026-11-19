@@ -1,0 +1,329 @@
+/* Account and admin
+   Account sheets and Admin Tools. Only admins see most of this.
+   Sections: Account, Admin Tools, Festival Manager, Movie Manager */
+
+/* ---------- Account ---------- */
+.account-row small.warn {
+  color: var(--danger);
+}
+.acct-head {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 2px 0 6px;
+}
+.acct-head b {
+  font-size: 17px;
+  overflow-wrap: anywhere;
+}
+.acct-head small {
+  font-size: var(--size-small);
+  color: var(--muted);
+}
+.acct-list {
+  margin-top: 14px;
+}
+.acct-uid {
+  margin: 14px 0 0;
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+.acct-uid code {
+  font-size: var(--size-tiny);
+}
+
+/* ---------- Admin Tools ---------- */
+.admin-soon {
+  padding: 12px 14px;
+}
+.admin-soon .sheet-text {
+  margin: 0;
+}
+.admin-soon .btn {
+  margin-top: 10px;
+}
+.user-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.user-stats .card {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.user-stats b {
+  font-size: var(--size-title);
+  color: var(--accent);
+}
+.user-stats small {
+  font-size: var(--size-caption);
+  color: var(--muted);
+}
+.user-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 8px;
+}
+.user-row {
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.user-row.idle {
+  opacity: 0.6;
+}
+.ur-email {
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ur-sub {
+  font-size: var(--size-small);
+  color: var(--muted);
+}
+.fb-list {
+  margin-top: 12px;
+}
+.fb-row {
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.fb-text {
+  margin: 0 0 4px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* ---------- Festival Manager ---------- */
+.draft-pill {
+  flex: none;
+  padding: 2px 8px;
+  border: 1px solid var(--accent);
+  border-radius: var(--r-pill);
+  color: var(--accent);
+  font-size: var(--size-tiny);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.draft-status {
+  margin: 0;
+  padding: 8px 14px 4px;
+  font-size: var(--size-small);
+  color: var(--muted);
+}
+.official-list {
+  list-style: none;
+  margin: 12px 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.official-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 12px;
+  border: var(--edge);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  text-align: left;
+}
+.or-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.or-text small {
+  font-size: var(--size-caption);
+  color: var(--muted);
+}
+.or-go {
+  flex: none;
+  font-size: var(--size-ui);
+  font-weight: 700;
+  color: var(--accent);
+}
+.official-list + .btn {
+  width: 100%;
+}
+
+/* ---------- Movie Manager ---------- */
+.req-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.req-row {
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+}
+.req-row .af-poster {
+  width: 46px;
+  height: 69px;
+}
+.req-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.req-title {
+  font-weight: 700;
+}
+.req-sub {
+  font-size: var(--size-small);
+  color: var(--muted);
+}
+.req-moods {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.req-moods button {
+  padding: 4px 10px;
+  border: var(--edge);
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: var(--size-small);
+}
+.req-moods button.on {
+  background: var(--accent-2);
+  border-color: var(--accent-2);
+  color: var(--accent-2-ink);
+}
+.req-actions {
+  display: flex;
+  gap: 8px;
+}
+.req-moods[hidden] {
+  display: none;
+}
+.req-mood-toggle {
+  align-self: flex-start;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font: inherit;
+  font-size: var(--size-ui);
+  font-weight: 650;
+}
+.sub-title {
+  margin: 18px 4px 8px;
+  font-size: var(--size-caption);
+  font-weight: 750;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.req-moods button.sug:not(.on) {
+  border-style: dashed;
+  border-color: var(--accent-2);
+  color: var(--text);
+}
+.add-search {
+  display: flex;
+  gap: 8px;
+}
+.add-search input {
+  flex: 1;
+  min-width: 0;
+  min-height: 46px;
+  padding: 10px 14px;
+  border: var(--edge);
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+  font-size: var(--size-body);
+}
+.add-list {
+  margin-top: 10px;
+}
+.add-pick {
+  margin-bottom: 4px;
+}
+.add-pick .req-title {
+  margin: 0 0 4px;
+}
+.add-actions {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 10px;
+  margin-top: 18px;
+}
+.scare-pick {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 6px;
+}
+.sp-nums {
+  display: grid;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  gap: 4px;
+  max-width: 420px;
+}
+.sp-nums button {
+  min-height: 38px;
+  padding: 0;
+  border: var(--edge);
+  border-radius: var(--r-sm);
+  background: var(--surface-2);
+  color: var(--text);
+  font: inherit;
+  font-weight: 750;
+  font-variant-numeric: tabular-nums;
+}
+.sp-nums button.on {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-ink, #fff);
+}
+.sp-out {
+  min-height: 22px;
+  display: flex;
+  align-items: center;
+}
+.sp-out .scare {
+  margin: 0;
+}
+.sp-note {
+  font-size: var(--size-small);
+  font-weight: 700;
+  color: var(--muted);
+}
+.req-scare {
+  margin-top: 4px;
+}
+.edit-row {
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+}
+.mi-edit {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 4px 0;
+  font-size: var(--size-ui);
+}
+#edit-results {
+  margin-top: 10px;
+}

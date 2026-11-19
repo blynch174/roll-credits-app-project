@@ -1,10 +1,10 @@
-// Boot, navigation, and the festival switcher.
+// Starts the app: loads the saved data, wires up navigation between screens, and starts the background work
+// (account sync, official festival updates, the movie catalog, offline support).
 
 import * as store from './store.js';
-import { dieName, BUILT_IN_FESTIVALS } from './defaults.js';
 import { applyTheme } from './themes.js';
 import { iconSVG } from './icons.js';
-import { $, $$, esc, nav, openSheet, swapSheet, closeSheet, initSheets, toast, attachSwipe } from './ui.js';
+import { $, $$, nav, initSheets, toast } from './ui.js';
 import { renderRoll, initRoll, resetRoll } from './screens/roll.js';
 import { renderWatched, initWatched } from './screens/watched.js';
 import * as catalog from './catalog.js';
@@ -13,17 +13,17 @@ import { startTutorial, initTutorial } from './tutorial.js';
 import { renderEditor, initEditor } from './screens/editor.js';
 import { renderPopcorn } from './screens/popcorn.js';
 import { renderSettings, initSettings } from './screens/settings.js';
-import { renderCreator, openCreator } from './screens/creator.js';
-import { renderAccountSection, renderAdmin, initAccount, chooseSideSheet } from './screens/account.js';
+import { renderCreator } from './screens/creator.js';
+import { initAccount, chooseSideSheet } from './screens/account.js';
 import * as sync from './sync.js';
 import * as official from './official.js';
 import { renderBanner } from './screens/updates.js';
 import { renderThemePicker, initThemePicker } from './screens/theme-picker.js';
-import { leaveDraft } from './screens/admin-official.js';
-import { renderLibrary, initLibrary, openLibrary, libraryEntries } from './screens/library.js';
+import { renderLibrary, initLibrary } from './screens/library.js';
+import { festivalSheet } from './screens/festivals.js';
 import { feedbackSheet } from './screens/feedback.js';
 import * as movieEdits from './movieedits.js';
-import { initMovieEdit } from './screens/movie-edit.js';
+import { loadAdmin, loadedAdmin } from './admin-loader.js';
 import { initWatchSlots } from './movieinfo.js';
 import { configured as cloudConfigured } from './cloud.js';
 
@@ -36,7 +36,7 @@ let screenOpts = {};
 function go(name, opts = {}) {
   if (name !== 'home') dice3d.clearNow();
   // Leaving an official festival draft (any navigation that isn't the draft editor itself) saves and closes it.
-  if (store.currentDraft() && !opts.keepDraft) leaveDraft();
+  if (store.currentDraft() && !opts.keepDraft) loadedAdmin().festivals.leaveDraft();
   if (TABS.includes(name)) lastTab = name;
   screen = name;
   screenOpts = opts;
@@ -54,13 +54,15 @@ function render() {
   const f = store.activeFestival();
   $('#fest-name').textContent = f.name;
   $('#fest-btn-icon').innerHTML = iconSVG(f.icon);
-  if (screen === 'home') { renderBanner(); renderRoll(); }
-  else if (screen === 'watched') renderWatched();
+  if (screen === 'home') {
+    renderBanner();
+    renderRoll();
+  } else if (screen === 'watched') renderWatched();
   else if (screen === 'popcorn') renderPopcorn();
   else if (screen === 'edit') renderEditor(screenOpts);
   else if (screen === 'settings') renderSettings();
   else if (screen === 'creator') renderCreator();
-  else if (screen === 'admin') renderAdmin();
+  else if (screen === 'admin') loadAdmin().then(({ admin }) => admin.renderAdmin());
   else if (screen === 'themes') renderThemePicker();
   else if (screen === 'library') renderLibrary();
   screenOpts = {};
@@ -69,72 +71,7 @@ function render() {
 nav.go = go;
 nav.back = () => go(lastTab);
 nav.render = render;
-
-// ---------- Festival switcher ----------
-
-function festivalSheet() {
-  const cur = store.activeFestival().id;
-  const canDelete = store.festivals().length > 1;
-  const seen = new Set(store.librarySeen());
-  const fresh = libraryEntries().filter((e) => !seen.has(e.id) && !store.festival(e.id)).length;
-  const sheet = openSheet({
-    title: 'Film Festivals',
-    body: `
-      <ul class="fest-list" id="fest-list">
-        ${store.festivals().map((f) => `
-          <li class="${canDelete ? 'swipe-row' : ''}">
-            ${canDelete ? `<button type="button" class="swipe-del" tabindex="-1">${f.builtIn ? 'Remove' : 'Delete'}</button>` : ''}
-            <div class="fest-row swipe-item ${f.id === cur ? 'on' : ''}" data-id="${f.id}">
-              <button type="button" class="fr-pick" data-id="${f.id}">
-                <span class="fest-icon">${iconSVG(f.icon)}</span>
-                <span class="fr-main"><span class="fr-name">${esc(f.name)}${f.isNew ? '<span class="new-badge">New</span>' : ''}${f.announce ? '<span class="update-dot" aria-label="Has an update"></span>' : ''}</span>
-                  <span class="fr-sub">${f.id === cur ? 'Now showing · ' : ''}${f.mode === 'one' ? `One ${dieName(f.categories[0].die)} list` : `${f.categories.length} categories`}${f.builtIn ? '' : ' · Custom'}</span></span>
-              </button>
-              <button type="button" class="btn ghost small fr-edit" data-edit="${f.id}" aria-label="Edit ${esc(f.name)}">Edit</button>
-            </div>
-          </li>`).join('')}
-      </ul>
-      ${store.canCreateFestival(sync.isAdmin())
-    ? '<button type="button" class="btn ghost big" id="btn-new-fest">+ Create a Festival</button>'
-    : '<button type="button" class="btn ghost big" id="btn-new-fest" disabled>Custom Festival Limit Reached</button>'}
-      <button type="button" class="btn ghost big" id="btn-library">+ Browse Festivals${fresh ? `<span class="new-badge">${fresh} New</span>` : ''}</button>`,
-    actions: [{ label: 'Close', kind: 'ghost', onClick: closeSheet }],
-  });
-  const switchTo = (id) => {
-    const changed = id !== store.activeFestival().id;
-    store.setActiveFestival(id);
-    const f = store.activeFestival();
-    if (changed) resetRoll();
-    return { f, changed };
-  };
-  $$('.fr-pick', sheet).forEach((b) => b.addEventListener('click', () => {
-    const { f, changed } = switchTo(b.dataset.id);
-    closeSheet();
-    go(screen === 'creator' ? 'home' : screen);
-    if (changed) toast(`Now showing: ${f.name}`);
-  }));
-  $$('.fr-edit', sheet).forEach((b) => b.addEventListener('click', () => {
-    switchTo(b.dataset.edit);
-    closeSheet();
-    go('edit', { part: 'tables' });
-  }));
-  $('#btn-new-fest', sheet).addEventListener('click', () => { closeSheet(); openCreator(); });
-  $('#btn-library', sheet).addEventListener('click', () => { closeSheet(); openLibrary(); });
-  // Swipe a festival left to delete it (Undo in the toast).
-  if (canDelete) attachSwipe($('#fest-list', sheet), (id) => {
-    const f = store.festival(id);
-    const snap = store.snapshot();
-    const wasActive = store.activeFestival().id === id;
-    if (!store.deleteFestival(id)) return;
-    if (wasActive) resetRoll();
-    render();
-    festivalSheet();
-    toast(f.builtIn ? `${f.name} removed.` : `${f.name} deleted.`, {
-      action: 'Undo',
-      onAction: () => { store.restore(snap); resetRoll(); render(); },
-    });
-  });
-}
+nav.current = () => screen;
 
 // ---------- Boot ----------
 
@@ -186,7 +123,11 @@ sync.start({
 // Official festivals: newer published versions (cached copy first, then the database).
 official.start({ changed: () => render() });
 movieEdits.start();
-initMovieEdit();
+// "Edit Movie" links (admins only) in movie details open the editor from any sheet.
+document.addEventListener('click', (e) => {
+  const b = e.target.closest('[data-edit-movie]');
+  if (b) loadAdmin().then(({ movieEdit }) => movieEdit.editMovieSheet(catalog.get(b.dataset.editMovie)));
+});
 initWatchSlots();
 
 catalog.load().then(() => {
@@ -211,14 +152,20 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:') {
     prompted = true;
     toast('Roll Credits has been updated.', { action: 'Reload', onAction: () => location.reload(), duration: 600000 });
   });
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('sw.js').then((reg) => {
-      // Check for a new version whenever the app comes back to the front.
-      document.addEventListener('visibilitychange', () => {
-        if (document.visibilityState === 'visible') reg.update().catch(() => {});
-      });
-    }).catch(() => {});
-  });
+  const register = () =>
+    navigator.serviceWorker
+      .register('sw.js')
+      .then((reg) => {
+        // Check for a new version whenever the app comes back to the front.
+        document.addEventListener('visibilitychange', () => {
+          if (document.visibilityState === 'visible') reg.update().catch(() => {});
+        });
+      })
+      .catch(() => {});
+  // This code can run after the page has finished loading (appconfig.js waits for the Firebase config first), and a
+  // 'load' listener added after that never fires. So register now if loading is already done.
+  if (document.readyState === 'complete') register();
+  else window.addEventListener('load', register);
 }
 
 // iOS home-screen apps sometimes lay out the fixed tab bar above the real bottom edge on launch, until the
@@ -229,9 +176,16 @@ function settleLayout() {
     window.scrollTo(0, y + 1);
     window.scrollTo(0, y);
     const bar = document.querySelector('.tabbar');
-    if (bar) { bar.style.display = 'none'; void bar.offsetHeight; bar.style.display = ''; }
+    if (bar) {
+      bar.style.display = 'none';
+      void bar.offsetHeight;
+      bar.style.display = '';
+    }
   });
 }
-window.addEventListener('load', () => { settleLayout(); setTimeout(settleLayout, 300); });
+window.addEventListener('load', () => {
+  settleLayout();
+  setTimeout(settleLayout, 300);
+});
 window.addEventListener('pageshow', settleLayout);
 window.addEventListener('orientationchange', () => setTimeout(settleLayout, 300));

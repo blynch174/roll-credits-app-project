@@ -67,16 +67,20 @@ export function renderCreator() {
       <span class="pv-icons">${[1, 2, 3, 4, 5].map((i) => `<span class="ricon ${i <= 3 ? 'on' : ''}">${iconSVG(form.icon)}</span>`).join('')}</span>`;
     $('#cr-cat-wrap').hidden = form.mode === 'one';
     const cats = form.mode === 'one' ? 1 : form.categoryDie;
-    $('#cr-summary').textContent = form.mode === 'one'
-      ? `1 list × ${form.movieDie} movies (${dieName(form.movieDie)})`
-      : `${cats} categories (${dieName(form.categoryDie)}) × ${form.movieDie} movies each (${dieName(form.movieDie)}) = ${cats * form.movieDie} slots`;
+    $('#cr-summary').textContent =
+      form.mode === 'one'
+        ? `1 list × ${form.movieDie} movies (${dieName(form.movieDie)})`
+        : `${cats} categories (${dieName(form.categoryDie)}) × ${form.movieDie} movies each (${dieName(form.movieDie)}) = ${cats * form.movieDie} slots`;
     $$('#creator .die-chips').forEach((row) => {
       const val = row.dataset.name === 'cat' ? form.categoryDie : form.movieDie;
       $$('.die-chip', row).forEach((b) => b.classList.toggle('on', +b.dataset.die === val));
     });
   };
 
-  $('#cr-cancel').addEventListener('click', () => { form = null; nav.back(); });
+  $('#cr-cancel').addEventListener('click', () => {
+    form = null;
+    nav.back();
+  });
   $('#cr-copy').addEventListener('change', (e) => {
     form.copyFrom = e.target.value;
     const src = store.festival(form.copyFrom);
@@ -85,28 +89,41 @@ export function renderCreator() {
       form.categoryDie = src.categoryDie || 6;
       form.movieDie = src.categories[0].die;
       form.icon = src.icon;
-      if (!form.name) { form.name = `My ${src.name}`; $('#cr-name').value = form.name; }
+      if (!form.name) {
+        form.name = `My ${src.name}`;
+        $('#cr-name').value = form.name;
+      }
       $$('#cr-icon .icon-pick').forEach((x) => x.classList.toggle('on', x.dataset.i === form.icon));
     }
     refresh();
   });
-  $('#cr-name').addEventListener('input', (e) => { form.name = e.target.value; refresh(); });
+  $('#cr-name').addEventListener('input', (e) => {
+    form.name = e.target.value;
+    refresh();
+  });
   $('#cr-mode').addEventListener('click', (e) => {
-    const b = e.target.closest('button'); if (!b) return;
-    form.mode = b.dataset.value; refresh();
+    const b = e.target.closest('button');
+    if (!b) return;
+    form.mode = b.dataset.value;
+    refresh();
   });
   $('#cr-icon').addEventListener('click', (e) => {
-    const b = e.target.closest('.icon-pick'); if (!b) return;
+    const b = e.target.closest('.icon-pick');
+    if (!b) return;
     form.icon = b.dataset.i;
     $$('#cr-icon .icon-pick').forEach((x) => x.classList.toggle('on', x === b));
     refresh();
   });
   wireChips($('#cr-dice'), (n, which) => {
-    if (which === 'cat') form.categoryDie = n; else form.movieDie = n;
+    if (which === 'cat') form.categoryDie = n;
+    else form.movieDie = n;
     refresh();
   });
   $('#cr-create').addEventListener('click', () => {
-    if (!form.name.trim()) { $('#cr-name').focus(); return toast('Give your festival a name.'); }
+    if (!form.name.trim()) {
+      $('#cr-name').focus();
+      return toast('Give your festival a name.');
+    }
     if (!store.canCreateFestival(sync.isAdmin())) return toast('Custom Festival Limit Reached.');
     const f = store.createFestival({ ...form, copyFrom: form.copyFrom || null });
     form = null;

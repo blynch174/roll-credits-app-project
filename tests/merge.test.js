@@ -9,10 +9,21 @@ const DAY = 24 * 3600 * 1000;
 const NOW = 1_800_000_000_000;
 
 // A minimal saved state. `at` / `gone` fill in sync times for the item kinds used here.
-function state({ festivals = [], history = [], savedPicks = [], settings = {}, at = {}, gone = {}, settingsAt = 0 } = {}) {
+function state({
+  festivals = [],
+  history = [],
+  savedPicks = [],
+  settings = {},
+  at = {},
+  gone = {},
+  settingsAt = 0,
+} = {}) {
   const s = emptySync();
-  Object.assign(s.at.f, at.f); Object.assign(s.at.h, at.h); Object.assign(s.at.s, at.s);
-  Object.assign(s.gone.f, gone.f); Object.assign(s.gone.h, gone.h);
+  Object.assign(s.at.f, at.f);
+  Object.assign(s.at.h, at.h);
+  Object.assign(s.at.s, at.s);
+  Object.assign(s.gone.f, gone.f);
+  Object.assign(s.gone.h, gone.h);
   s.at.settings = settingsAt;
   return { festivals, history, savedPicks, customMovies: [], settings, activeFestival: festivals[0]?.id, sync: s };
 }
@@ -23,7 +34,11 @@ test('the newer edit to the same festival wins', () => {
   const local = state({ festivals: [fest('a', 'Old name')], at: { f: { a: NOW - 1000 } } });
   const remote = state({ festivals: [fest('a', 'New name')], at: { f: { a: NOW } } });
   assert.equal(merge(local, remote, { now: NOW }).festivals[0].name, 'New name');
-  assert.equal(merge(remote, local, { now: NOW }).festivals[0].name, 'New name', 'order of arguments should not matter');
+  assert.equal(
+    merge(remote, local, { now: NOW }).festivals[0].name,
+    'New name',
+    'order of arguments should not matter',
+  );
 });
 
 test('items that only exist on one device are kept', () => {
@@ -57,8 +72,14 @@ test('old deletion records expire after 120 days', () => {
 
 test('history comes back newest first', () => {
   const local = state({ history: [watched('old', '2026-01-01')], at: { h: { old: 1 } } });
-  const remote = state({ history: [watched('new', '2026-11-01'), watched('mid', '2026-06-01')], at: { h: { new: 1, mid: 1 } } });
-  assert.deepEqual(merge(local, remote, { now: NOW }).history.map((e) => e.id), ['new', 'mid', 'old']);
+  const remote = state({
+    history: [watched('new', '2026-11-01'), watched('mid', '2026-06-01')],
+    at: { h: { new: 1, mid: 1 } },
+  });
+  assert.deepEqual(
+    merge(local, remote, { now: NOW }).history.map((e) => e.id),
+    ['new', 'mid', 'old'],
+  );
 });
 
 test('Saved for Later keeps only the most recent picks', () => {
@@ -66,7 +87,10 @@ test('Saved for Later keeps only the most recent picks', () => {
   const local = state({ savedPicks: [pick('a', '2026-01-01'), pick('b', '2026-02-01')], at: { s: { a: 1, b: 1 } } });
   const remote = state({ savedPicks: [pick('c', '2026-03-01'), pick('d', '2026-04-01')], at: { s: { c: 1, d: 1 } } });
   const out = merge(local, remote, { now: NOW, savedMax: 3 });
-  assert.deepEqual(out.savedPicks.map((p) => p.movieId), ['b', 'c', 'd']);
+  assert.deepEqual(
+    out.savedPicks.map((p) => p.movieId),
+    ['b', 'c', 'd'],
+  );
 });
 
 test('settings: the newer change wins as a whole; ties go to remote only when asked', () => {
@@ -85,7 +109,10 @@ test('the active festival falls back when it was deleted elsewhere', () => {
   local.activeFestival = 'b';
   const remote = state({ festivals: [fest('a')], at: { f: { a: 1 } }, gone: { f: { b: NOW - 5 } } });
   const out = merge(local, remote, { now: NOW });
-  assert.deepEqual(out.festivals.map((f) => f.id), ['a']);
+  assert.deepEqual(
+    out.festivals.map((f) => f.id),
+    ['a'],
+  );
   assert.equal(out.activeFestival, 'a');
 });
 
@@ -98,10 +125,16 @@ test('merge does not modify its inputs', () => {
 });
 
 test('stamp records edits, additions, and deletions since the last save', () => {
-  const d = { festivals: [fest('a'), fest('b')], history: [], savedPicks: [], customMovies: [], settings: { theme: 'noir' } };
+  const d = {
+    festivals: [fest('a'), fest('b')],
+    history: [],
+    savedPicks: [],
+    customMovies: [],
+    settings: { theme: 'noir' },
+  };
   const base = baselineOf(d);
-  d.festivals[0].name = 'Renamed';       // edit
-  d.festivals.splice(1, 1);              // delete b
+  d.festivals[0].name = 'Renamed'; // edit
+  d.festivals.splice(1, 1); // delete b
   d.history.push(watched('h1', '2026-10-01')); // add
   d.settings.theme = 'sepia';
   stamp(d, base, 1234);
@@ -119,7 +152,7 @@ test('stamp leaves unchanged items alone', () => {
 });
 
 test('ensureSync repairs a missing or malformed sync record', () => {
-  const d = { sync: { at: { f: [] , settings: 'x' }, gone: null } };
+  const d = { sync: { at: { f: [], settings: 'x' }, gone: null } };
   const s = ensureSync(d);
   assert.deepEqual(s, emptySync());
 });

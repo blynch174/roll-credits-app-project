@@ -17,11 +17,10 @@ export function randInt(min, max) {
 // What a die shows for a number. Coins show H/T.
 export const faceLabel = (sides, n) => (n == null ? '?' : sides === 2 ? (n === 1 ? 'H' : 'T') : String(n));
 
-const reduceMotion = () =>
-  window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const reduceMotion = () => window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 // Flips the CSS coin and lands on heads (1) or tails (2).
-export function flipCoin(el, final, duration = 1300) {
+function flipCoin(el, final, duration = 1300) {
   const inner = el.querySelector('.coin-3d');
   const end = final === 2 ? 180 : 0;
   el.classList.add('has-value');
@@ -37,7 +36,7 @@ export function flipCoin(el, final, duration = 1300) {
       { transform: `translateY(-6px) rotateX(${spin + 6}deg) scale(1)`, offset: 0.93 },
       { transform: `translateY(0) rotateX(${spin}deg) scale(1)` },
     ],
-    { duration, easing: 'cubic-bezier(.3,.7,.4,1)' }
+    { duration, easing: 'cubic-bezier(.3,.7,.4,1)' },
   );
   return anim.finished.then(() => {}).catch(() => {});
 }

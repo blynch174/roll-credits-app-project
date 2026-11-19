@@ -48,7 +48,9 @@ export function reviewSheet(fId) {
       <p class="sheet-text">Replaces its tables and dice${edited ? ', including your changes' : ''}. History and Seen marks stay.</p>`,
     actions: [
       {
-        label: 'Keep Mine', kind: 'ghost', onClick: () => {
+        label: 'Keep Mine',
+        kind: 'ghost',
+        onClick: () => {
           store.keepMine(f.id, pub.rev);
           closeSheet();
           nav.render();
@@ -56,7 +58,9 @@ export function reviewSheet(fId) {
         },
       },
       {
-        label: 'Update', kind: 'primary', onClick: () => {
+        label: 'Update',
+        kind: 'primary',
+        onClick: () => {
           store.applyOfficial(f.id, pub, false);
           closeSheet();
           nav.render();

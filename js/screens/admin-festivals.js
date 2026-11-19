@@ -6,9 +6,18 @@ import * as store from '../store.js';
 import * as cloud from '../cloud.js';
 import * as official from '../official.js';
 import {
-  BUILT_IN_FESTIVALS, RATING_ICONS, SWATCHES, SHELVES, shelfName, buildBuiltInFestival, tablesFromFestival, categoriesFromTables, makeCategory,
+  BUILT_IN_FESTIVALS,
+  RATING_ICONS,
+  SWATCHES,
+  SHELVES,
+  shelfName,
+  buildBuiltInFestival,
+  tablesFromFestival,
+  categoriesFromTables,
+  makeCategory,
 } from '../defaults.js';
 import { iconSVG } from '../icons.js';
+import { ago } from '../util.js';
 import { $, $$, esc, toast, nav, openSheet, closeSheet, confirmSheet, syncSeg } from '../ui.js';
 
 let pubs = [];
@@ -17,15 +26,6 @@ let saveTimer = null;
 let saving = null;
 let draftStatus = '';
 
-const ago = (ms) => {
-  if (!ms) return '';
-  const m = Math.round((Date.now() - ms) / 60000);
-  if (m < 1) return 'just now';
-  if (m < 60) return `${m} min ago`;
-  const h = Math.round(m / 60);
-  if (h < 24) return `${h} hr ago`;
-  return new Date(ms).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
-};
 const who = (email) => (email ? email.split('@')[0] : 'someone');
 
 // ---------- The list in Admin tools ----------
@@ -44,16 +44,24 @@ export async function renderOfficialSection() {
   const missing = BUILT_IN_FESTIVALS.filter((d) => !ids.has(d.id));
   const rows = [
     ...pubs.map((p) => ({ id: p.id, name: p.name, icon: p.icon, pub: p, draft: drafts.find((d) => d.id === p.id) })),
-    ...drafts.filter((d) => !pubs.some((p) => p.id === d.id)).map((d) => ({ id: d.id, name: d.name, icon: d.icon, pub: null, draft: d })),
+    ...drafts
+      .filter((d) => !pubs.some((p) => p.id === d.id))
+      .map((d) => ({ id: d.id, name: d.name, icon: d.icon, pub: null, draft: d })),
   ];
   box.innerHTML = `
-    ${missing.length ? `
+    ${
+      missing.length
+        ? `
       <div class="card admin-soon">
         <p class="sheet-text">${pubs.length ? `${missing.length} built-in festival${missing.length === 1 ? ' isn’t' : 's aren’t'} published yet.` : 'Start by publishing the festivals already built into the app. Nothing changes for anyone; they become editable here.'}</p>
         <button type="button" class="btn primary small" id="of-import">Publish ${missing.length === BUILT_IN_FESTIVALS.length ? 'the built-in festivals' : missing.map((d) => d.name).join(', ')}</button>
-      </div>` : ''}
+      </div>`
+        : ''
+    }
     <ul class="official-list">
-      ${rows.map((r) => `
+      ${rows
+        .map(
+          (r) => `
         <li>
           <button type="button" class="official-row" data-edit="${esc(r.id)}">
             <span class="fest-icon small">${iconSVG(r.icon)}</span>
@@ -63,7 +71,9 @@ export async function renderOfficialSection() {
             </span>
             <span class="or-go">Edit</span>
           </button>
-        </li>`).join('')}
+        </li>`,
+        )
+        .join('')}
     </ul>
     <button type="button" class="btn ghost" id="of-new">+ New Official Festival</button>`;
   const imp = $('#of-import');
@@ -74,14 +84,25 @@ export async function renderOfficialSection() {
 
 async function importBuiltIns(defs) {
   const btn = $('#of-import');
-  if (btn) { btn.disabled = true; btn.textContent = 'Publishing…'; }
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = 'Publishing…';
+  }
   try {
     for (const def of defs) {
       const order = BUILT_IN_FESTIVALS.indexOf(def);
       // Published as revision 1 = exactly what's built into the app, so nobody sees an update.
       await cloud.publishOfficial(def.id, {
-        name: def.name, icon: def.icon, tables: tablesFromFestival(buildBuiltInFestival(def)),
-        rev: 1, kind: 'fix', message: '', hidden: false, order, shelf: def.shelf || '', blurb: def.blurb || '',
+        name: def.name,
+        icon: def.icon,
+        tables: tablesFromFestival(buildBuiltInFestival(def)),
+        rev: 1,
+        kind: 'fix',
+        message: '',
+        hidden: false,
+        order,
+        shelf: def.shelf || '',
+        blurb: def.blurb || '',
       });
     }
     toast('Built-in festivals published. Tap one to edit it.');
@@ -104,13 +125,31 @@ function newFestivalSheet() {
     actions: [
       { label: 'Cancel', kind: 'ghost', onClick: closeSheet },
       {
-        label: 'Create Draft', kind: 'primary', onClick: async (s) => {
+        label: 'Create Draft',
+        kind: 'primary',
+        onClick: async (s) => {
           const name = $('#nf-name', s).value.trim();
           if (!name) return toast('Give it a name.');
-          const taken = new Set([...pubs.map((p) => p.id), ...drafts.map((d) => d.id), ...BUILT_IN_FESTIVALS.map((d) => d.id), ...store.festivals().map((f) => f.id)]);
-          let id = name.toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'festival';
-          if (taken.has(id)) { let n = 2; while (taken.has(`${id}-${n}`)) n++; id = `${id}-${n}`; }
-          const cats = SWATCHES.slice(0, 6).map((sw, i) => makeCategory(i === 5 ? 'Wild Card' : `Category ${i + 1}`, i === 5 ? 'slate' : sw.id, 12));
+          const taken = new Set([
+            ...pubs.map((p) => p.id),
+            ...drafts.map((d) => d.id),
+            ...BUILT_IN_FESTIVALS.map((d) => d.id),
+            ...store.festivals().map((f) => f.id),
+          ]);
+          let id =
+            name
+              .toLowerCase()
+              .replace(/&/g, 'and')
+              .replace(/[^a-z0-9]+/g, '-')
+              .replace(/^-|-$/g, '') || 'festival';
+          if (taken.has(id)) {
+            let n = 2;
+            while (taken.has(`${id}-${n}`)) n++;
+            id = `${id}-${n}`;
+          }
+          const cats = SWATCHES.slice(0, 6).map((sw, i) =>
+            makeCategory(i === 5 ? 'Wild Card' : `Category ${i + 1}`, i === 5 ? 'slate' : sw.id, 12),
+          );
           const tables = tablesFromFestival({ mode: 'two', categoryDie: 6, categories: cats });
           try {
             await cloud.saveDraft(id, { name, icon, tables, baseRev: 0 });
@@ -118,14 +157,23 @@ function newFestivalSheet() {
             return toast(cloud.errorText(e));
           }
           closeSheet();
-          drafts.push({ id, name, icon, tables, baseRev: 0, updatedAt: Date.now(), updatedBy: cloud.currentUser().email });
+          drafts.push({
+            id,
+            name,
+            icon,
+            tables,
+            baseRev: 0,
+            updatedAt: Date.now(),
+            updatedBy: cloud.currentUser().email,
+          });
           openDraftEditor(id);
         },
       },
     ],
   });
   $('#nf-icon', sheet).addEventListener('click', (e) => {
-    const b = e.target.closest('.icon-pick'); if (!b) return;
+    const b = e.target.closest('.icon-pick');
+    if (!b) return;
     icon = b.dataset.i;
     $$('#nf-icon .icon-pick', sheet).forEach((x) => x.classList.toggle('on', x === b));
   });
@@ -133,7 +181,7 @@ function newFestivalSheet() {
 
 // ---------- Editing a draft ----------
 
-export function openDraftEditor(id) {
+function openDraftEditor(id) {
   const pub = pubs.find((p) => p.id === id) || null;
   const d = drafts.find((x) => x.id === id) || null;
   const src = d || pub;
@@ -158,7 +206,11 @@ export function openDraftEditor(id) {
       hasDraft: !!d,
     },
   };
-  draftStatus = d ? `Draft · last edited by ${who(d.updatedBy)}, ${ago(d.updatedAt)}` : pub ? 'No changes yet' : 'Draft';
+  draftStatus = d
+    ? `Draft · last edited by ${who(d.updatedBy)}, ${ago(d.updatedAt)}`
+    : pub
+      ? 'No changes yet'
+      : 'Draft';
   store.openDraft(fest, scheduleSave);
   nav.go('edit', { part: 'tables', keepDraft: true });
 }
@@ -173,16 +225,22 @@ function scheduleSave(fest) {
 function saveNow(fest) {
   clearTimeout(saveTimer);
   saveTimer = null;
-  saving = cloud.saveDraft(fest.officialId, {
-    name: fest.name, icon: fest.icon, tables: tablesFromFestival(fest), baseRev: fest.draftInfo.baseRev,
-  })
+  saving = cloud
+    .saveDraft(fest.officialId, {
+      name: fest.name,
+      icon: fest.icon,
+      tables: tablesFromFestival(fest),
+      baseRev: fest.draftInfo.baseRev,
+    })
     .then(() => {
       fest.draftInfo.updatedBy = cloud.currentUser().email;
       fest.draftInfo.updatedAt = Date.now();
       setStatus('Draft saved');
     })
     .catch((e) => setStatus(`Couldn’t save the draft: ${cloud.errorText(e)}`))
-    .finally(() => { saving = null; });
+    .finally(() => {
+      saving = null;
+    });
   return saving;
 }
 
@@ -228,38 +286,44 @@ export function wireDraftSettings(f) {
   const shelfBtn = $('#btn-shelf');
   if (shelfBtn) shelfBtn.addEventListener('click', () => shelfSheet(f));
   const hide = $('#btn-hide');
-  if (hide) hide.addEventListener('click', async () => {
-    const to = !f.draftInfo.hidden;
-    try {
-      await cloud.setOfficialHidden(f.officialId, to);
-      f.draftInfo.hidden = to;
-      toast(to ? `${f.name} is hidden from the Festival Library.` : `${f.name} is visible again.`);
-      official.refresh();
-      nav.render();
-    } catch (e) {
-      toast(cloud.errorText(e));
-    }
-  });
-  const discard = $('#btn-discard');
-  if (discard) discard.addEventListener('click', () => confirmSheet(
-    'Discard this draft?',
-    f.draftInfo.published ? 'Your unpublished changes are thrown away. The published version stays as it is.' : 'This festival was never published, so it’s deleted.',
-    'Discard',
-    async () => {
-      clearTimeout(saveTimer);
-      saveTimer = null;
-      if (saving) await saving;
+  if (hide)
+    hide.addEventListener('click', async () => {
+      const to = !f.draftInfo.hidden;
       try {
-        await cloud.deleteDraft(f.officialId);
+        await cloud.setOfficialHidden(f.officialId, to);
+        f.draftInfo.hidden = to;
+        toast(to ? `${f.name} is hidden from the Festival Library.` : `${f.name} is visible again.`);
+        official.refresh();
+        nav.render();
       } catch (e) {
-        return toast(cloud.errorText(e));
+        toast(cloud.errorText(e));
       }
-      store.closeDraft();
-      nav.go('admin');
-      toast('Draft discarded.');
-    },
-    true
-  ));
+    });
+  const discard = $('#btn-discard');
+  if (discard)
+    discard.addEventListener('click', () =>
+      confirmSheet(
+        'Discard this draft?',
+        f.draftInfo.published
+          ? 'Your unpublished changes are thrown away. The published version stays as it is.'
+          : 'This festival was never published, so it’s deleted.',
+        'Discard',
+        async () => {
+          clearTimeout(saveTimer);
+          saveTimer = null;
+          if (saving) await saving;
+          try {
+            await cloud.deleteDraft(f.officialId);
+          } catch (e) {
+            return toast(cloud.errorText(e));
+          }
+          store.closeDraft();
+          nav.go('admin');
+          toast('Draft discarded.');
+        },
+        true,
+      ),
+    );
 }
 
 const bundled = (id) => BUILT_IN_FESTIVALS.find((d) => d.id === id) || {};
@@ -279,7 +343,9 @@ function shelfSheet(f) {
     actions: [
       { label: 'Cancel', kind: 'ghost', onClick: closeSheet },
       {
-        label: 'Save', kind: 'primary', onClick: async (s) => {
+        label: 'Save',
+        kind: 'primary',
+        onClick: async (s) => {
           const shelf = $('#sh-shelf', s).value;
           try {
             await cloud.setOfficialShelf(f.officialId, { shelf, blurb: $('#sh-blurb', s).value.trim() });
@@ -301,19 +367,28 @@ function publishSheet(f) {
   const sheet = openSheet({
     title: `Publish ${f.name}`,
     body: `
-      ${info.published ? `
+      ${
+        info.published
+          ? `
         <div class="field"><span class="label">What kind of update?</span>
           <div class="seg" id="p-kind">
             <button type="button" data-value="version">New Version</button>
             <button type="button" data-value="fix">Quick Fix</button>
           </div>
           <p class="hint" id="p-hint"></p>
-        </div>` : ''}
+        </div>`
+          : ''
+      }
       <label class="field" id="p-msg-wrap"><span class="label">Message <em>(optional)</em></span>
         <textarea id="p-msg" maxlength="200" placeholder="${esc(f.name)} just dropped some new picks!"></textarea></label>`,
     actions: [
       { label: 'Cancel', kind: 'ghost', onClick: closeSheet },
-      { label: 'Publish', kind: 'primary', id: 'p-go', onClick: (s) => publish(f, kind, $('#p-msg', s).value.trim(), s) },
+      {
+        label: 'Publish',
+        kind: 'primary',
+        id: 'p-go',
+        onClick: (s) => publish(f, kind, $('#p-msg', s).value.trim(), s),
+      },
     ],
   });
   const update = () => {
@@ -324,10 +399,13 @@ function publishSheet(f) {
     $('#p-msg-wrap', sheet).hidden = kind === 'fix';
   };
   const seg = $('#p-kind', sheet);
-  if (seg) seg.addEventListener('click', (e) => {
-    const b = e.target.closest('button'); if (!b) return;
-    kind = b.dataset.value; update();
-  });
+  if (seg)
+    seg.addEventListener('click', (e) => {
+      const b = e.target.closest('button');
+      if (!b) return;
+      kind = b.dataset.value;
+      update();
+    });
   update();
 }
 
@@ -339,7 +417,7 @@ async function publish(f, kind, message, sheet) {
   saveTimer = null;
   if (saving) await saving;
   const info = f.draftInfo;
-  let latest = null;
+  let latest;
   try {
     latest = (await cloud.listOfficial()).find((p) => p.id === f.officialId) || null;
     await cloud.publishOfficial(f.officialId, {
@@ -351,8 +429,8 @@ async function publish(f, kind, message, sheet) {
       message: kind === 'fix' && info.published ? '' : message,
       hidden: latest ? latest.hidden : false,
       order: latest ? latest.order : info.order,
-      shelf: latest ? latest.shelf : (bundled(f.officialId).shelf || ''),
-      blurb: latest ? latest.blurb : (bundled(f.officialId).blurb || ''),
+      shelf: latest ? latest.shelf : bundled(f.officialId).shelf || '',
+      blurb: latest ? latest.blurb : bundled(f.officialId).blurb || '',
     });
     await cloud.deleteDraft(f.officialId).catch(() => {});
   } catch (e) {

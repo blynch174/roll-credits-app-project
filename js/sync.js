@@ -10,7 +10,7 @@
 import * as store from './store.js';
 import * as cloud from './cloud.js';
 
-export const APP_VERSION = '3.31';
+export const APP_VERSION = '4.0';
 const META_KEY = 'roll-credits:sync';
 const DEVICE_KEY = 'roll-credits:device';
 const PUSH_DELAY = 1500;
@@ -28,7 +28,14 @@ let hooks = { onRemoteApplied: () => {}, chooseSide: (remote, done) => done('com
 const listeners = [];
 
 export function getStatus() {
-  return { status, admin, lastSynced, email: user ? user.email : '', uid: user ? user.uid : '', configured: cloud.configured() };
+  return {
+    status,
+    admin,
+    lastSynced,
+    email: user ? user.email : '',
+    uid: user ? user.uid : '',
+    configured: cloud.configured(),
+  };
 }
 export function onStatus(cb) {
   listeners.push(cb);
@@ -49,12 +56,19 @@ function readMeta() {
   }
 }
 function writeMeta(m) {
-  try { localStorage.setItem(META_KEY, JSON.stringify(m)); } catch (e) { /* storage full or blocked */ }
+  try {
+    localStorage.setItem(META_KEY, JSON.stringify(m));
+  } catch (e) {
+    /* storage full or blocked */
+  }
 }
 function deviceId() {
   try {
     let id = localStorage.getItem(DEVICE_KEY);
-    if (!id) { id = Math.random().toString(36).slice(2, 10); localStorage.setItem(DEVICE_KEY, id); }
+    if (!id) {
+      id = Math.random().toString(36).slice(2, 10);
+      localStorage.setItem(DEVICE_KEY, id);
+    }
     return id;
   } catch (e) {
     return 'unknown';
@@ -73,7 +87,7 @@ export function start(h = {}) {
   });
   window.addEventListener('online', () => {
     if (!user) return connect();
-    if (status === 'offline' || status === 'error') (ready ? syncNow() : checkAccess());
+    if (status === 'offline' || status === 'error') ready ? syncNow() : checkAccess();
   });
   connect();
 }
@@ -94,7 +108,7 @@ function handleUser(u) {
 }
 
 // Is this account an admin? Then line up this device with the account.
-export async function checkAccess() {
+async function checkAccess() {
   if (!user) return;
   set('loading');
   try {
@@ -147,7 +161,11 @@ async function reconcile() {
 }
 
 const parse = (remote) => {
-  try { return JSON.parse(remote.state); } catch (e) { return null; }
+  try {
+    return JSON.parse(remote.state);
+  } catch (e) {
+    return null;
+  }
 };
 
 // The account's data replaces this device's. Only used when this device has no unsent changes
@@ -159,13 +177,35 @@ function notePresence() {
   try {
     const last = JSON.parse(localStorage.getItem(PRESENCE_KEY) || '{}');
     if (last.uid === user.uid && Date.now() - last.at < 6 * 3600 * 1000) return;
-  } catch (e) { /* ignore */ }
+  } catch (e) {
+    /* ignore */
+  }
   const ua = navigator.userAgent || '';
-  const platform = /iPhone|iPad|iPod/.test(ua) ? 'iPhone/iPad' : /Android/.test(ua) ? 'Android' : /Mac/.test(ua) ? 'Mac' : /Windows/.test(ua) ? 'Windows' : 'Other';
+  const platform = /iPhone|iPad|iPod/.test(ua)
+    ? 'iPhone/iPad'
+    : /Android/.test(ua)
+      ? 'Android'
+      : /Mac/.test(ua)
+        ? 'Mac'
+        : /Windows/.test(ua)
+          ? 'Windows'
+          : 'Other';
   const st = store.getState();
   const uid = user.uid;
-  cloud.touchPresence(user, { appVersion: APP_VERSION, platform, watched: st.history.length, festivals: st.festivals.length })
-    .then(() => { try { localStorage.setItem(PRESENCE_KEY, JSON.stringify({ uid, at: Date.now() })); } catch (e) { /* full */ } })
+  cloud
+    .touchPresence(user, {
+      appVersion: APP_VERSION,
+      platform,
+      watched: st.history.length,
+      festivals: st.festivals.length,
+    })
+    .then(() => {
+      try {
+        localStorage.setItem(PRESENCE_KEY, JSON.stringify({ uid, at: Date.now() }));
+      } catch (e) {
+        /* full */
+      }
+    })
     .catch(() => {});
 }
 
@@ -188,7 +228,11 @@ function combine(remote, remoteWinsTies = true) {
   const r = store.mergeIn(d, { remoteWinsTies });
   if (!r) return set('error');
   if (r.changed && before) {
-    try { localStorage.setItem('roll-credits:before-sync', JSON.stringify({ at: Date.now(), state: JSON.parse(before) })); } catch (e) { /* best-effort */ }
+    try {
+      localStorage.setItem('roll-credits:before-sync', JSON.stringify({ at: Date.now(), state: JSON.parse(before) }));
+    } catch (e) {
+      /* best-effort */
+    }
   }
   writeMeta({ uid: user.uid, syncedAt: remote.clientUpdatedAt, dirty: r.differs, localAt: Date.now() });
   if (r.changed) hooks.onRemoteApplied();
@@ -239,13 +283,14 @@ function push(knownRemote = null, force = false) {
 function write(uid) {
   const seq = changeSeq;
   const now = Date.now();
-  return cloud.putUserData(uid, {
-    state: JSON.stringify(store.getState()),
-    clientUpdatedAt: now,
-    email: user.email,
-    device: deviceId(),
-    appVersion: APP_VERSION,
-  })
+  return cloud
+    .putUserData(uid, {
+      state: JSON.stringify(store.getState()),
+      clientUpdatedAt: now,
+      email: user.email,
+      device: deviceId(),
+      appVersion: APP_VERSION,
+    })
     .then(() => {
       const m = readMeta();
       m.uid = uid;

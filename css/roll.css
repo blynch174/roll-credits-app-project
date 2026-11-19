@@ -1,0 +1,831 @@
+/* Roll and Popcorn Pick
+   The home screen roll card and dice, plus Popcorn Pick and its ticket.
+   Sections: Roll card, Dice, Category key, Physical dice, Result, Open slots reminder, Popcorn Pick, Ticket */
+
+/* ---------- Roll card ---------- */
+.roll-card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+#roll-area {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.roll-hint {
+  margin: 0;
+  color: var(--muted);
+  text-align: center;
+}
+.roll-q {
+  margin: 2px 0 0;
+  text-align: center;
+  font-weight: 650;
+}
+.wild-title {
+  margin: 0;
+  text-align: center;
+  font-family: 'Avenir Next Condensed', 'Arial Narrow', system-ui, sans-serif;
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.roll-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+#recent {
+  margin-top: 4px;
+}
+
+/* ---------- Dice ---------- */
+
+.die {
+  --die: var(--accent);
+  position: relative;
+  width: 104px;
+  height: 104px;
+  display: grid;
+  place-items: center;
+}
+.die svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.die svg > * {
+  fill: var(--die);
+  stroke: color-mix(in srgb, var(--die) 70%, #000);
+  stroke-width: 3;
+  stroke-linejoin: round;
+  transition: fill 0.3s;
+}
+.die-num {
+  position: relative;
+  font-size: 40px;
+  font-weight: 800;
+  color: var(--die-ink, #fff);
+  font-variant-numeric: tabular-nums;
+}
+.d12 .die-num {
+  top: 6px;
+}
+.d4 .die-num {
+  top: 16px;
+  font-size: 32px;
+}
+.d8 .die-num {
+  font-size: 34px;
+}
+.d20 .die-num {
+  font-size: 36px;
+}
+.die-label {
+  position: absolute;
+  bottom: -20px;
+  left: -40px;
+  right: -40px;
+  text-align: center;
+  white-space: nowrap;
+  font-size: var(--size-tiny);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.dice-row {
+  display: flex;
+  justify-content: center;
+  gap: 28px;
+  padding: 6px 0 2px;
+  margin-bottom: 18px;
+}
+.die.rolling > svg,
+.die.rolling > .die-num {
+  animation: tumble 0.32s linear infinite;
+}
+.die.d12.rolling > svg,
+.die.d12.rolling > .die-num {
+  animation-duration: 0.38s;
+  animation-direction: reverse;
+}
+.die.landed > svg,
+.die.landed > .die-num {
+  animation: land 0.38s cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+@keyframes tumble {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  25% {
+    transform: translate(-6px, -8px) rotate(90deg);
+  }
+  50% {
+    transform: translate(5px, -2px) rotate(180deg);
+  }
+  75% {
+    transform: translate(-3px, -6px) rotate(270deg);
+  }
+  100% {
+    transform: translate(0, 0) rotate(360deg);
+  }
+}
+@keyframes land {
+  0% {
+    transform: scale(0.82) rotate(-8deg);
+  }
+  100% {
+    transform: scale(1) rotate(0);
+  }
+}
+.coin-pick .btn {
+  min-height: 56px;
+}
+/* Coin flips instead of tumbling */
+.die.d2.rolling > svg,
+.die.d2.rolling > .die-num {
+  animation: coinflip 0.3s linear infinite;
+}
+@keyframes coinflip {
+  0% {
+    transform: translateY(0) scaleX(1);
+  }
+  25% {
+    transform: translateY(-10px) scaleX(0.15);
+  }
+  50% {
+    transform: translateY(-14px) scaleX(-1);
+  }
+  75% {
+    transform: translateY(-10px) scaleX(-0.15);
+  }
+  100% {
+    transform: translateY(0) scaleX(1);
+  }
+}
+/* Die-size chips */
+.die-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.die-chip {
+  min-width: 56px;
+  min-height: 40px;
+  padding: 6px 12px;
+  border-radius: var(--r-sm);
+  border: var(--edge);
+  background: var(--surface-2);
+  font-weight: 700;
+  font-size: var(--size-ui);
+}
+.die-chip.on {
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-color: var(--accent);
+}
+/* ================= v3.1: 3D dice + coin ================= */
+/* Full-screen layer the 3D dice are thrown onto. Taps pass through it. */
+.dice-stage {
+  position: fixed;
+  inset: 0;
+  z-index: 15;
+  pointer-events: none;
+  transition: opacity 0.35s;
+}
+.dice-stage canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.dice-stage.fade {
+  opacity: 0;
+}
+/* CSS 3D coin */
+.die.coin {
+  perspective: 600px;
+}
+.coin-3d {
+  position: absolute;
+  inset: 6px;
+  transform-style: preserve-3d;
+  transform: rotateX(0deg);
+}
+.die.coin.tails .coin-3d {
+  transform: rotateX(180deg);
+}
+.coin-face,
+.coin-edge {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+}
+.coin-face {
+  display: grid;
+  place-items: center;
+  font-size: 40px;
+  font-weight: 800;
+  color: var(--die-ink, #fff);
+  background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.35), transparent 55%), var(--die);
+  box-shadow:
+    inset 0 0 0 5px color-mix(in srgb, var(--die) 70%, #000),
+    inset 0 0 0 8px color-mix(in srgb, var(--die) 85%, #fff);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.coin-face.heads {
+  transform: translateZ(3.5px);
+}
+.coin-face.tails {
+  transform: rotateX(180deg) translateZ(3.5px);
+}
+.coin-edge {
+  background: color-mix(in srgb, var(--die) 60%, #000);
+  transform: translateZ(var(--z));
+}
+.die.coin:not(.has-value) .coin-face {
+  color: color-mix(in srgb, var(--die-ink, #fff) 80%, transparent);
+}
+
+/* ---------- Category key ---------- */
+.cat-key {
+  list-style: none;
+  margin: 2px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+.cat-key li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: var(--size-ui);
+  color: var(--muted);
+}
+.cat-key em {
+  font-style: normal;
+  opacity: 0.8;
+}
+.cat-key .k {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  display: grid;
+  place-items: center;
+  background: var(--cat);
+  color: #fff;
+  font-size: var(--size-caption);
+  font-weight: 800;
+}
+/* Category key */
+.cat-key .kn {
+  flex: 1;
+  min-width: 0;
+}
+.cat-key .kd {
+  flex: none;
+  font-size: var(--size-caption);
+  font-weight: 700;
+  color: var(--muted);
+  opacity: 0.8;
+}
+
+/* ---------- Physical dice ---------- */
+.phys-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.phys-inputs.one {
+  grid-template-columns: 1fr;
+}
+.phys-inputs label span,
+.field .label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: var(--size-caption);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.phys-inputs input {
+  text-align: center;
+  font-size: 28px;
+  font-weight: 800;
+  min-height: 64px;
+}
+.phys-echo {
+  margin: 0;
+  text-align: center;
+  color: var(--muted);
+}
+
+/* ---------- Result ---------- */
+.pick-grid {
+  display: grid;
+  gap: 8px;
+}
+.pick {
+  min-height: 50px;
+  padding: 10px 14px;
+  border-radius: var(--r-md);
+  border: var(--edge);
+  border-left: 6px solid var(--cat);
+  background: var(--surface-2);
+  text-align: left;
+  font-weight: 650;
+}
+.pick-card {
+  padding: 18px;
+  border-radius: var(--r-lg);
+  background: var(--surface-2);
+  border: var(--edge);
+  border-top: 5px solid var(--cat);
+  text-align: center;
+  animation: rise 0.3s ease-out;
+}
+.pick-cat {
+  margin: 0;
+  font-size: var(--size-caption);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text);
+  opacity: 0.75;
+}
+.pick-title {
+  margin: 6px 0 0;
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1.15;
+}
+.pick-title .year,
+.wi-title .year,
+.slot-title .year {
+  font-weight: 500;
+  color: var(--muted);
+  font-size: 0.7em;
+}
+.pick-note {
+  margin: 10px 0 0;
+  font-size: var(--size-ui);
+  color: var(--muted);
+}
+.pick-flag {
+  margin: 8px 0 0;
+  font-weight: 650;
+  color: var(--muted);
+}
+.pick-card.seen .pick-title {
+  text-decoration: line-through;
+  opacity: 0.7;
+}
+.pick-card.empty {
+  border-style: dashed;
+  border-top-style: solid;
+}
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+/* Sequel offer */
+.pick-was {
+  margin: 6px 0 0;
+  font-size: var(--size-ui);
+  color: var(--muted);
+}
+.pick-was s {
+  opacity: 0.8;
+}
+.pick-was .year {
+  font-size: 1em;
+}
+.pick-card.has-poster {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  text-align: left;
+}
+.pick-poster {
+  width: 92px;
+  aspect-ratio: 2 / 3;
+  flex: none;
+  border-radius: var(--r-sm);
+  object-fit: cover;
+  background: var(--surface);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+}
+.pick-body {
+  flex: 1;
+  min-width: 0;
+}
+.pick-card.has-poster .pick-title {
+  font-size: 23px;
+}
+.pick-meta {
+  margin: 6px 0 0;
+  font-size: var(--size-ui);
+  color: var(--muted);
+}
+.pick-info {
+  margin-top: 8px;
+  padding: 4px 0;
+  font-size: var(--size-ui);
+}
+.pick-scare {
+  justify-content: center;
+}
+.pick-card.has-poster .pick-scare {
+  justify-content: flex-start;
+}
+.pick-card:not(.has-poster) .watch.compact {
+  align-items: center;
+}
+
+/* ---------- Open slots reminder ---------- */
+#open-slots .reminder {
+  margin-top: 14px;
+  padding: 14px;
+  border-color: color-mix(in srgb, var(--accent) 50%, var(--line));
+}
+.reminder-title {
+  margin: 0 2px 8px;
+  font-weight: 750;
+  color: var(--accent);
+}
+.reminder ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+.reminder li button {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 0;
+  border-left: 5px solid var(--cat);
+  border-radius: var(--r-sm);
+  background: var(--surface-2);
+  text-align: left;
+  font-weight: 600;
+}
+.reminder .n {
+  color: var(--muted);
+  font-weight: 500;
+  font-size: var(--size-ui);
+}
+
+/* ---------- Popcorn Pick ---------- */
+.pp-moods {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  margin: 0 -18px;
+  padding: 2px 18px 4px;
+  scrollbar-width: none;
+}
+.pp-moods::-webkit-scrollbar {
+  display: none;
+}
+
+.pp-chip {
+  flex: none;
+  min-height: 34px;
+  padding: 4px 12px;
+  border-radius: var(--r-pill);
+  border: var(--edge);
+  background: var(--surface-2);
+  font-size: var(--size-ui);
+  font-weight: 600;
+}
+.pp-chip.on {
+  background: var(--accent-2);
+  border-color: var(--accent-2);
+  color: var(--accent-2-ink);
+}
+.pp-stage {
+  position: relative;
+  height: 270px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.pp-bucket.disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.pp-bucket .b-top circle {
+  fill: var(--pop-kernel);
+  stroke: var(--pop-kernel-edge);
+  stroke-width: 1.5;
+}
+.pp-bucket .b-body {
+  fill: var(--bucket-body);
+}
+
+.pp-bucket .b-rim {
+  fill: var(--bucket-rim);
+}
+.pp-tap {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: 0;
+  text-align: center;
+  font-size: var(--size-small);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.pp-kernel {
+  position: absolute;
+  left: 50%;
+  bottom: 140px;
+  width: 30px;
+  height: 27px;
+  pointer-events: none;
+  will-change: transform;
+}
+.pp-kernel svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.pp-kernel .k-puff circle {
+  fill: var(--pop-kernel);
+  stroke: var(--pop-kernel-edge);
+  stroke-width: 1.5;
+}
+.pp-kernel .k-hull {
+  fill: var(--pop-hull);
+}
+.pp-kernel.gold {
+  z-index: 2;
+}
+.pp-kernel.plain {
+  opacity: 0;
+}
+/* hidden until its own flight starts (they launch one after another) */
+.pp-kernel.gold .k-puff circle {
+  fill: var(--pop-gold);
+  stroke: var(--pop-gold-edge);
+}
+.pp-kernel.gold svg {
+  filter: drop-shadow(0 0 10px rgba(246, 207, 90, 0.8));
+}
+.pp-crumb {
+  position: absolute;
+  left: 50%;
+  bottom: 140px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--pop-gold);
+  pointer-events: none;
+}
+
+#screen-popcorn .pp-moods {
+  margin: 0 -16px;
+  padding: 2px 16px 4px;
+}
+
+/* The stage grows with the screen so the bucket sits low and centered in the open space,
+   with room above for the popping kernels and below for the buttons after a pick. */
+#screen-popcorn .pp-stage {
+  height: clamp(300px, calc(100dvh - 430px), 420px);
+}
+#screen-popcorn .pp-bucket {
+  margin-bottom: 34px;
+}
+/* Bucket: a dark cartoon outline so it reads on light themes too, with a soft shadow under it. */
+.pp-bucket .b-top circle,
+.pp-bucket .b-body,
+.pp-bucket .b-stripe,
+.pp-bucket .b-rim {
+  stroke: var(--bucket-outline);
+  stroke-width: 3;
+  stroke-linejoin: round;
+  paint-order: stroke;
+}
+.pp-bucket .b-stripe {
+  fill: var(--bucket-stripe);
+  stroke-width: 0;
+}
+.pp-bucket {
+  width: 132px;
+  height: 132px;
+  margin-bottom: 26px;
+  transform-origin: 50% 100%;
+  cursor: pointer;
+  position: relative;
+  z-index: 1;
+}
+.pp-bucket svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  filter: drop-shadow(0 8px 10px rgba(0, 0, 0, 0.35));
+}
+/* After a pick: the ticket replaces the stage, buttons right under it. */
+#screen-popcorn .pp-stage.has-ticket {
+  height: auto;
+  display: block;
+  margin-top: 4px;
+}
+.pp-stage.has-ticket .ticket-wrap {
+  position: relative;
+  left: auto;
+  top: auto;
+  translate: none;
+  margin: 0 auto 14px;
+}
+.pp-actions {
+  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.pp-actions .btn {
+  min-height: 52px;
+}
+.pp-watch {
+  background: var(--watch);
+  border-color: var(--watch);
+  color: var(--watch-ink);
+}
+.btn-watch,
+.pp-watch {
+  background: var(--watch);
+  border-color: var(--watch);
+  color: var(--watch-ink);
+}
+.pp-actions .pp-save {
+  grid-column: 1 / -1;
+}
+.pp-actions .pp-save:disabled {
+  opacity: 0.6;
+}
+.pp-services {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+.pp-svc.on {
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
+/* ---------- Ticket ---------- */
+/* Movie ticket */
+
+.ticket::before {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  border: 1.5px dashed color-mix(in srgb, var(--ticket-ink) 35%, transparent);
+  border-radius: var(--r-sm);
+  pointer-events: none;
+}
+.t-title {
+  margin: 8px 0 2px;
+  font-size: 25px;
+  font-weight: 850;
+  line-height: 1.15;
+}
+.t-meta {
+  margin: 0;
+  font-weight: 650;
+  opacity: 0.8;
+}
+.t-dir {
+  margin: 6px 0 0;
+  font-size: var(--size-small);
+  opacity: 0.75;
+}
+.t-moods {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 5px;
+  margin: 10px 0 0;
+}
+.t-moods span {
+  padding: 2px 9px;
+  border-radius: var(--r-pill);
+  background: rgba(42, 29, 5, 0.12);
+  font-size: var(--size-caption);
+  font-weight: 700;
+}
+.t-poster {
+  display: block;
+  width: 74px;
+  aspect-ratio: 2 / 3;
+  margin: 6px auto 4px;
+  border-radius: 8px;
+  object-fit: cover;
+  box-shadow: 0 3px 10px color-mix(in srgb, var(--ticket-ink) 35%, transparent);
+}
+.ticket.has-poster .t-title {
+  margin-top: 4px;
+  font-size: var(--size-title);
+}
+.t-overview {
+  display: -webkit-box;
+  margin: 8px 0 0;
+  overflow: hidden;
+  font-size: 12.5px;
+  line-height: 1.35;
+  opacity: 0.8;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+.ticket .movie-links {
+  justify-content: center;
+  margin-top: 10px;
+}
+.ticket .mlink {
+  position: relative;
+  z-index: 1;
+  border-color: color-mix(in srgb, var(--ticket-ink) 35%, transparent);
+  color: var(--ticket-ink);
+}
+.ticket-wrap {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(100%, 340px);
+  translate: -50% -50%;
+  filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.3));
+}
+/* Real notches: the mask cuts two half-circles out of the edges, so whatever is behind shows through. */
+.ticket {
+  padding: 18px 22px;
+  border-radius: var(--r-lg);
+  color: var(--ticket-ink);
+  text-align: center;
+  position: relative;
+  left: auto;
+  top: auto;
+  width: 100%;
+  translate: none;
+  background: linear-gradient(160deg, var(--ticket-paper), var(--ticket-paper-2));
+  box-shadow: none;
+  -webkit-mask:
+    radial-gradient(circle 13px at 0 50%, transparent 97%, #000) left / 51% 100% no-repeat,
+    radial-gradient(circle 13px at 100% 50%, transparent 97%, #000) right / 51% 100% no-repeat;
+  mask:
+    radial-gradient(circle 13px at 0 50%, transparent 97%, #000) left / 51% 100% no-repeat,
+    radial-gradient(circle 13px at 100% 50%, transparent 97%, #000) right / 51% 100% no-repeat;
+}
+.t-scare .sk-fill {
+  color: var(--ticket-ink);
+}
+.t-scare {
+  justify-content: center;
+  margin-top: 8px;
+}
+.t-scare .sk,
+.t-scare .sk.on {
+  color: var(--ticket-ink);
+}
+.t-scare .sk svg .h {
+  fill: var(--ticket-skull-hole);
+}
+.t-scare .sk-word {
+  color: var(--ticket-ink);
+  opacity: 0.8;
+}
+.ticket .watch.compact {
+  align-items: center;
+}
+.ticket .w-line,
+.ticket .w-none,
+.ticket .w-more {
+  color: var(--ticket-ink);
+  opacity: 0.8;
+}
+.ticket .w-logo.mine {
+  outline-color: var(--ticket-ink);
+}

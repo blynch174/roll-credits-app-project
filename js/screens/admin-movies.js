@@ -10,20 +10,27 @@ import { scarePickerHTML, wireScarePicker, editMovieSheet } from './movie-edit.j
 import { $, $$, esc, toast } from '../ui.js';
 
 const POSTER = 'https://image.tmdb.org/t/p/w92';
-const TITLES = { movies: 'Movie Manager', 'movies:pending': 'Pending', 'movies:approved': 'Approved', 'movies:rejected': 'Rejected', 'movies:add': 'Add New', 'movies:edit': 'Edit Movies' };
+const TITLES = {
+  movies: 'Movie Manager',
+  'movies:pending': 'Pending',
+  'movies:approved': 'Approved',
+  'movies:rejected': 'Rejected',
+  'movies:add': 'Add New',
+  'movies:edit': 'Edit Movies',
+};
 
 let requests = null; // null = not loaded
-let moodPick = new Map(); // movie id -> Set of moods chosen on screen
-let suggested = new Map(); // movie id -> moods suggested from TMDB
-let scarePick = new Map(); // movie id -> scare factor chosen, 1–10
+const moodPick = new Map(); // movie id -> Set of moods chosen on screen
+const suggested = new Map(); // movie id -> moods suggested from TMDB
+const scarePick = new Map(); // movie id -> scare factor chosen, 1–10
 let addState = { q: '', results: null, picked: null, busy: false };
 let go = () => {};
 
 export const moviesTitle = (v) => TITLES[v] || 'Movie Manager';
 export const moviesParent = () => 'movies';
 
-const moodList = () => catalog.moodCounts().filter(([, n]) => n >= 10).map(([t]) => t).sort();
-const poster = (p) => (p ? `<img class="af-poster" src="${POSTER}${esc(p)}" alt="" loading="lazy">` : '<span class="af-poster"></span>');
+const poster = (p) =>
+  p ? `<img class="af-poster" src="${POSTER}${esc(p)}" alt="" loading="lazy">` : '<span class="af-poster"></span>';
 
 async function load(force = false) {
   if (requests && !force) return requests;
@@ -73,7 +80,13 @@ function renderMenu(root) {
 // ---------- Pending / Approved / Rejected ----------
 
 function moodChips(id, chosen) {
-  return `<div class="req-moods" data-for="${esc(id)}">${moodList().map((m) => `<button type="button" data-mood="${esc(m)}" class="${chosen.has(m) ? 'on' : ''}${(suggested.get(id) || []).includes(m) ? ' sug' : ''}">${esc(m)}</button>`).join('')}</div>`;
+  return `<div class="req-moods" data-for="${esc(id)}">${catalog
+    .moodList()
+    .map(
+      (m) =>
+        `<button type="button" data-mood="${esc(m)}" class="${chosen.has(m) ? 'on' : ''}${(suggested.get(id) || []).includes(m) ? ' sug' : ''}">${esc(m)}</button>`,
+    )
+    .join('')}</div>`;
 }
 
 // Scare factor (1–10, or not set) chosen on screen for each request: movie id -> value.
@@ -92,36 +105,48 @@ function renderList(root, status) {
     root.innerHTML = `<p class="hint">${status === 'pending' ? 'No requests right now.' : 'Nothing here.'}</p>`;
     return;
   }
-  root.innerHTML = `<div class="req-list">${list.map((r) => {
-    const chosen = moodPick.get(r.id) || new Set(r.moods || []);
-    moodPick.set(r.id, chosen);
-    if (!scarePick.has(r.id)) scarePick.set(r.id, Number.isInteger(r.scariness) ? r.scariness : null);
-    const inCat = !!catalog.byTmdbId(r.tmdbId);
-    const sub = status === 'pending'
-      ? `${r.count || 1} request${(r.count || 1) === 1 ? '' : 's'}`
-      : status === 'approved'
-        ? `${inCat ? 'In the catalog' : 'Joins the catalog on the next update'}${r.addedByAdmin ? ' · Added by an admin' : ''}${(r.moods || []).length ? ` · ${r.moods.join(', ')}` : ''}${Number.isInteger(r.scariness) ? ` · Scare ${r.scariness}/10` : ''}`
-        : `${r.count || 1} request${(r.count || 1) === 1 ? '' : 's'}`;
-    const actions = status === 'pending'
-      ? `<button type="button" class="btn primary small" data-act="approved">Approve</button><button type="button" class="btn ghost small" data-act="rejected">Reject</button>`
-      : status === 'approved'
-        ? (inCat ? '' : '<button type="button" class="btn ghost small" data-act="pending">Undo Approval</button>')
-        : '<button type="button" class="btn primary small" data-act="approved">Approve</button><button type="button" class="btn ghost small" data-act="pending">Back to Pending</button>';
-    return `
+  root.innerHTML = `<div class="req-list">${list
+    .map((r) => {
+      const chosen = moodPick.get(r.id) || new Set(r.moods || []);
+      moodPick.set(r.id, chosen);
+      if (!scarePick.has(r.id)) scarePick.set(r.id, Number.isInteger(r.scariness) ? r.scariness : null);
+      const inCat = !!catalog.byTmdbId(r.tmdbId);
+      const sub =
+        status === 'pending'
+          ? `${r.count || 1} request${(r.count || 1) === 1 ? '' : 's'}`
+          : status === 'approved'
+            ? `${inCat ? 'In the catalog' : 'Joins the catalog on the next update'}${r.addedByAdmin ? ' · Added by an admin' : ''}${(r.moods || []).length ? ` · ${r.moods.join(', ')}` : ''}${Number.isInteger(r.scariness) ? ` · Scare ${r.scariness}/10` : ''}`
+            : `${r.count || 1} request${(r.count || 1) === 1 ? '' : 's'}`;
+      const actions =
+        status === 'pending'
+          ? `<button type="button" class="btn primary small" data-act="approved">Approve</button><button type="button" class="btn ghost small" data-act="rejected">Reject</button>`
+          : status === 'approved'
+            ? inCat
+              ? ''
+              : '<button type="button" class="btn ghost small" data-act="pending">Undo Approval</button>'
+            : '<button type="button" class="btn primary small" data-act="approved">Approve</button><button type="button" class="btn ghost small" data-act="pending">Back to Pending</button>';
+      return `
     <div class="card req-row" data-id="${esc(r.id)}">
       ${poster(r.posterPath)}
       <div class="req-main">
         <span class="req-title">${esc(r.title)}${r.year ? ` <span class="year">(${r.year})</span>` : ''}</span>
         <span class="req-sub">${esc(sub)}</span>
-        ${status !== 'approved' ? `<button type="button" class="req-mood-toggle" data-toggle="1">${chosen.size ? `Moods: ${esc([...chosen].join(', '))}` : '+ Moods'}</button>
+        ${
+          status !== 'approved'
+            ? `<button type="button" class="req-mood-toggle" data-toggle="1">${chosen.size ? `Moods: ${esc([...chosen].join(', '))}` : '+ Moods'}</button>
         ${moodChips(r.id, chosen).replace('class="req-moods"', 'class="req-moods" hidden')}
-        ${scarePicker(r.id)}` : ''}
+        ${scarePicker(r.id)}`
+            : ''
+        }
         ${actions ? `<div class="req-actions">${actions}</div>` : ''}
       </div>
     </div>`;
-  }).join('')}</div>`;
+    })
+    .join('')}</div>`;
   wireRows(root, status);
-  root.querySelectorAll('.scare-pick').forEach((box) => wireScarePicker(box, scareOf(box.dataset.for), (v) => scareSet(box.dataset.for, v)));
+  root
+    .querySelectorAll('.scare-pick')
+    .forEach((box) => wireScarePicker(box, scareOf(box.dataset.for), (v) => scareSet(box.dataset.for, v)));
 }
 
 function wireRows(root, status) {
@@ -151,7 +176,13 @@ function wireRows(root, status) {
       return toast(cloud.errorText(err));
     }
     Object.assign(r, { status: to, moods, scariness, reviewedAt: Date.now() });
-    toast(to === 'approved' ? `${r.title} approved.` : to === 'rejected' ? `${r.title} rejected.` : `${r.title} is back in Pending.`);
+    toast(
+      to === 'approved'
+        ? `${r.title} approved.`
+        : to === 'rejected'
+          ? `${r.title} rejected.`
+          : `${r.title} is back in Pending.`,
+    );
     renderList(root, status);
   };
 }
@@ -159,7 +190,8 @@ function wireRows(root, status) {
 function toggleMood(row, id, btn) {
   const set = moodPick.get(id) || new Set();
   const m = btn.dataset.mood;
-  if (set.has(m)) set.delete(m); else set.add(m);
+  if (set.has(m)) set.delete(m);
+  else set.add(m);
   moodPick.set(id, set);
   btn.classList.toggle('on', set.has(m));
   const t = row.querySelector('[data-toggle]');
@@ -175,7 +207,7 @@ async function suggestFor(row, id) {
   } catch (e) {
     return;
   }
-  const sug = suggestMoods(m, moodList());
+  const sug = suggestMoods(m, catalog.moodList());
   suggested.set(id, sug);
   const set = moodPick.get(id) || new Set();
   if (!set.size) sug.forEach((x) => set.add(x));
@@ -201,19 +233,29 @@ async function renderEdit(root) {
   const box = $('#edit-results', root);
   const show = () => {
     const hits = catalog.search(editQ, null, 25).filter((m) => catalog.get(m.id) === m);
-    box.innerHTML = editQ.trim().length < 2
-      ? '<p class="hint">Type a title to find a movie.</p>'
-      : hits.length ? `<div class="req-list">${hits.map((m) => `
+    box.innerHTML =
+      editQ.trim().length < 2
+        ? '<p class="hint">Type a title to find a movie.</p>'
+        : hits.length
+          ? `<div class="req-list">${hits
+              .map(
+                (m) => `
         <button type="button" class="card req-row edit-row" data-id="${esc(m.id)}">
           ${poster(m.posterPath)}
           <span class="req-main">
             <span class="req-title">${esc(m.title)} <span class="year">(${m.releaseYear})</span></span>
             <span class="req-sub">Scare ${Number.isInteger(m.scariness) ? `${m.scariness}/10` : 'not set'}${(m.moodTone || []).length ? ` · ${esc(m.moodTone.join(', '))}` : ''}</span>
           </span>
-        </button>`).join('')}</div>` : '<p class="hint">No catalog movies match.</p>';
+        </button>`,
+              )
+              .join('')}</div>`
+          : '<p class="hint">No catalog movies match.</p>';
   };
   show();
-  $('#edit-q', root).addEventListener('input', (e) => { editQ = e.target.value; show(); });
+  $('#edit-q', root).addEventListener('input', (e) => {
+    editQ = e.target.value;
+    show();
+  });
   box.addEventListener('click', (e) => {
     const b = e.target.closest('.edit-row');
     if (b) editMovieSheet(catalog.get(b.dataset.id), show);
@@ -253,14 +295,19 @@ function renderAdd(root) {
         <button type="button" class="btn primary big" id="add-go">Add to Catalog</button>
       </div>`;
     $('.req-moods', root).addEventListener('click', (e) => {
-      const b = e.target.closest('[data-mood]'); if (!b) return;
+      const b = e.target.closest('[data-mood]');
+      if (!b) return;
       const set = moodPick.get(String(p.tmdbId)) || new Set();
-      if (set.has(b.dataset.mood)) set.delete(b.dataset.mood); else set.add(b.dataset.mood);
+      if (set.has(b.dataset.mood)) set.delete(b.dataset.mood);
+      else set.add(b.dataset.mood);
       moodPick.set(String(p.tmdbId), set);
       b.classList.toggle('on', set.has(b.dataset.mood));
     });
     wireScarePicker($('.scare-pick', root), scareOf(String(p.tmdbId)), (v) => scareSet(String(p.tmdbId), v));
-    $('#add-back', root).addEventListener('click', () => { addState.picked = null; renderAdd(root); });
+    $('#add-back', root).addEventListener('click', () => {
+      addState.picked = null;
+      renderAdd(root);
+    });
     $('#add-go', root).addEventListener('click', async (e) => {
       const btn = e.currentTarget;
       btn.disabled = true;
@@ -293,10 +340,13 @@ function renderAdd(root) {
     addState.q = q;
     $('#add-results', root).innerHTML = '<p class="hint">Searching…</p>';
     try {
-      addState.results = await tmdb.search(q.replace(/\s*\(?\b(18|19|20)\d{2}\)?\s*$/, ''), (q.match(/\b(18|19|20)\d{2}\b/) || [])[0]);
+      addState.results = await tmdb.search(
+        q.replace(/\s*\(?\b(18|19|20)\d{2}\)?\s*$/, ''),
+        (q.match(/\b(18|19|20)\d{2}\b/) || [])[0],
+      );
     } catch (err) {
       addState.results = null;
-      $('#add-results', root).innerHTML = "<p class=\"hint\">Couldn't reach TMDB.</p>";
+      $('#add-results', root).innerHTML = '<p class="hint">Couldn\'t reach TMDB.</p>';
       return;
     }
     $('#add-results', root).innerHTML = resultsHTML();
@@ -317,7 +367,7 @@ function renderAdd(root) {
       return toast("Couldn't reach TMDB.");
     }
     addState.busy = false;
-    const sug = suggestMoods(m, moodList());
+    const sug = suggestMoods(m, catalog.moodList());
     suggested.set(String(id), sug);
     if (!moodPick.has(String(id))) moodPick.set(String(id), new Set(sug));
     addState.picked = m;
@@ -335,12 +385,16 @@ function resultsHTML() {
     const r = (requests || []).find((x) => +x.id === id);
     return r ? { pending: 'Requested', approved: 'Approved', rejected: 'Rejected' }[r.status] || '' : '';
   };
-  return `<div class="af-list add-list">${res.map((r) => `
+  return `<div class="af-list add-list">${res
+    .map(
+      (r) => `
     <button type="button" class="af-item af-hit" data-tmdb="${r.tmdbId}">
       ${poster(r.posterPath)}
       <span class="af-text">
         <span class="af-title">${esc(r.title)}${r.releaseYear ? ` <span class="year">(${r.releaseYear})</span>` : ''}</span>
         <span class="af-sub">${esc(status(r.tmdbId) || r.overview || '')}</span>
       </span>
-    </button>`).join('')}</div>`;
+    </button>`,
+    )
+    .join('')}</div>`;
 }

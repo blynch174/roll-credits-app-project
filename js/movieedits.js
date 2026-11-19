@@ -3,16 +3,13 @@
 
 import * as catalog from './catalog.js';
 import * as cloud from './cloud.js';
+import { readJSON, writeJSON } from './util.js';
 
 const CACHE_KEY = 'roll-credits:movie-edits';
 
 function readCache() {
-  try {
-    const c = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null');
-    return c && typeof c === 'object' ? c : {};
-  } catch (e) {
-    return {};
-  }
+  const c = readJSON(CACHE_KEY, {});
+  return typeof c === 'object' ? c : {};
 }
 
 export async function start() {
@@ -22,7 +19,7 @@ export async function start() {
   try {
     const map = await cloud.listCatalogEdits();
     catalog.applyEdits(map, true);
-    try { localStorage.setItem(CACHE_KEY, JSON.stringify(map)); } catch (e) { /* full */ }
+    writeJSON(CACHE_KEY, map);
   } catch (e) {
     /* offline or rules not published yet: keep the cached edits */
   }
@@ -33,5 +30,5 @@ export function remember(id, edit) {
   const map = readCache();
   map[id] = edit;
   catalog.applyEdits({ [id]: edit });
-  try { localStorage.setItem(CACHE_KEY, JSON.stringify(map)); } catch (e) { /* full */ }
+  writeJSON(CACHE_KEY, map);
 }

@@ -16,7 +16,10 @@ const hits = new Map(); // ip -> { minute, n }. Per Worker instance, so approxim
 
 function allowedOrigin(req, env) {
   const origin = req.headers.get('Origin') || '';
-  const list = String(env.ALLOWED_ORIGINS || '').split(',').map((s) => s.trim()).filter(Boolean);
+  const list = String(env.ALLOWED_ORIGINS || '')
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean);
   return list.includes(origin) ? origin : null;
 }
 
@@ -57,7 +60,8 @@ async function tmdb(path, params, env) {
   else url.searchParams.set('api_key', token);
   const get = () => fetch(url, { headers });
   let res = await get();
-  if (res.status === 429) { // TMDB's rate limit: wait a moment and try once more
+  if (res.status === 429) {
+    // TMDB's rate limit: wait a moment and try once more
     await new Promise((r) => setTimeout(r, 1000));
     res = await get();
   }
@@ -79,7 +83,10 @@ function usRating(releaseDates) {
   for (const r of (releaseDates && releaseDates.results) || []) {
     if (r.iso_3166_1 !== 'US') continue;
     const certs = (r.release_dates || []).filter((d) => d.certification);
-    certs.sort((a, b) => (a.type !== 3) - (b.type !== 3) || String(a.release_date || '').localeCompare(String(b.release_date || '')));
+    certs.sort(
+      (a, b) =>
+        (a.type !== 3) - (b.type !== 3) || String(a.release_date || '').localeCompare(String(b.release_date || '')),
+    );
     if (certs.length) return certs[0].certification;
   }
   return null;
@@ -142,7 +149,9 @@ async function health(env) {
 export default {
   async fetch(req, env, ctx) {
     if (new URL(req.url).pathname === '/health') {
-      return new Response(JSON.stringify(await health(env), null, 2), { headers: { 'Content-Type': 'application/json; charset=utf-8' } });
+      return new Response(JSON.stringify(await health(env), null, 2), {
+        headers: { 'Content-Type': 'application/json; charset=utf-8' },
+      });
     }
     const origin = allowedOrigin(req, env);
     if (req.method === 'OPTIONS') return origin ? reply({}, 204, origin) : reply({ error: 'forbidden' }, 403, null);

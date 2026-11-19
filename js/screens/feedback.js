@@ -10,7 +10,15 @@ let draft = ''; // kept if sending fails, so nothing typed is lost
 
 const platform = () => {
   const ua = navigator.userAgent || '';
-  return /iPhone|iPad|iPod/.test(ua) ? 'iPhone/iPad' : /Android/.test(ua) ? 'Android' : /Mac/.test(ua) ? 'Mac' : /Windows/.test(ua) ? 'Windows' : 'Other';
+  return /iPhone|iPad|iPod/.test(ua)
+    ? 'iPhone/iPad'
+    : /Android/.test(ua)
+      ? 'Android'
+      : /Mac/.test(ua)
+        ? 'Mac'
+        : /Windows/.test(ua)
+          ? 'Windows'
+          : 'Other';
 };
 
 export function feedbackSheet() {
@@ -21,7 +29,14 @@ export function feedbackSheet() {
       body: '<p class="sheet-text">Sign in to send feedback. It keeps out spam, and lets us follow up if we have questions.</p>',
       actions: [
         { label: 'Cancel', kind: 'ghost', onClick: closeSheet },
-        { label: 'Sign In', kind: 'primary', onClick: async () => { const a = await import('./account.js'); a.signInSheet(); } },
+        {
+          label: 'Sign In',
+          kind: 'primary',
+          onClick: async () => {
+            const a = await import('./account.js');
+            a.signInSheet();
+          },
+        },
       ],
     });
   }
@@ -30,9 +45,19 @@ export function feedbackSheet() {
     body: `<label class="field"><span class="label">What should we fix or add?</span>
       <textarea id="fb-text" rows="5" maxlength="2000" placeholder="Something broken, confusing, or missing…"></textarea></label>`,
     actions: [
-      { label: 'Cancel', kind: 'ghost', onClick: () => { draft = $('#fb-text').value; closeSheet(); } },
       {
-        label: 'Send', kind: 'primary', id: 'fb-go', onClick: async (s) => {
+        label: 'Cancel',
+        kind: 'ghost',
+        onClick: () => {
+          draft = $('#fb-text').value;
+          closeSheet();
+        },
+      },
+      {
+        label: 'Send',
+        kind: 'primary',
+        id: 'fb-go',
+        onClick: async (s) => {
           const text = $('#fb-text', s).value.trim();
           if (!text) return $('#fb-text', s).focus();
           const btn = $('#fb-go', s);
@@ -42,8 +67,11 @@ export function feedbackSheet() {
             const fb = await cloud.init();
             if (!fb) throw new Error('offline');
             await cloud.sendFeedback({
-              text: text.slice(0, 2000), appVersion: APP_VERSION.slice(0, 20), platform: platform().slice(0, 20),
-              screen: `${window.innerWidth}×${window.innerHeight}`.slice(0, 20), theme: store.themeId().slice(0, 40),
+              text: text.slice(0, 2000),
+              appVersion: APP_VERSION.slice(0, 20),
+              platform: platform().slice(0, 20),
+              screen: `${window.innerWidth}×${window.innerHeight}`.slice(0, 20),
+              theme: store.themeId().slice(0, 40),
             });
           } catch (e) {
             btn.disabled = false;

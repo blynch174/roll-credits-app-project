@@ -4,6 +4,7 @@
 
 import * as store from './store.js';
 import * as cloud from './cloud.js';
+import { readJSON, writeJSON } from './util.js';
 
 const CACHE_KEY = 'roll-credits:official';
 const REFRESH_EVERY = 10 * 60 * 1000;
@@ -13,16 +14,10 @@ let fetchedAt = 0;
 let hooks = { changed: () => {} };
 
 function readCache() {
-  try {
-    const c = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null');
-    return c && Array.isArray(c.list) ? c.list : [];
-  } catch (e) {
-    return [];
-  }
+  const c = readJSON(CACHE_KEY);
+  return c && Array.isArray(c.list) ? c.list : [];
 }
-function writeCache() {
-  try { localStorage.setItem(CACHE_KEY, JSON.stringify({ list, savedAt: Date.now() })); } catch (e) { /* full */ }
-}
+const writeCache = () => writeJSON(CACHE_KEY, { list, savedAt: Date.now() });
 
 export const published = () => list;
 export const get = (id) => list.find((p) => p.id === id) || null;
@@ -75,10 +70,15 @@ export function diffSummary(f, pub) {
   for (const c of pub.tables.categories) for (const m of c.slots) if (m) theirs.set(key(m), m);
   const added = [...theirs.keys()].filter((k) => !mine.has(k)).map((k) => theirs.get(k));
   const removed = [...mine.keys()].filter((k) => !theirs.has(k)).map((k) => mine.get(k));
-  const names = (arr) => arr.slice(0, 4).map((m) => m.title).join(', ') + (arr.length > 4 ? `, and ${arr.length - 4} more` : '');
+  const names = (arr) =>
+    arr
+      .slice(0, 4)
+      .map((m) => m.title)
+      .join(', ') + (arr.length > 4 ? `, and ${arr.length - 4} more` : '');
   if (pub.name !== f.name) lines.push(`Renamed to ${pub.name}`);
   if (added.length) lines.push(`${added.length} new movie${added.length === 1 ? '' : 's'}: ${names(added)}`);
-  if (removed.length) lines.push(`${removed.length} movie${removed.length === 1 ? '' : 's'} leaving: ${names(removed)}`);
+  if (removed.length)
+    lines.push(`${removed.length} movie${removed.length === 1 ? '' : 's'} leaving: ${names(removed)}`);
   const n = Math.min(f.categories.length, pub.tables.categories.length);
   for (let i = 0; i < n; i++) {
     const a = f.categories[i];

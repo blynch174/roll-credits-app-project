@@ -1,0 +1,8 @@
+# Formatting (npm run format) covers the app's code and styles. These are left as they are:
+vendor/
+data/
+docs/
+node_modules/
+package-lock.json
+*.md
+index.html

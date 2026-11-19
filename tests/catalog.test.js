@@ -27,7 +27,10 @@ test('match finds a movie by title and year, despite spelling differences', () =
 
 test('every catalog movie can be found again by its own title and year', () => {
   const misses = catalog.all().filter((m) => !catalog.match(m.title, m.releaseYear));
-  assert.deepEqual(misses.map((m) => m.id), []);
+  assert.deepEqual(
+    misses.map((m) => m.id),
+    [],
+  );
 });
 
 test('search puts an exact title first', () => {
@@ -49,7 +52,11 @@ test('nextInFranchise skips movies that are not open', () => {
 });
 
 test('suggestMoods weights keywords over the summary and caps the list', () => {
-  const moods = suggestMoods({ keywords: ['haunted house', 'ghost', 'possession'], genres: ['Horror'], overview: 'A family moves in.' });
+  const moods = suggestMoods({
+    keywords: ['haunted house', 'ghost', 'possession'],
+    genres: ['Horror'],
+    overview: 'A family moves in.',
+  });
   assert.ok(moods.includes('Supernatural'));
   assert.ok(moods.length <= 4);
   assert.deepEqual(suggestMoods(null), []);

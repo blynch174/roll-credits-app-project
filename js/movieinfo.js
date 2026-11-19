@@ -9,7 +9,7 @@ import * as streaming from './streaming.js';
 
 const IMG = 'https://image.tmdb.org/t/p/';
 
-export function posterUrl(m, size = 'w342') {
+function posterUrl(m, size = 'w342') {
   return m && m.posterPath ? IMG + size + m.posterPath : null;
 }
 
@@ -19,7 +19,8 @@ export function posterImg(m, cls = 'poster', size = 'w342') {
   return url ? `<img class="${cls}" src="${url}" alt="" loading="lazy" decoding="async" onerror="this.remove()">` : '';
 }
 
-export const tmdbUrl = (m) => (m && m.tmdbId ? `https://www.themoviedb.org/${m.tmdbType === 'tv' ? 'tv' : 'movie'}/${m.tmdbId}` : null);
+const tmdbUrl = (m) =>
+  m && m.tmdbId ? `https://www.themoviedb.org/${m.tmdbType === 'tv' ? 'tv' : 'movie'}/${m.tmdbId}` : null;
 
 export function linksHTML(m) {
   if (!m) return '';
@@ -33,7 +34,9 @@ export function linksHTML(m) {
 }
 
 export function metaLine(m) {
-  return [m.releaseYear, m.runtimeMinutes ? `${m.runtimeMinutes} min` : '', m.contentRating].filter(Boolean).join(' · ');
+  return [m.releaseYear, m.runtimeMinutes ? `${m.runtimeMinutes} min` : '', m.contentRating]
+    .filter(Boolean)
+    .join(' · ');
 }
 
 // Scare factor: the catalog's 1–10 scariness as five skulls and a word. Hidden for movies that aren't scary.
@@ -65,11 +68,24 @@ export function scareHTML(m, cls = '') {
 // Cards drop in a placeholder (watchSlot); fillWatch() fills every one on screen once the data has loaded.
 
 export const watchSlot = (m, compact = false) =>
-  (m && m.id ? `<div class="watch${compact ? ' compact' : ''}" data-watch-id="${esc(m.id)}"></div>` : '');
+  m && m.id ? `<div class="watch${compact ? ' compact' : ''}" data-watch-id="${esc(m.id)}"></div>` : '';
 
-const initials = (name) => esc(name.replace(/[^A-Za-z0-9+ ]/g, '').split(' ').map((w) => w[0]).join('').slice(0, 2) || name.slice(0, 2));
+const initials = (name) =>
+  esc(
+    name
+      .replace(/[^A-Za-z0-9+ ]/g, '')
+      .split(' ')
+      .map((w) => w[0])
+      .join('')
+      .slice(0, 2) || name.slice(0, 2),
+  );
 // A logo that can't load turns into the service's initials.
-const logoImg = (p, chip = false) => (p.logo ? (chip ? `<img src="${p.logo}" alt="" loading="lazy" onerror="this.remove()">` : `<img src="${p.logo}" alt="${initials(p.name)}" loading="lazy" onerror="this.replaceWith(this.alt)">`) : '');
+const logoImg = (p, chip = false) =>
+  p.logo
+    ? chip
+      ? `<img src="${p.logo}" alt="" loading="lazy" onerror="this.remove()">`
+      : `<img src="${p.logo}" alt="${initials(p.name)}" loading="lazy" onerror="this.replaceWith(this.alt)">`
+    : '';
 
 function watchInner(m, compact) {
   const w = streaming.forMovie(m);
@@ -82,15 +98,29 @@ function watchInner(m, compact) {
     if (!list.length) return `<p class="w-none">${none}</p>`;
     const shown = list.slice(0, 4);
     return `<div class="w-logos">${shown.map((p) => `<span class="w-logo${mineIds.has(p.id) ? ' mine' : ''}" title="${esc(p.name)}">${logoImg(p) || initials(p.name)}</span>`).join('')}${list.length > 4 ? `<span class="w-more">+${list.length - 4}</span>` : ''}</div>
-      <p class="w-line">${w.mine.length ? `On your ${esc(w.mine.map((p) => p.name).slice(0, 2).join(' and '))}` : `On ${esc(list[0].name)}${list.length > 1 ? ` and ${list.length - 1} more` : ''}`}</p>`;
+      <p class="w-line">${
+        w.mine.length
+          ? `On your ${esc(
+              w.mine
+                .map((p) => p.name)
+                .slice(0, 2)
+                .join(' and '),
+            )}`
+          : `On ${esc(list[0].name)}${list.length > 1 ? ` and ${list.length - 1} more` : ''}`
+      }</p>`;
   }
-  const chips = list.map((p) => `<a class="w-chip${mineIds.has(p.id) ? ' mine' : ''}" href="${w.link || '#'}" target="_blank" rel="noopener">${logoImg(p, true)}<span>${esc(p.name)}</span>${mineIds.has(p.id) ? '<small>Yours</small>' : freeIds.has(p.id) ? '<small>Free</small>' : ''}</a>`).join('');
+  const chips = list
+    .map(
+      (p) =>
+        `<a class="w-chip${mineIds.has(p.id) ? ' mine' : ''}" href="${w.link || '#'}" target="_blank" rel="noopener">${logoImg(p, true)}<span>${esc(p.name)}</span>${mineIds.has(p.id) ? '<small>Yours</small>' : freeIds.has(p.id) ? '<small>Free</small>' : ''}</a>`,
+    )
+    .join('');
   return `<span class="w-title">Where to Watch</span>
     ${list.length ? `<div class="w-row">${chips}</div>` : `<p class="w-none">${none}</p>`}
     <p class="w-credit">${w.link ? `<a href="${w.link}" target="_blank" rel="noopener">All options ↗</a> · ` : ''}Streaming data from JustWatch</p>`;
 }
 
-export function fillWatch(root = document) {
+function fillWatch(root = document) {
   if (!streaming.isReady()) return;
   root.querySelectorAll('.watch[data-watch-id]:not(.filled)').forEach((el) => {
     const m = catalog.get(el.dataset.watchId);

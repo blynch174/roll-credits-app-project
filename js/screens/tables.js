@@ -3,9 +3,7 @@
 import * as store from '../store.js';
 import { SWATCHES, DIE_OPTIONS, swatchHex, dieName } from '../defaults.js';
 import { randInt, faceLabel } from '../dice.js';
-import {
-  $, $$, esc, toast, openSheet, closeSheet, confirmSheet, movieLabel, dieChips, wireChips,
-} from '../ui.js';
+import { $, $$, esc, toast, openSheet, closeSheet, confirmSheet, movieLabel, dieChips, wireChips } from '../ui.js';
 import { autofindBox, attachAutofind } from '../autofind.js';
 import { linksHTML, catalogMovie } from '../movieinfo.js';
 
@@ -21,14 +19,20 @@ export function renderTables(opts = {}) {
   const chips = $('#chips');
   if (f.mode === 'two') {
     chips.hidden = false;
-    chips.innerHTML = f.categories.map((c, i) => `
+    chips.innerHTML = f.categories
+      .map(
+        (c, i) => `
       <button type="button" role="tab" class="chip ${c.id === cat.id ? 'on' : ''}" data-cat="${c.id}" style="--cat:${swatchHex(c.color)}" aria-selected="${c.id === cat.id}">
         <span class="chip-n">${esc(faceLabel(f.categoryDie, i + 1))}</span>${esc(c.name)}
-      </button>`).join('');
-    $$('.chip', chips).forEach((b) => b.addEventListener('click', () => {
-      currentCat = b.dataset.cat;
-      renderTables();
-    }));
+      </button>`,
+      )
+      .join('');
+    $$('.chip', chips).forEach((b) =>
+      b.addEventListener('click', () => {
+        currentCat = b.dataset.cat;
+        renderTables();
+      }),
+    );
     const active = $('.chip.on', chips);
     if (active) active.scrollIntoView({ block: 'nearest', inline: 'center' });
   } else {
@@ -55,14 +59,15 @@ export function renderTables(opts = {}) {
     toast('Shuffled.');
   });
 
-  $('#slot-list').innerHTML = cat.slots.map((m, i) => {
-    const n = esc(faceLabel(cat.die, i + 1));
-    if (!m) {
-      return `<li><button type="button" class="slot empty" data-i="${i}" style="--cat:${color}">
+  $('#slot-list').innerHTML = cat.slots
+    .map((m, i) => {
+      const n = esc(faceLabel(cat.die, i + 1));
+      if (!m) {
+        return `<li><button type="button" class="slot empty" data-i="${i}" style="--cat:${color}">
         <span class="slot-n">${n}</span><span class="slot-main"><span class="slot-title">Empty slot</span><span class="slot-sub">Tap to add a movie</span></span></button></li>`;
-    }
-    const isSeen = store.isSeen(f, m);
-    return `<li><button type="button" class="slot ${isSeen ? 'seen' : ''}" data-i="${i}" style="--cat:${color}">
+      }
+      const isSeen = store.isSeen(f, m);
+      return `<li><button type="button" class="slot ${isSeen ? 'seen' : ''}" data-i="${i}" style="--cat:${color}">
       <span class="slot-n">${n}</span>
       <span class="slot-main">
         <span class="slot-title">${movieLabel(m)}</span>
@@ -70,9 +75,10 @@ export function renderTables(opts = {}) {
       </span>
       ${isSeen ? '<span class="badge">Seen</span>' : ''}
     </button></li>`;
-  }).join('');
+    })
+    .join('');
   $$('#slot-list .slot').forEach((b) =>
-    b.addEventListener('click', () => editSlotSheet(f.id, cat.id, parseInt(b.dataset.i, 10), () => renderTables()))
+    b.addEventListener('click', () => editSlotSheet(f.id, cat.id, parseInt(b.dataset.i, 10), () => renderTables())),
   );
 }
 
@@ -86,7 +92,11 @@ export function editSlotSheet(fId, catId, index, after) {
     actions.push({
       label: 'Clear Slot',
       kind: 'danger-ghost',
-      onClick: () => { store.clearSlot(fId, catId, index); closeSheet(); after && after(); },
+      onClick: () => {
+        store.clearSlot(fId, catId, index);
+        closeSheet();
+        after && after();
+      },
     });
   }
   actions.push({
@@ -94,7 +104,10 @@ export function editSlotSheet(fId, catId, index, after) {
     kind: 'primary',
     onClick: (sheet) => {
       const title = $('#f-title', sheet).value.trim();
-      if (!title) { $('#f-title', sheet).focus(); return toast('A title is required.'); }
+      if (!title) {
+        $('#f-title', sheet).focus();
+        return toast('A title is required.');
+      }
       store.setSlot(fId, catId, index, { title, year: $('#f-year', sheet).value, catalogId: getCatalogId(true) });
       closeSheet();
       after && after();
@@ -158,7 +171,7 @@ function editCategorySheet(fId, catId) {
               `Switching to a ${dieName(die)} leaves ${die} slots, so ${loss} movie${loss === 1 ? '' : 's'} in slots ${die + 1}–${cat.die} will be removed from this table. Your watch history is not affected.`,
               'Remove and switch',
               apply,
-              true
+              true,
             );
           } else apply();
         },
@@ -171,7 +184,10 @@ function editCategorySheet(fId, catId) {
     hint.textContent = loss ? `${loss} movie${loss === 1 ? '' : 's'} will be removed if you save.` : `${die} slots.`;
   };
   setHint();
-  wireChips($('#c-die-wrap', sheet), (n) => { die = n; setHint(); });
+  wireChips($('#c-die-wrap', sheet), (n) => {
+    die = n;
+    setHint();
+  });
   $('#c-swatches', sheet).addEventListener('click', (e) => {
     const b = e.target.closest('.swatch');
     if (!b) return;
@@ -183,8 +199,11 @@ function editCategorySheet(fId, catId) {
       'Clear every slot?',
       `All movies in ${cat.name} will be removed from the table.${f.mode === 'two' ? ' An empty category acts as the Wild Card.' : ''}`,
       'Clear it',
-      () => { store.clearCategory(fId, catId); renderTables(); },
-      true
+      () => {
+        store.clearCategory(fId, catId);
+        renderTables();
+      },
+      true,
     );
   });
 }

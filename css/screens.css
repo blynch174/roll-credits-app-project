@@ -1,0 +1,833 @@
+/* Screens
+   Watched, tables and editor, festivals, creator, library, themes, settings, services, and the tutorial.
+   Sections: Watched, Tables, Editor, Festival switcher, Creator, Festival Library, Themes, Settings, Streaming services, Tutorial */
+
+/* ---------- Watched ---------- */
+.wi-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.wi-title {
+  font-weight: 700;
+}
+.wi-meta {
+  font-size: var(--size-small);
+  color: var(--muted);
+}
+.wi-notes {
+  font-size: var(--size-ui);
+  color: var(--muted);
+  font-style: italic;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.wi-rating {
+  flex: none;
+  display: flex;
+  gap: 1px;
+}
+.rate-me {
+  font-size: var(--size-small);
+  font-weight: 650;
+  color: var(--accent);
+}
+/* Watched filters */
+.filters {
+  display: grid;
+  gap: 10px;
+}
+.filter-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.filter-grid label span {
+  display: block;
+  margin: 0 2px 4px;
+  font-size: var(--size-tiny);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.filter-grid select {
+  min-height: 42px;
+  font-size: var(--size-body);
+  background-color: var(--surface);
+}
+.filter-grid select:disabled {
+  opacity: 0.5;
+}
+#screen-watched .section-head {
+  align-items: center;
+  margin-bottom: 12px;
+}
+#screen-watched .section-head .section-title {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+.saved-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.saved-item {
+  width: 100%;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 14px 16px;
+  border: var(--edge);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+}
+.saved-item .si-title {
+  flex: 1;
+  min-width: 0;
+  font-weight: 650;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.saved-item .si-year {
+  flex: none;
+  font-size: var(--size-small);
+  color: var(--muted);
+}
+
+/* ---------- Tables ---------- */
+.cat-header {
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 14px 16px;
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  border: var(--edge);
+  border-top: 5px solid var(--cat);
+}
+.cat-name {
+  margin: 0;
+  font-size: 21px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+.cat-count {
+  margin: 8px 0 0;
+  font-size: var(--size-caption);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.cat-tools {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.wild-note {
+  margin: 12px 2px 0;
+  padding: 12px 14px;
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+  font-size: var(--size-ui);
+  color: var(--muted);
+}
+.slot-list {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+.slot {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 60px;
+  padding: 10px 14px 10px 10px;
+  border: var(--edge);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  text-align: left;
+}
+.slot-n {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--r-sm);
+  display: grid;
+  place-items: center;
+  background: var(--cat);
+  color: #fff;
+  font-weight: 800;
+}
+.slot-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.slot-title {
+  font-weight: 700;
+}
+.slot-note {
+  font-size: var(--size-small);
+  color: var(--muted);
+  font-style: italic;
+}
+.slot.seen .slot-title {
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+.slot.seen .slot-n {
+  opacity: 0.5;
+}
+.slot.empty {
+  border-style: dashed;
+  background: transparent;
+}
+.slot.empty .slot-n {
+  background: var(--surface-2);
+  color: var(--muted);
+}
+.slot.empty .slot-title {
+  color: var(--muted);
+  font-weight: 600;
+}
+.slot-sub {
+  font-size: var(--size-small);
+  color: var(--muted);
+}
+
+/* ---------- Editor ---------- */
+/* ================= v3.3: edit screen, festival menu, popcorn tab ================= */
+.edit-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 12px;
+}
+.edit-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 20px;
+  font-weight: 800;
+  min-width: 0;
+}
+.edit-tabs {
+  margin-bottom: 14px;
+}
+#edit-settings .section-title:first-of-type {
+  margin-top: 22px;
+}
+
+/* ---------- Festival switcher ---------- */
+/* Icon picker */
+.icon-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+.icon-pick {
+  display: grid;
+  place-items: center;
+  height: 56px;
+  border-radius: var(--r-md);
+  border: 2px solid var(--line);
+  background: var(--surface-2);
+  color: var(--muted);
+}
+.icon-pick svg {
+  width: 30px;
+  height: 30px;
+}
+.icon-pick.on {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+/* Festival card in Settings */
+.fest-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px 10px;
+}
+.fest-icon {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  flex: none;
+  padding: 7px;
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+  color: var(--accent);
+}
+.fest-name {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 800;
+}
+.fest-sub {
+  margin: 2px 0 0;
+  font-size: var(--size-small);
+  color: var(--muted);
+}
+.fest-head + .row-btn {
+  border-top: 1px solid var(--line);
+  border-radius: 0;
+}
+/* Festival switcher */
+.fest-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+.fest-row {
+  width: 100%;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px 8px 12px;
+  border: var(--edge);
+  border-radius: var(--r-lg);
+  background: var(--surface-2);
+}
+.fest-row.on {
+  border-color: var(--accent);
+}
+.fr-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.fr-name {
+  font-weight: 750;
+}
+.fr-sub {
+  font-size: var(--size-small);
+  color: var(--muted);
+}
+.fest-icon.small {
+  width: 30px;
+  height: 30px;
+  padding: 5px;
+  border-radius: var(--r-sm);
+}
+
+.fr-pick {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 2px 0;
+  border: 0;
+  background: none;
+  text-align: left;
+}
+.fr-edit {
+  flex: none;
+}
+
+/* ---------- Creator ---------- */
+.pv-icons .ricon {
+  width: 18px;
+  height: 18px;
+}
+/* Creator */
+.creator-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+.creator-title {
+  margin: 0;
+  font-size: var(--size-title);
+  font-weight: 800;
+}
+.form-card {
+  display: grid;
+  gap: 14px;
+}
+.preview {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 16px;
+  border-radius: var(--r-lg);
+  background: var(--bg);
+  border: var(--edge);
+  color: var(--text);
+}
+.pv-title {
+  font-family: 'Avenir Next Condensed', 'Arial Narrow', system-ui, sans-serif;
+  font-weight: 800;
+  font-size: var(--size-title);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.pv-btn {
+  padding: 10px 16px;
+  border-radius: var(--r-md);
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-weight: 700;
+}
+.pv-icons {
+  display: flex;
+  gap: 3px;
+}
+.pv-icons .h {
+  fill: var(--bg);
+}
+.summary {
+  margin: 0;
+  font-weight: 650;
+}
+#cr-create {
+  margin-top: 22px;
+}
+
+/* ---------- Festival Library ---------- */
+.lib-search {
+  width: 100%;
+  min-height: 46px;
+  margin: 4px 0 2px;
+  padding: 10px 14px;
+  border: var(--edge);
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+  font-size: var(--size-body);
+}
+.lib-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.lib-card,
+.lib-soon {
+  height: 150px; /* every card the same size */
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 12px;
+  overflow: hidden;
+  border: var(--card-edge);
+  border-radius: var(--r-lg);
+  background: var(--card-bg);
+  box-shadow: var(--card-shadow);
+  color: var(--text);
+  text-align: left;
+}
+.lib-card.added {
+  opacity: 0.72;
+}
+.lib-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+.lib-top .fest-icon {
+  width: 34px;
+  height: 34px;
+}
+.lib-badge {
+  padding: 2px 8px;
+  border-radius: var(--r-pill);
+  font-size: var(--size-tiny);
+  font-weight: 750;
+}
+.lib-badge.new {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+.lib-badge.added {
+  background: var(--surface-2);
+  color: var(--muted);
+}
+.lib-name {
+  font-weight: 750;
+  font-size: 15px;
+  line-height: 19px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.lib-blurb {
+  font-size: 12.5px;
+  line-height: 16px;
+  color: var(--muted);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.lib-meta {
+  margin-top: auto;
+  font-size: 11.5px;
+  color: var(--muted);
+  opacity: 0.85;
+}
+.lib-soon {
+  align-items: center;
+  justify-content: center;
+  border-style: dashed;
+  background: transparent;
+  box-shadow: none;
+  color: var(--muted);
+}
+.lib-soon b {
+  font-size: 15px;
+}
+.lib-cats {
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 6px;
+  counter-reset: c;
+}
+.lib-cats li {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  border: var(--edge);
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+  counter-increment: c;
+}
+.lib-cats li span::before {
+  content: counter(c) '. ';
+  color: var(--muted);
+}
+.lib-cats small {
+  color: var(--muted);
+}
+#btn-library .new-badge {
+  margin-left: 8px;
+}
+.lib-grid .lib-soon {
+  grid-column: 1 / -1;
+  height: 64px;
+}
+
+/* ---------- Themes ---------- */
+.theme-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.theme-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+  height: 150px; /* every card the same size, whatever the theme */
+  padding: 0;
+  overflow: hidden;
+  border-radius: 14px;
+  border: 2px solid var(--line);
+  background: var(--texture), var(--bg-layer), var(--bg);
+  color: var(--text);
+  text-align: left;
+}
+.theme-card.on {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent);
+}
+.tc-stage {
+  flex: 1;
+  padding: 10px 10px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-height: 0;
+}
+.tc-brand {
+  height: 22px;
+  line-height: 22px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: clip;
+  font-family: var(--font-display);
+  font-weight: 800;
+  color: var(--accent);
+  font-size: calc(15px * var(--display-scale));
+  letter-spacing: var(--display-tracking);
+  text-transform: var(--display-case);
+}
+.tc-mini {
+  height: 46px;
+  padding: 7px 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: var(--card-bg);
+  border: var(--card-edge);
+  border-radius: var(--r-md);
+  box-shadow: var(--card-shadow);
+}
+.tc-mini i {
+  display: block;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--muted);
+  opacity: 0.5;
+  width: 70%;
+}
+.tc-mini b {
+  display: flex;
+  gap: 5px;
+}
+.tc-mini b span {
+  height: 12px;
+  flex: 1;
+  border-radius: var(--r-pill);
+  background: var(--watch);
+}
+.tc-mini b span + span {
+  background: var(--accent-2);
+}
+.tc-label {
+  height: 44px;
+  padding: 6px 10px 8px;
+  background: var(--surface);
+  border-top: 1px solid var(--line);
+  overflow: hidden;
+}
+.tc-name {
+  display: block;
+  font-weight: 750;
+  font-size: var(--size-ui);
+  line-height: 17px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.tc-desc {
+  display: block;
+  font-size: 11.5px;
+  line-height: 15px;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+#themes .section-title:not(.first) {
+  margin-top: 26px;
+}
+
+/* ---------- Settings ---------- */
+.settings-list {
+  padding: 4px;
+  display: grid;
+}
+.diff-list {
+  margin: 12px 0 4px;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.diff-list li {
+  font-size: 15px;
+}
+.new-badge {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 1px 7px;
+  border-radius: var(--r-pill);
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-size: var(--size-tiny);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  vertical-align: 2px;
+}
+.about-card {
+  padding: 12px 14px;
+}
+.about-card .sheet-text {
+  margin: 0;
+  font-size: var(--size-ui);
+}
+.about-card a {
+  color: var(--accent);
+}
+
+/* ---------- Streaming services ---------- */
+/* My Streaming Services */
+.sv-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 8px;
+}
+.sv-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 6px 10px 6px 6px;
+  border: var(--edge);
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+  color: var(--text);
+  font: inherit;
+  font-size: var(--size-ui);
+  font-weight: 650;
+  text-align: left;
+}
+.sv-item img,
+.sv-blank {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: var(--surface);
+}
+.sv-item span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.sv-item.on {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 16%, var(--surface-2));
+}
+
+/* ---------- Tutorial ---------- */
+/* ================= v3.3: tutorial ================= */
+.tutorial {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.7);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.tutorial.show {
+  opacity: 1;
+}
+.tut-card {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  padding: 30px 22px 20px;
+  border-radius: 22px;
+  border: var(--edge);
+  background: var(--surface);
+  text-align: center;
+  min-height: 430px;
+  display: flex;
+  flex-direction: column;
+  transform: translateY(12px);
+  transition: transform 0.2s;
+}
+.tut-dots {
+  margin-top: auto !important;
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin: 20px 0 16px;
+}
+.tutorial.show .tut-card {
+  transform: none;
+}
+.tut-skip {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 8px 10px;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font-size: var(--size-ui);
+  font-weight: 650;
+}
+.tut-icon {
+  width: 72px;
+  height: 72px;
+  margin: 0 auto 14px;
+  padding: 16px;
+  border-radius: 22px;
+  background: color-mix(in srgb, var(--accent) 16%, var(--surface-2));
+  color: var(--accent);
+}
+.tut-icon svg {
+  width: 100%;
+  height: 100%;
+}
+.tut-icon .h {
+  fill: color-mix(in srgb, var(--accent) 16%, var(--surface-2));
+}
+.tut-title {
+  margin: 0;
+  font-size: var(--size-title);
+  font-weight: 800;
+}
+.tut-text {
+  margin: 10px 0 0;
+  color: var(--text);
+  line-height: 1.5;
+}
+.tut-text b,
+.tut-tip b {
+  color: var(--accent);
+  font-weight: 700;
+}
+.tut-tip {
+  margin: 12px 0 0;
+  padding: 10px 12px;
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+  font-size: var(--size-ui);
+  color: var(--muted);
+}
+
+.tut-dots span {
+  width: 7px;
+  height: 7px;
+  border-radius: var(--r-pill);
+  background: var(--line);
+  transition:
+    width 0.2s,
+    background 0.2s;
+}
+.tut-dots span.on {
+  width: 20px;
+  background: var(--accent);
+}
+.tut-nav {
+  display: flex;
+  gap: 10px;
+}
+.tut-nav .btn {
+  flex: 1;
+}

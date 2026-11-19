@@ -49,7 +49,11 @@ export function init() {
 }
 
 function emulatorOn() {
-  try { return localStorage.getItem('roll-credits:emulator') === '1'; } catch (e) { return false; }
+  try {
+    return localStorage.getItem('roll-credits:emulator') === '1';
+  } catch (e) {
+    return false;
+  }
 }
 
 export const currentUser = () => (fb ? fb.auth.currentUser : null);
@@ -101,7 +105,12 @@ export async function getUserData(uid) {
 export async function putUserData(uid, { state, clientUpdatedAt, email, device, appVersion }) {
   const { F, db } = fb;
   await F.setDoc(F.doc(db, 'users', uid), {
-    state, clientUpdatedAt, email, device, appVersion, updatedAt: F.serverTimestamp(),
+    state,
+    clientUpdatedAt,
+    email,
+    device,
+    appVersion,
+    updatedAt: F.serverTimestamp(),
   });
 }
 
@@ -121,8 +130,15 @@ export async function requestMovie(user, m) {
     batch.update(reqRef, { count: (r.data().count || 0) + 1, lastAt: now });
   } else {
     batch.set(reqRef, {
-      tmdbId: m.tmdbId, title: String(m.title).slice(0, 300), year: m.releaseYear || null, posterPath: m.posterPath || null,
-      count: 1, status: 'pending', moods: [], firstAt: now, lastAt: now,
+      tmdbId: m.tmdbId,
+      title: String(m.title).slice(0, 300),
+      year: m.releaseYear || null,
+      posterPath: m.posterPath || null,
+      count: 1,
+      status: 'pending',
+      moods: [],
+      firstAt: now,
+      lastAt: now,
     });
   }
   batch.set(voterRef, { at: now });
@@ -146,8 +162,18 @@ export async function adminAddMovie(m, moods, scariness = null) {
     await F.updateDoc(ref, { status: 'approved', moods: moods || [], scariness: scariness || null, reviewedAt: now });
   } else {
     await F.setDoc(ref, {
-      tmdbId: m.tmdbId, title: String(m.title).slice(0, 300), year: m.releaseYear || null, posterPath: m.posterPath || null,
-      count: 0, status: 'approved', moods: moods || [], scariness: scariness || null, firstAt: now, lastAt: now, reviewedAt: now, addedByAdmin: true,
+      tmdbId: m.tmdbId,
+      title: String(m.title).slice(0, 300),
+      year: m.releaseYear || null,
+      posterPath: m.posterPath || null,
+      count: 0,
+      status: 'approved',
+      moods: moods || [],
+      scariness: scariness || null,
+      firstAt: now,
+      lastAt: now,
+      reviewedAt: now,
+      addedByAdmin: true,
     });
   }
 }
@@ -155,7 +181,12 @@ export async function adminAddMovie(m, moods, scariness = null) {
 // Admins: status 'approved' | 'rejected' | 'pending', plus the moods and scare factor (1-10) it gets in the catalog.
 export function setRequest(id, { status, moods, scariness = null }) {
   const { F, db } = fb;
-  return F.updateDoc(F.doc(db, 'requests', String(id)), { status, moods: moods || [], scariness: scariness || null, reviewedAt: Date.now() });
+  return F.updateDoc(F.doc(db, 'requests', String(id)), {
+    status,
+    moods: moods || [],
+    scariness: scariness || null,
+    reviewedAt: Date.now(),
+  });
 }
 
 // ---------- Catalog edits (admins fix a movie's moods and scare factor) ----------
@@ -165,15 +196,24 @@ export async function listCatalogEdits() {
   const { F, db } = fb;
   const snap = await F.getDocs(F.collection(db, 'catalogEdits'));
   const out = {};
-  snap.docs.forEach((d) => { const x = d.data(); out[d.id] = { moods: Array.isArray(x.moods) ? x.moods : null, scariness: Number.isInteger(x.scariness) ? x.scariness : null }; });
+  snap.docs.forEach((d) => {
+    const x = d.data();
+    out[d.id] = {
+      moods: Array.isArray(x.moods) ? x.moods : null,
+      scariness: Number.isInteger(x.scariness) ? x.scariness : null,
+    };
+  });
   return out;
 }
 
 export function setCatalogEdit(id, { moods, scariness, title }) {
   const { F, db } = fb;
   return F.setDoc(F.doc(db, 'catalogEdits', String(id)), {
-    moods: (moods || []).slice(0, 8), scariness: Number.isInteger(scariness) ? scariness : null,
-    title: String(title || '').slice(0, 200), at: Date.now(), by: fb.auth.currentUser.email,
+    moods: (moods || []).slice(0, 8),
+    scariness: Number.isInteger(scariness) ? scariness : null,
+    title: String(title || '').slice(0, 200),
+    at: Date.now(),
+    by: fb.auth.currentUser.email,
   });
 }
 
@@ -184,7 +224,11 @@ export async function sendFeedback(fields) {
   const u = fb.auth.currentUser;
   if (!u) throw new Error('signed-out');
   await F.addDoc(F.collection(db, 'feedback'), {
-    ...fields, uid: u.uid, email: u.email || '', status: 'new', createdAt: Date.now(),
+    ...fields,
+    uid: u.uid,
+    email: u.email || '',
+    status: 'new',
+    createdAt: Date.now(),
   });
 }
 
@@ -224,12 +268,26 @@ export async function listPresence() {
 // ---------- Official festivals ----------
 
 const parseOfficial = (id, d) => {
-  let tables = null;
-  try { tables = JSON.parse(d.tables); } catch (e) { return null; }
+  let tables;
+  try {
+    tables = JSON.parse(d.tables);
+  } catch (e) {
+    return null;
+  }
   return {
-    id, name: d.name, icon: d.icon, rev: d.rev || 1, kind: d.kind || 'version', message: d.message || '',
-    hidden: !!d.hidden, order: d.order || 0, tables, publishedAt: d.publishedAt || 0, publishedBy: d.publishedBy || '',
-    shelf: d.shelf || '', blurb: d.blurb || '',
+    id,
+    name: d.name,
+    icon: d.icon,
+    rev: d.rev || 1,
+    kind: d.kind || 'version',
+    message: d.message || '',
+    hidden: !!d.hidden,
+    order: d.order || 0,
+    tables,
+    publishedAt: d.publishedAt || 0,
+    publishedBy: d.publishedBy || '',
+    shelf: d.shelf || '',
+    blurb: d.blurb || '',
   };
 };
 
@@ -237,15 +295,27 @@ const parseOfficial = (id, d) => {
 export async function listOfficial() {
   const { F, db } = fb;
   const snap = await F.getDocs(F.collection(db, 'official'));
-  return snap.docs.map((d) => parseOfficial(d.id, d.data())).filter(Boolean).sort((a, b) => a.order - b.order);
+  return snap.docs
+    .map((d) => parseOfficial(d.id, d.data()))
+    .filter(Boolean)
+    .sort((a, b) => a.order - b.order);
 }
 
 export async function publishOfficial(id, { name, icon, tables, rev, kind, message, hidden, order, shelf, blurb }) {
   const { F, db } = fb;
   await F.setDoc(F.doc(db, 'official', id), {
-    name, icon, tables: JSON.stringify(tables), rev, kind, message: message || '', hidden: !!hidden, order: order || 0,
-    shelf: shelf || '', blurb: blurb || '',
-    publishedAt: Date.now(), publishedBy: fb.auth.currentUser.email,
+    name,
+    icon,
+    tables: JSON.stringify(tables),
+    rev,
+    kind,
+    message: message || '',
+    hidden: !!hidden,
+    order: order || 0,
+    shelf: shelf || '',
+    blurb: blurb || '',
+    publishedAt: Date.now(),
+    publishedBy: fb.auth.currentUser.email,
   });
 }
 
@@ -263,18 +333,37 @@ export async function setOfficialHidden(id, hidden) {
 export async function listDrafts() {
   const { F, db } = fb;
   const snap = await F.getDocs(F.collection(db, 'drafts'));
-  return snap.docs.map((d) => {
-    const x = d.data();
-    let tables = null;
-    try { tables = JSON.parse(x.tables); } catch (e) { /* skip broken */ }
-    return { id: d.id, name: x.name, icon: x.icon, tables, baseRev: x.baseRev || 0, updatedAt: x.updatedAt || 0, updatedBy: x.updatedBy || '' };
-  }).filter((d) => d.tables);
+  return snap.docs
+    .map((d) => {
+      const x = d.data();
+      let tables = null;
+      try {
+        tables = JSON.parse(x.tables);
+      } catch (e) {
+        /* skip broken */
+      }
+      return {
+        id: d.id,
+        name: x.name,
+        icon: x.icon,
+        tables,
+        baseRev: x.baseRev || 0,
+        updatedAt: x.updatedAt || 0,
+        updatedBy: x.updatedBy || '',
+      };
+    })
+    .filter((d) => d.tables);
 }
 
 export async function saveDraft(id, { name, icon, tables, baseRev }) {
   const { F, db } = fb;
   await F.setDoc(F.doc(db, 'drafts', id), {
-    name, icon, tables: JSON.stringify(tables), baseRev: baseRev || 0, updatedAt: Date.now(), updatedBy: fb.auth.currentUser.email,
+    name,
+    icon,
+    tables: JSON.stringify(tables),
+    baseRev: baseRev || 0,
+    updatedAt: Date.now(),
+    updatedBy: fb.auth.currentUser.email,
   });
 }
 

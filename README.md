@@ -84,7 +84,7 @@ Admins can see your email, when you last opened the app, and how many movies you
 
 ## How it's built
 
-I built Roll Credits using both my own knowledge and some AI-assited building for the gaps (Claude), starting in October 2026. The reason for this was to truly understand and learn the structure of how web applications are built from the ground up, and learn from any mistakes and bugs. This was a personal project I have been toying with for the past couple years. It's a phone-first web app that works offline, with optional accounts that sync across devices. About 7,800 lines of JavaScript in 40 modules, with no framework and no build step.
+I built Roll Credits using both my own knowledge and some AI-assisted building for the gaps (Claude), starting in October 2026. The reason for this was to truly understand and learn the structure of how web applications are built from the ground up, and learn from any mistakes and bugs. This was a personal project I have been toying with for the past couple years. It's a phone-first web app that works offline, with optional accounts that sync across devices. About 10,000 lines of JavaScript in 51 modules, with no framework and no build step.
 
 ```mermaid
 flowchart LR
@@ -106,7 +106,7 @@ flowchart LR
 | Movie data | Python catalog tool (standard library only) that merges hand-curated moods and franchises with TMDB details and Oscar data |
 | API key protection | Cloudflare Worker relay, so the TMDB key never ships in the page |
 | Automation | GitHub Actions: tests on every push, catalog rebuild every night |
-| Tests | Node's built-in test runner, no dependencies (`npm test`) |
+| Tests and code quality | Node's built-in test runner (`npm test`), plus ESLint and Prettier for consistent, checked code (`npm run check`) |
 
 ### Design decisions
 

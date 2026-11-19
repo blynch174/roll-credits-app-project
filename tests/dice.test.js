@@ -27,14 +27,17 @@ test('randInt handles a one-value range', () => {
 // Chi-square goodness of fit at p = 0.0001: a fair die fails this about once in 10,000 runs, so CI stays green,
 // while a real bias (e.g. one face coming up 3 points more often) fails it every time at 60,000 rolls.
 test('d6 and d20 rolls are uniform (chi-square)', () => {
-  const critical = { 6: 25.74, 20: 50.80 }; // p = 0.0001, df = sides - 1
+  const critical = { 6: 25.74, 20: 50.8 }; // p = 0.0001, df = sides - 1
   for (const sides of [6, 20]) {
     const rolls = 60000;
     const counts = new Array(sides).fill(0);
     for (let i = 0; i < rolls; i++) counts[randInt(1, sides) - 1]++;
     const expected = rolls / sides;
     const chi2 = counts.reduce((sum, c) => sum + (c - expected) ** 2 / expected, 0);
-    assert.ok(chi2 < critical[sides], `d${sides} chi-square ${chi2.toFixed(2)} >= ${critical[sides]}: counts ${counts}`);
+    assert.ok(
+      chi2 < critical[sides],
+      `d${sides} chi-square ${chi2.toFixed(2)} >= ${critical[sides]}: counts ${counts}`,
+    );
   }
 });
 

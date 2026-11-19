@@ -2,9 +2,23 @@
 
 import * as store from '../store.js';
 import { swatchHex } from '../defaults.js';
-import { $, $$, esc, nav, openSheet, closeSheet, swapSheet, toast, ratingIcons, movieLabel, fmtDate, attachSwipe } from '../ui.js';
+import {
+  $,
+  $$,
+  esc,
+  nav,
+  openSheet,
+  closeSheet,
+  swapSheet,
+  toast,
+  ratingIcons,
+  movieLabel,
+  fmtDate,
+  attachSwipe,
+} from '../ui.js';
 import { infoBlock, catalogMovie } from '../movieinfo.js';
 import { autofindBox, attachAutofind } from '../autofind.js';
+import { localDay, today, dayToISO } from '../util.js';
 
 const blank = () => ({ q: '', festival: 'all', category: 'all', rating: 'any', year: 'all' });
 let filters = blank();
@@ -61,9 +75,11 @@ export function renderWatched() {
     const fest = store.festival(filters.festival);
     const seen = new Map();
     if (fest) fest.categories.forEach((c) => seen.set(c.id, c.name));
-    history.filter((e) => e.festivalId === filters.festival).forEach((e) => {
-      if (!seen.has(e.categoryId)) seen.set(e.categoryId, e.categoryName);
-    });
+    history
+      .filter((e) => e.festivalId === filters.festival)
+      .forEach((e) => {
+        if (!seen.has(e.categoryId)) seen.set(e.categoryId, e.categoryName);
+      });
     catOptions = [...seen.entries()];
   } else {
     filters.category = 'all';
@@ -71,7 +87,9 @@ export function renderWatched() {
   const years = [...new Set(history.map((e) => new Date(e.date).getFullYear()))].sort((a, b) => b - a);
   // History can include festivals that were deleted.
   const festChoices = new Map(fests.map((x) => [x.id, x.name]));
-  history.forEach((e) => { if (!festChoices.has(e.festivalId)) festChoices.set(e.festivalId, store.historyGroupName(e.festivalId)); });
+  history.forEach((e) => {
+    if (!festChoices.has(e.festivalId)) festChoices.set(e.festivalId, store.historyGroupName(e.festivalId));
+  });
 
   $('#watched-filters').innerHTML = `
     <input id="wf-q" type="search" autocorrect="off" spellcheck="false" enterkeyhint="search" placeholder="Search titles and notes" value="${esc(filters.q)}" autocomplete="off">
@@ -96,11 +114,17 @@ export function renderWatched() {
       </select></label>
     </div>`;
 
-  $('#wf-q').addEventListener('input', (e) => { filters.q = e.target.value; renderList(); });
+  $('#wf-q').addEventListener('input', (e) => {
+    filters.q = e.target.value;
+    renderList();
+  });
   for (const key of ['festival', 'category', 'rating', 'year']) {
     $('#wf-' + key).addEventListener('change', (e) => {
       filters[key] = e.target.value;
-      if (key === 'festival') { filters.category = 'all'; renderWatched(); } else renderList();
+      if (key === 'festival') {
+        filters.category = 'all';
+        renderWatched();
+      } else renderList();
     });
   }
   renderList();
@@ -114,7 +138,11 @@ function renderList() {
     <span>${list.length} movie${list.length === 1 ? '' : 's'}${active ? ` of ${all.length}` : ''}</span>
     ${active ? '<button type="button" class="link" id="wf-clear">Clear Filters</button>' : ''}`;
   const clear = $('#wf-clear');
-  if (clear) clear.addEventListener('click', () => { filters = blank(); renderWatched(); });
+  if (clear)
+    clear.addEventListener('click', () => {
+      filters = blank();
+      renderWatched();
+    });
 
   const ul = $('#history-list');
   if (!all.length) {
@@ -144,7 +172,9 @@ export function entrySheet(entryId, after) {
     if (e.festivalId === store.POPCORN) opts.push([store.POPCORN, store.POPCORN_NAME]);
     for (const f of store.festivals()) opts.push([f.id, f.name]);
     if (!opts.some(([id]) => id === e.festivalId)) opts.push([e.festivalId, store.historyGroupName(e.festivalId)]);
-    return opts.map(([id, name]) => `<option value="${esc(id)}" ${id === e.festivalId ? 'selected' : ''}>${esc(name)}</option>`).join('');
+    return opts
+      .map(([id, name]) => `<option value="${esc(id)}" ${id === e.festivalId ? 'selected' : ''}>${esc(name)}</option>`)
+      .join('');
   };
   const sheet = openSheet({
     title: e.title + (e.year ? ` (${e.year})` : ''),
@@ -155,7 +185,7 @@ export function entrySheet(entryId, after) {
         <label class="field"><span class="label">Festival</span>
           <select id="e-fest">${festOptions()}</select></label>
         <label class="field"><span class="label">Watched on</span>
-          <input id="e-date" type="date" value="${dayOf(e.date)}" max="${todayStr()}"></label>
+          <input id="e-date" type="date" value="${localDay(e.date)}" max="${today()}"></label>
       </div>
       <div class="field">
         <span class="label">Rating</span>
@@ -189,7 +219,10 @@ export function entrySheet(entryId, after) {
   $('#e-date', sheet).addEventListener('change', (ev) => {
     const day = ev.target.value;
     if (!day) return;
-    if (day > todayStr()) { ev.target.value = dayOf(e.date); return toast("That date hasn't happened yet."); }
+    if (day > today()) {
+      ev.target.value = localDay(e.date);
+      return toast("That date hasn't happened yet.");
+    }
     store.setEntryDate(entryId, day);
     $('#e-sub', sheet).innerHTML = subLine();
   });
@@ -205,7 +238,15 @@ function removeSheet(entryId, after) {
       body: '<p class="sheet-text">It comes off your watch history. It was never on a table, so nothing else changes.</p>',
       actions: [
         { label: 'Cancel', kind: 'ghost', onClick: () => entrySheet(entryId, after) },
-        { label: 'Remove', kind: 'danger', onClick: () => { const msg = store.removeEntry(entryId, 'mistake'); closeSheet(); toast(msg); } },
+        {
+          label: 'Remove',
+          kind: 'danger',
+          onClick: () => {
+            const msg = store.removeEntry(entryId, 'mistake');
+            closeSheet();
+            toast(msg);
+          },
+        },
       ],
       onClose: () => after && after(),
     });
@@ -250,17 +291,6 @@ function removeSheet(entryId, after) {
 
 // ---------- Log a movie watched outside the app ----------
 
-// The local calendar day of a saved time, as 'YYYY-MM-DD'.
-const dayOf = (iso) => {
-  const d = new Date(iso);
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-};
-
-const todayStr = () => {
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-};
-
 export function logSheet(after) {
   let festId = store.NO_FEST;
   let rating = 0;
@@ -278,9 +308,12 @@ export function logSheet(after) {
       ${autofindBox()}
       <div class="field-row">
         <label class="field grow"><span class="label">Festival</span>
-          <select id="lg-fest"><option value="${store.NO_FEST}" selected>${store.NO_FEST_NAME}</option>${store.festivals().map((x) => `<option value="${x.id}">${esc(x.name)}</option>`).join('')}</select></label>
+          <select id="lg-fest"><option value="${store.NO_FEST}" selected>${store.NO_FEST_NAME}</option>${store
+            .festivals()
+            .map((x) => `<option value="${x.id}">${esc(x.name)}</option>`)
+            .join('')}</select></label>
         <label class="field date"><span class="label">Watched on</span>
-          <input id="lg-date" type="date" value="${todayStr()}" max="${todayStr()}"></label>
+          <input id="lg-date" type="date" value="${today()}" max="${today()}"></label>
       </div>
       <p class="hint" id="lg-match"></p>
       <div class="field"><span class="label">Rating</span><div class="rating-row" id="rating-row"></div></div>
@@ -293,28 +326,46 @@ export function logSheet(after) {
         kind: 'primary',
         onClick: (s) => {
           const title = $('#f-title', s).value.trim();
-          if (!title) { $('#f-title', s).focus(); return toast('A title is required.'); }
-          const day = $('#lg-date', s).value || todayStr();
-          if (day > todayStr()) return toast("That date hasn't happened yet.");
-          const date = day === todayStr() ? new Date().toISOString() : new Date(day + 'T12:00:00').toISOString();
+          if (!title) {
+            $('#f-title', s).focus();
+            return toast('A title is required.');
+          }
+          const day = $('#lg-date', s).value || today();
+          if (day > today()) return toast("That date hasn't happened yet.");
+          const date = day === today() ? new Date().toISOString() : dayToISO(day);
           const res = store.logMovie({
-            festivalId: festId, title, year: $('#f-year', s).value, catalogId: getCatalogId(true),
-            date, rating, notes: $('#lg-notes', s).value,
+            festivalId: festId,
+            title,
+            year: $('#f-year', s).value,
+            catalogId: getCatalogId(true),
+            date,
+            rating,
+            notes: $('#lg-notes', s).value,
           });
           closeSheet();
           after && after();
-          if (res) toast(res.found ? `${res.entry.title} logged and marked on your ${res.found.cat.name} table.` : `${res.entry.title} logged.`);
+          if (res)
+            toast(
+              res.found
+                ? `${res.entry.title} logged and marked on your ${res.found.cat.name} table.`
+                : `${res.entry.title} logged.`,
+            );
         },
       },
     ],
   });
 
   const fest = () => store.festival(festId);
-  const drawRating = () => { $('#rating-row', sheet).innerHTML = ratingIcons(fest() ? fest().icon : store.NO_FEST_ICON, rating, true); };
+  const drawRating = () => {
+    $('#rating-row', sheet).innerHTML = ratingIcons(fest() ? fest().icon : store.NO_FEST_ICON, rating, true);
+  };
   const updateMatch = () => {
     const title = $('#f-title', sheet).value.trim();
     const el = $('#lg-match', sheet);
-    if (!title || !fest()) { el.textContent = ''; return; }
+    if (!title || !fest()) {
+      el.textContent = '';
+      return;
+    }
     const y = parseInt($('#f-year', sheet).value, 10) || null;
     const hit = store.findSlot(fest(), { title, year: y, catalogId: getCatalogId() });
     const mode = store.getState().settings.slotMode;
@@ -326,7 +377,11 @@ export function logSheet(after) {
   getCatalogId = attachAutofind(sheet, { festivalId: festId, onPick: updateMatch });
   $('#f-title', sheet).addEventListener('input', updateMatch);
   $('#f-year', sheet).addEventListener('input', updateMatch);
-  $('#lg-fest', sheet).addEventListener('change', (e) => { festId = e.target.value; drawRating(); updateMatch(); });
+  $('#lg-fest', sheet).addEventListener('change', (e) => {
+    festId = e.target.value;
+    drawRating();
+    updateMatch();
+  });
   $('#rating-row', sheet).addEventListener('click', (e) => {
     const b = e.target.closest('.ricon');
     if (!b) return;
@@ -351,6 +406,9 @@ export function swipeDelete(id, after) {
   after && after();
   toast(`${e.title} deleted.`, {
     action: 'Undo',
-    onAction: () => { store.restore(snap); nav.render(); },
+    onAction: () => {
+      store.restore(snap);
+      nav.render();
+    },
   });
 }

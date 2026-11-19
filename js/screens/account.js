@@ -4,31 +4,29 @@
 import * as sync from '../sync.js';
 import * as cloud from '../cloud.js';
 import { $, esc, toast, nav, openSheet, swapSheet, closeSheet, confirmSheet } from '../ui.js';
-import { renderAdmin, adminBack, resetAdmin } from './admin.js';
+import { ago, fmtDate } from '../util.js';
+import { loadAdmin } from '../admin-loader.js';
 
 // ---------- Settings → Account section ----------
 
-function ago(ms) {
-  if (!ms) return '';
-  const s = Math.round((Date.now() - ms) / 1000);
-  if (s < 45) return 'just now';
-  const m = Math.round(s / 60);
-  if (m < 60) return `${m} min ago`;
-  const h = Math.round(m / 60);
-  if (h < 24) return `${h} hr ago`;
-  return new Date(ms).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
-}
-
-export function statusText(st) {
+function statusText(st) {
   switch (st.status) {
-    case 'loading': return 'Checking your account…';
-    case 'signedOut': return 'Back up your data and use it on other devices';
-    case 'choosing': return 'Pick which data to keep';
-    case 'saving': return 'Backing up…';
-    case 'synced': return `Backed up ${ago(st.lastSynced)}`;
-    case 'offline': return "Offline. Changes back up when you're online again.";
-    case 'error': return "Couldn't back up. Tap to try again.";
-    default: return '';
+    case 'loading':
+      return 'Checking your account…';
+    case 'signedOut':
+      return 'Back up your data and use it on other devices';
+    case 'choosing':
+      return 'Pick which data to keep';
+    case 'saving':
+      return 'Backing up…';
+    case 'synced':
+      return `Backed up ${ago(st.lastSynced)}`;
+    case 'offline':
+      return "Offline. Changes back up when you're online again.";
+    case 'error':
+      return "Couldn't back up. Tap to try again.";
+    default:
+      return '';
   }
 }
 
@@ -45,11 +43,21 @@ export function renderAccountSection() {
       <span>${signedIn ? esc(st.email) : 'Sign in or create an account'}</span>
       <small class="${warn ? 'warn' : ''}">${esc(statusText(st))}</small>
     </button>
-    ${st.admin ? `<button type="button" class="row-btn" id="btn-admin">
-      <span>Admin tools</span></button>` : ''}`;
+    ${
+      st.admin
+        ? `<button type="button" class="row-btn" id="btn-admin">
+      <span>Admin tools</span></button>`
+        : ''
+    }`;
   $('#btn-account').addEventListener('click', () => (sync.isSignedIn() ? accountSheet() : signInSheet()));
   const ab = $('#btn-admin');
-  if (ab) ab.addEventListener('click', () => { resetAdmin(); nav.go('admin'); });
+  if (ab)
+    ab.addEventListener('click', () =>
+      loadAdmin().then(({ admin }) => {
+        admin.resetAdmin();
+        nav.go('admin');
+      }),
+    );
 }
 
 // ---------- Sheets ----------
@@ -61,11 +69,17 @@ const field = (id, label, type, auto, value = '') => `
 function busy(sheet, btnId, on, label) {
   const b = $('#' + btnId, sheet);
   if (!b) return;
-  if (on) { b.dataset.label = b.textContent; b.textContent = label; }
-  else if (b.dataset.label) b.textContent = b.dataset.label;
+  if (on) {
+    b.dataset.label = b.textContent;
+    b.textContent = label;
+  } else if (b.dataset.label) b.textContent = b.dataset.label;
   b.disabled = on;
 }
-const showError = (sheet, msg) => { const p = $('.sheet-error', sheet); p.textContent = msg; p.hidden = !msg; };
+const showError = (sheet, msg) => {
+  const p = $('.sheet-error', sheet);
+  p.textContent = msg;
+  p.hidden = !msg;
+};
 
 export function signInSheet(email = '') {
   const sheet = swapSheet({
@@ -85,7 +99,9 @@ export function signInSheet(email = '') {
   });
   $('#a-forgot', sheet).addEventListener('click', () => resetSheet($('#a-email', sheet).value));
   $('#a-new', sheet).addEventListener('click', () => createSheet($('#a-email', sheet).value));
-  $('#a-pass', sheet).addEventListener('keydown', (e) => { if (e.key === 'Enter') submitSignIn(sheet); });
+  $('#a-pass', sheet).addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') submitSignIn(sheet);
+  });
 }
 
 async function submitSignIn(sheet) {
@@ -140,7 +156,7 @@ async function submitCreate(sheet) {
 }
 
 function resetSheet(email = '') {
-  const sheet = swapSheet({
+  swapSheet({
     title: 'Reset your password',
     body: `
       ${field('a-email', 'Email', 'email', 'username', email)}
@@ -148,7 +164,10 @@ function resetSheet(email = '') {
     actions: [
       { label: 'Back', kind: 'ghost', onClick: (s) => signInSheet($('#a-email', s).value) },
       {
-        label: 'Send Link', kind: 'primary', id: 'a-go', onClick: async (s) => {
+        label: 'Send Link',
+        kind: 'primary',
+        id: 'a-go',
+        onClick: async (s) => {
           const em = $('#a-email', s).value.trim();
           if (!em) return showError(s, 'Enter your email.');
           busy(s, 'a-go', true, 'Sending…');
@@ -168,15 +187,20 @@ function resetSheet(email = '') {
 
 function accountSheet() {
   const st = sync.getStatus();
-  const actions = [{
-    label: 'Back Up Now', kind: 'primary', id: 'a-go', onClick: async (s) => {
-      busy(s, 'a-go', true, 'Backing up…');
-      await sync.syncNow();
-      closeSheet();
-      const now = sync.getStatus().status;
-      toast(now === 'synced' ? 'Backed up.' : statusText(sync.getStatus()));
+  const actions = [
+    {
+      label: 'Back Up Now',
+      kind: 'primary',
+      id: 'a-go',
+      onClick: async (s) => {
+        busy(s, 'a-go', true, 'Backing up…');
+        await sync.syncNow();
+        closeSheet();
+        const now = sync.getStatus().status;
+        toast(now === 'synced' ? 'Backed up.' : statusText(sync.getStatus()));
+      },
     },
-  }];
+  ];
   const sheet = openSheet({
     title: 'Your account',
     body: `
@@ -190,17 +214,32 @@ function accountSheet() {
     actions: [{ label: 'Close', kind: 'ghost', onClick: closeSheet }, ...actions],
   });
   $('#a-pw', sheet).addEventListener('click', async () => {
-    try { await sync.sendReset(st.email); toast(`Password link sent to ${st.email}.`); } catch (e) { toast(cloud.errorText(e)); }
+    try {
+      await sync.sendReset(st.email);
+      toast(`Password link sent to ${st.email}.`);
+    } catch (e) {
+      toast(cloud.errorText(e));
+    }
   });
   $('#a-out', sheet).addEventListener('click', () => {
-    confirmSheet('Sign out?', 'Your festivals and history stay on this device. Sign back in any time to keep backing up.', 'Sign Out', async () => {
-      await sync.signOut();
-      toast('Signed out.');
-    });
+    confirmSheet(
+      'Sign out?',
+      'Your festivals and history stay on this device. Sign back in any time to keep backing up.',
+      'Sign Out',
+      async () => {
+        await sync.signOut();
+        toast('Signed out.');
+      },
+    );
   });
   $('#a-del', sheet).addEventListener('click', () => deleteSheet(st.email));
   $('#a-copy', sheet).addEventListener('click', async () => {
-    try { await navigator.clipboard.writeText(st.uid); toast('User ID copied.'); } catch (e) { toast("Couldn't copy. Select it instead."); }
+    try {
+      await navigator.clipboard.writeText(st.uid);
+      toast('User ID copied.');
+    } catch (e) {
+      toast("Couldn't copy. Select it instead.");
+    }
   });
 }
 
@@ -215,7 +254,10 @@ function deleteSheet(email) {
     actions: [
       { label: 'Cancel', kind: 'ghost', onClick: closeSheet },
       {
-        label: 'Delete Account', kind: 'danger', id: 'a-go', onClick: async (s) => {
+        label: 'Delete Account',
+        kind: 'danger',
+        id: 'a-go',
+        onClick: async (s) => {
           const pass = $('#a-pass', s).value;
           if (!pass) return showError(s, 'Enter your password.');
           showError(s, '');
@@ -238,9 +280,17 @@ function deleteSheet(email) {
 // Signing in on a device that already has its own data, for an account that also has data.
 export function chooseSideSheet(remote, done) {
   let when = '';
-  try { when = remote.clientUpdatedAt ? new Date(remote.clientUpdatedAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : ''; } catch (e) { /* ignore */ }
+  try {
+    when = remote.clientUpdatedAt ? fmtDate(remote.clientUpdatedAt) : '';
+  } catch (e) {
+    /* ignore */
+  }
   let picked = false;
-  const pick = (choice) => { picked = true; closeSheet(); done(choice); };
+  const pick = (choice) => {
+    picked = true;
+    closeSheet();
+    done(choice);
+  };
   openSheet({
     title: 'Which data should we keep?',
     body: `
@@ -252,29 +302,41 @@ export function chooseSideSheet(remote, done) {
       </div>
 `,
     actions: [],
-    onClose: () => { if (!picked) setTimeout(() => chooseSideSheet(remote, done), 260); },
+    onClose: () => {
+      if (!picked) setTimeout(() => chooseSideSheet(remote, done), 260);
+    },
   });
   $('#c-combine').addEventListener('click', () => pick('combine'));
   $('#c-account').addEventListener('click', () => pick('account'));
-  $('#c-device').addEventListener('click', () => swapSheet({
-    title: "Replace your account's data?",
-    body: '<p class="sheet-text">Your account\'s festivals and history get replaced with what\'s on this device.</p>',
-    actions: [
-      { label: 'Back', kind: 'ghost', onClick: () => chooseSideSheet(remote, done) },
-      { label: 'Replace', kind: 'danger', onClick: () => { picked = true; closeSheet(); done('device'); } },
-    ],
-    onClose: () => { if (!picked) setTimeout(() => chooseSideSheet(remote, done), 260); },
-  }));
+  $('#c-device').addEventListener('click', () =>
+    swapSheet({
+      title: "Replace your account's data?",
+      body: '<p class="sheet-text">Your account\'s festivals and history get replaced with what\'s on this device.</p>',
+      actions: [
+        { label: 'Back', kind: 'ghost', onClick: () => chooseSideSheet(remote, done) },
+        {
+          label: 'Replace',
+          kind: 'danger',
+          onClick: () => {
+            picked = true;
+            closeSheet();
+            done('device');
+          },
+        },
+      ],
+      onClose: () => {
+        if (!picked) setTimeout(() => chooseSideSheet(remote, done), 260);
+      },
+    }),
+  );
 }
 
 // ---------- Admin screen ----------
 
-export { renderAdmin };
-
 export function initAccount() {
   sync.onStatus(() => {
     if (!$('#screen-settings').hidden) renderAccountSection();
-    if (!$('#screen-admin').hidden && !sync.isAdmin()) renderAdmin();
+    if (!$('#screen-admin').hidden && !sync.isAdmin()) loadAdmin().then(({ admin }) => admin.renderAdmin());
   });
-  $('#admin-done').addEventListener('click', adminBack);
+  $('#admin-done').addEventListener('click', () => loadAdmin().then(({ admin }) => admin.adminBack()));
 }

@@ -22,11 +22,17 @@ export function load() {
       readyCallbacks.splice(0).forEach((cb) => cb());
       return data;
     })
-    .catch(() => { loading = null; return null; });
+    .catch(() => {
+      loading = null;
+      return null;
+    });
   return loading;
 }
 export const isReady = () => !!data;
-export function onReady(cb) { if (data) cb(); else readyCallbacks.push(cb); }
+export function onReady(cb) {
+  if (data) cb();
+  else readyCallbacks.push(cb);
+}
 export const hasData = () => !!(data && Object.keys(data.movies).length);
 
 const provider = (id) => {
@@ -37,7 +43,10 @@ const provider = (id) => {
 // Every service in the file, most popular first (for the My Services picker).
 export function allProviders() {
   if (!data) return [];
-  return Object.keys(data.providers).map(provider).filter(Boolean).sort((a, b) => a.priority - b.priority || a.name.localeCompare(b.name));
+  return Object.keys(data.providers)
+    .map(provider)
+    .filter(Boolean)
+    .sort((a, b) => a.priority - b.priority || a.name.localeCompare(b.name));
 }
 
 // Picked services, with any that were folded into another service counted as that one.
@@ -57,8 +66,14 @@ export function forMovie(m) {
   const subs = (rec.s || []).map(provider).filter(Boolean);
   const free = (rec.f || []).map(provider).filter(Boolean);
   const all = [...subs, ...free];
-  const order = (list) => list.sort((a, b) => (mine.has(b.id) - mine.has(a.id)) || a.priority - b.priority);
-  return { subs: order(subs), free: order(free), rentBuy: !!rec.rb, mine: all.filter((p) => mine.has(p.id)), link: watchLink(m) };
+  const order = (list) => list.sort((a, b) => mine.has(b.id) - mine.has(a.id) || a.priority - b.priority);
+  return {
+    subs: order(subs),
+    free: order(free),
+    rentBuy: !!rec.rb,
+    mine: all.filter((p) => mine.has(p.id)),
+    link: watchLink(m),
+  };
 }
 
 // On one of this person's services? (Popcorn Pick's "My Services" filter.)
@@ -69,4 +84,5 @@ export function onMyServices(m) {
   return [...(rec.s || []), ...(rec.f || [])].some((id) => mine.includes(id));
 }
 
-export const watchLink = (m) => (m && m.tmdbId && m.tmdbType !== 'tv' ? `https://www.themoviedb.org/movie/${m.tmdbId}/watch?locale=${REGION}` : null);
+const watchLink = (m) =>
+  m && m.tmdbId && m.tmdbType !== 'tv' ? `https://www.themoviedb.org/movie/${m.tmdbId}/watch?locale=${REGION}` : null;

@@ -2,8 +2,10 @@
 
 How the app is built, how to run it, and how the data works. For what the app is and how to use it, see `README.md`.
 
-Roll dice to pick tonight's movie. Each **film festival** (Halloween, Christmas, Awards Season, Kids & Family, Bucket List Cinema, Tear Jerkers, or one you make)
-has its own tables, dice, and rating icon. Colors are one app-wide theme (Settings → Themes). Plain HTML, CSS, and JavaScript. No frameworks, no build step.
+Roll dice to pick tonight's movie. Each **film festival** (Halloween, Christmas, Awards Season, Kids & Family,
+Bucket List Cinema, or one you make) has its own tables, dice, and rating icon. Colors are one app-wide theme
+(Settings → Themes). Plain HTML, CSS, and JavaScript: no framework, no build step. The browser runs the files in
+this repo exactly as they are.
 
 ## Run it on your computer
 
@@ -13,43 +15,103 @@ python3 -m http.server 8000
 
 Then open http://localhost:8000. (The JS loads as modules, which don't run from a double-clicked file.)
 
-## Files
+## How the app fits together
 
-| File | What it does |
+```mermaid
+flowchart TB
+  HTML["index.html<br/>every screen's layout"] --> App["js/app.js<br/>starts the app, switches screens"]
+  App --> Screens["js/screens/*<br/>one file per screen"]
+  Screens --> UI["js/ui.js → js/ui/*<br/>sheets, toasts, swipes, dice"]
+  Screens --> Store["js/store.js → js/store/*<br/>the saved data and every change to it"]
+  Screens --> Catalog["js/catalog.js<br/>2,200+ movies from data/all_movies.json"]
+  Store --> Local[("localStorage<br/>on the device")]
+  Store <--> Sync["js/sync.js + js/merge.js"] <--> Cloud["js/cloud.js"] <--> FS[("Firebase<br/>Auth + Firestore")]
+  Screens -. "admins only, loaded on demand" .-> Admin["js/admin-loader.js → js/screens/admin*.js"]
+```
+
+The rule that keeps it simple: **screens never change data directly.** They call a function in the store
+(`store.watchMovie(...)`, `store.setSlot(...)`), and the store saves. Then the screen redraws itself from the
+store. Sync listens for saves and backs them up to the account; nothing else has to know it exists.
+
+### Folders
+
+| Where | What's there |
 |---|---|
-| `index.html` | Screen layout: the Roll, Watched, Popcorn, and Settings tabs, plus the Edit festival screen and the festival creator |
-| `css/styles.css` | All styling. Colors come from variables set by `js/themes.js` |
-| `js/app.js` | Boot, tab navigation, festival switcher, background loading of the catalog and 3D dice |
-| `js/store.js` | Saved data and every change to it, plus upgrading older saved data |
-| `js/defaults.js` | Built-in festivals and their starter movies, dice options, category colors, rating icon list |
-| `js/themes.js` | The theme library (Classic, Seasonal, Common, Developer picks). One theme for the whole app |
-| `js/official.js` | Official festivals: fetches the published versions, caches them, works out what changed |
-| `js/icons.js` | SVG drawings for rating icons and flat dice |
-| `js/dice.js` | Fair random numbers, the flat dice tumble, and the CSS 3D coin flip |
-| `js/dice3d.js` | 3D dice: loads dice-box only when 3D is on, falls back to flat dice if it can't start |
-| `js/catalog.js` | Loads `data/all_movies.json`: title search, title matching, franchise lookups |
-| `js/autofind.js` | Catalog suggestions under a title box (slot editor and Log a movie) |
-| `js/firebase-config.js` | Firebase project settings. `null` = no accounts (everything stays on the device). See `FIREBASE_SETUP.md` |
-| `js/cloud.js` | Firebase sign-in and database calls |
-| `js/sync.js` | Keeps the device's data and the account's copy in step |
-| `js/tutorial.js` | First-run tour (shows on a fresh install; Settings → Show the tutorial replays it) |
-| `js/ui.js` | Shared helpers: sheets (with swipe-down to close), toasts, the type-DELETE confirm, dice and coin markup |
-| `js/screens/*.js` | One file per screen. `editor.js` is Edit festival (tables + festival settings), `tables.js` draws the tables inside it, `popcorn.js` is the Popcorn tab, `account.js` is the Account section, sign-in sheets, and Admin tools, `admin-official.js` is editing and publishing official festivals, `updates.js` is the update banner and Review sheet, `theme-picker.js` is Settings → Themes |
-| `data/` | `all_movies.json` is what the app reads (built, don't hand-edit). `data/catalog/` holds its sources. The collection files list each built-in festival's movies |
-| `tools/catalog.py` | Catalog tool: TMDB details and posters, adding movies, Oscar data, building `all_movies.json`. See `CATALOG.md` |
-| `js/movieinfo.js` | Posters, the movie details sheet, and IMDb/TMDB links |
-| `vendor/firebase/` | Firebase JS SDK 12.19.0 (Apache 2.0): app, auth, firestore-lite. Only downloaded when accounts are set up |
+| `index.html` | The layout of every screen and the tab bar. Screens fill in their content from JavaScript |
+| `css/` | Styles, split by what they style and loaded in this order: `base` (colors, fonts, resets), `layout` (app frame, top and tab bars), `components` (buttons, cards, forms, sheets), `movie` (details, scare factor, where to watch), `roll` (dice, roll card, Popcorn Pick), `screens` (everything else), `admin`. Each file starts with a list of its sections |
+| `js/app.js` | Starts the app: loads the data, wires up the tabs, starts sync, the catalog, and offline support |
+| `js/store.js` | The data. One import for screens; the parts live in `js/store/`: `state.js` (loading, saving, the account's copy, undo, backups), `festivals.js`, `history.js`, `migrate.js` (checking and upgrading old data), `constants.js` |
+| `js/ui.js` | Shared screen helpers, from `js/ui/`: `dom.js` ($, navigation), `sheet.js` (bottom sheets and the iPhone keyboard), `toast.js`, `swipe.js`, `controls.js` (dice, rating icons, chips) |
+| `js/util.js` | Small helpers that don't touch the page: escaping text, dates, safe device storage, reduced motion |
+| `js/screens/` | One file per screen or sheet: `roll`, `watched`, `popcorn`, `settings`, `editor` + `tables` (Edit festival), `festivals` (the festival switcher), `creator`, `library`, `theme-picker`, `account`, `services`, `feedback`, `updates`. Admin Tools: `admin`, `admin-festivals`, `admin-movies`, `movie-edit` |
+| `js/admin-loader.js` | Loads Admin Tools only when an admin opens them, so nobody else downloads that code |
+| `js/defaults.js` | Built-in festivals, dice options, category colors, rating icons |
+| `js/themes.js` | Every theme. See *Adding a theme* below |
+| `js/catalog.js` | The movie catalog: search, title matching, franchises, moods |
+| `js/movieinfo.js` | Posters, the movie details sheet, scare factor, and where-to-watch display |
+| `js/streaming.js` | Where-to-watch data (`data/streaming/US.json`) and My Streaming Services |
+| `js/sync.js`, `js/merge.js`, `js/cloud.js` | Accounts: keeping the device and the account in step, merging edits from two devices, Firebase calls |
+| `js/official.js`, `js/movieedits.js` | Published official festivals and admin movie edits, cached for offline use |
+| `js/tmdb.js`, `js/autofind.js` | TMDB search through the relay, and title suggestions under title boxes |
+| `js/dice.js`, `js/dice3d.js`, `js/icons.js` | Fair random numbers and flat dice, optional 3D dice, SVG drawings |
+| `js/tutorial.js`, `js/moodmatch.js`, `js/appconfig.js` | First-run tour, mood suggestions from TMDB keywords, loading the Firebase config |
+| `sw.js` | Offline support. Lists the files saved at install (`FILES`) |
+| `data/` | `all_movies.json` is what the app reads (built, don't hand-edit). `catalog/` holds its sources, `streaming/` the where-to-watch data, `scares/` reviewed scare scores, `additions/` hand-added movies |
+| `tools/catalog.py` | The catalog tool (Python, no installs). See `CATALOG.md` |
+| `worker/` | The Cloudflare Worker that keeps the TMDB key off the page. See `RELAY_SETUP.md` |
+| `tests/` | Tests for everything that doesn't touch the page (see below) |
+| `art/themes/` | Background art for themes |
+| `vendor/` | Libraries copied in unmodified: Firebase JS SDK 12.19.0 (Apache 2.0), dice-box 1.1.4 (MIT). Each only downloads when it's used |
 | `firestore.rules` | Database security rules. Paste into the Firebase console (Firestore → Rules) after any change |
-| `vendor/dice-box/` | [dice-box](https://github.com/3d-dice/dice-box) v1.1.4 (MIT), copied unmodified from npm. About 3 MB, only downloaded when 3D dice are used |
-| `sw.js` | Offline support |
+
+### Code conventions
+
+- **One job per file**, named for what it is (`festivals.js`, not `helpers2.js`). Each file opens with a comment
+  saying what it does; each function with a non-obvious job has one line saying why.
+- **Screens draw from data.** A screen's `render…()` builds its HTML from the store and wires up its buttons.
+  After a change, redraw rather than patching the page by hand.
+- **Buttons:** a list of similar items gets one listener on the list that reads the tapped item's `data-…`
+  attribute (`data-act="watch"`, `data-id="…"`). A single button gets its own listener.
+- **Escape everything a person typed** before it goes into HTML: `esc(title)`.
+- **No dependencies in the app.** Libraries are copied into `vendor/` and loaded only when needed. `package.json`
+  is only for developer tools.
+- Formatting is automatic (`npm run format`), so nobody has to argue about spacing or quotes.
+
+### Code tour
+
+A good order to read the code in, or to walk someone through it:
+
+1. `index.html` and `js/app.js`: what's on screen and how the app starts.
+2. `js/screens/roll.js`: the core idea. A roll moves through steps (idle → rolling → result), and each step has
+   its own small render function.
+3. `js/store.js`, then `js/store/history.js`: how watching a movie becomes a saved history entry.
+4. `js/merge.js` and `tests/merge.test.js`: how two devices' edits combine without losing either (the most
+   interesting algorithm in the app, with tests that show each case).
+5. `js/store/migrate.js`: how old saved data upgrades safely.
+6. `css/base.css` and `js/themes.js`: how one set of variables gives 16 different looks.
+7. `tools/catalog.py` and `.github/workflows/`: the nightly pipeline that keeps 2,200+ movies up to date.
+8. `firestore.rules` and `worker/tmdb-relay.js`: what keeps people's data private and the TMDB key secret.
 
 ## Publishing an update
 
 1. Make your changes.
-2. If you added a new file under `js/`, add it to the `FILES` list in `sw.js`.
-3. Bump `CACHE_VERSION` in `sw.js` (`v15` → `v16`).
-4. Run `npm test` (see below). Everything should pass.
+2. If you added a new file under `js/`, add it to the `FILES` list in `sw.js` (Admin Tools files are listed in the
+   comment below it instead).
+3. Bump `CACHE_VERSION` in `sw.js` (`v40` → `v41`) and `APP_VERSION` in `js/sync.js`.
+4. Run `npm run check`. Everything should pass.
 5. `git add .`, `git commit -m "what changed"`, `git push`.
+
+## Developer tools
+
+The app needs nothing installed. These are for working on it, and need Node 20 or newer.
+
+| Command | What it does |
+|---|---|
+| `npm test` | Runs the tests (no install needed: Node's built-in test runner) |
+| `npm install` | Once, before the commands below: installs ESLint and Prettier into `node_modules/` (never committed) |
+| `npm run lint` | ESLint: finds mistakes like a missing import or an unused variable (`eslint.config.js`) |
+| `npm run format` | Prettier: formats every JS and CSS file the same way (`.prettierrc.json`) |
+| `npm run check` | All three, without changing anything. Run before pushing |
 
 ## Running the tests
 
@@ -58,7 +120,7 @@ npm test
 ```
 
 Needs Node 20 or newer, and nothing else: no `npm install`, the tests use Node's built-in test runner. They run in
-about a second. GitHub runs the same tests on every push (`.github/workflows/test.yml`); the Tests badge at the top
+about a second. GitHub runs the same tests on every push (`.github/workflows/test.yaml`); the Tests badge at the top
 of the README shows the latest result.
 
 | File | What it checks |
@@ -70,10 +132,10 @@ of the README shows the latest result.
 | `tests/catalog.test.js` | Title matching, search, sequels, mood suggestions, against the real `all_movies.json` |
 | `tests/data.test.js` | Data files parse, festival lists point at real movies, built-in festivals are well formed, every `js/` file is in `sw.js` |
 
-Adding a module under `js/` without listing it in `sw.js` fails `data.test.js` on purpose: it would break the app
-offline.
+Adding a module under `js/` without listing it in `sw.js` (in `FILES`, or the Admin Tools comment) fails
+`data.test.js` on purpose: it would break the app offline.
 
-Only modules that don't touch the page are tested (`store`, `merge`, `dice`, `catalog`, `defaults`, `moodmatch`).
+Only modules that don't touch the page are tested (the store, `merge`, `dice`, `catalog`, `defaults`, `moodmatch`).
 The screens, Firebase calls, and `firestore.rules` aren't covered yet. Rules tests need the Firebase emulator.
 
 `data/` and `vendor/` are deliberately not in `FILES`. They're too big to download at install, and get saved for
@@ -88,9 +150,9 @@ fetches details and posters from TMDB and builds `data/all_movies.json`, the onl
 
 ## Adding a built-in festival
 
-Easiest: Settings → Admin tools → **+ New official festival**, fill it in, Publish. Everyone gets it.
+Easiest: Settings → Admin Tools → Festival Manager → **+ New official festival**, fill it in, Publish. Everyone gets it.
 To also ship it inside the app (offline / first launch), add it to `BUILT_IN_FESTIVALS` in `js/defaults.js`;
-it then shows up under Admin tools as not published yet. Existing users get code-added festivals automatically. A category can have its own
+it then shows up in Festival Manager as not published yet. Existing users get code-added festivals automatically. A category can have its own
 movie die as a 4th item (`[name, color, movies, 8]`); otherwise it uses the festival's `movieDie`. To give it a
 movie list for search and sequels, add its collection file to `COLLECTIONS` in `js/catalog.js`.
 
@@ -108,7 +170,7 @@ Set up once with `FIREBASE_SETUP.md`. Signing in is optional; without it nothing
   (it only adds things back, never deletes).
 - Settings → Account → Delete Account removes the backup and the sign-in (asks for the password). The device
   keeps its own copy.
-- Free limit: 3 custom festivals (`CUSTOM_FESTIVAL_LIMIT` in `store.js`); admins aren't limited. Only enforced in
+- Free limit: 3 custom festivals (`CUSTOM_FESTIVAL_LIMIT` in `js/store/constants.js`); admins aren't limited. Only enforced in
   the app for now; paid plans would need server-side enforcement.
 - Signing in on a device that has its own data, with an account that also has data, asks which to keep.
   A device with untouched defaults just takes the account's data.
@@ -119,7 +181,7 @@ Set up once with `FIREBASE_SETUP.md`. Signing in is optional; without it nothing
 
 ## Official festivals (admins)
 
-The built-in festivals are "official": admins edit and publish them from Settings → Admin tools → Official festivals.
+The built-in festivals are "official": admins edit and publish them from Settings → Admin Tools → Festival Manager.
 
 - **First time:** tap *Publish the built-in festivals*. That uploads what's in `defaults.js` as revision 1, so
   nothing changes for anyone.
@@ -168,7 +230,35 @@ TMDB asks apps to show their logo with the credit. Download one of the official 
 https://www.themoviedb.org/about/logos-attribution and save it as `icons/tmdb.svg`. Settings → About shows it
 automatically (nothing shows until the file is there).
 
-## Themes
+## Adding a theme
+
+Themes live in `THEME_GROUPS` in `js/themes.js`. Each is one `t(...)` call: an id, a name, a one-line description,
+a palette, and an optional style.
+
+```js
+t('midnight-matinee', 'Midnight Matinee', 'Gold on deep blue', {
+  bg: '#0d1020', surface: '#171b33', surface2: '#21264a', line: '#2f3666',
+  text: '#f4efe2', muted: '#a6a3b8', accent: '#e8b84a', accentInk: '#1a1405',
+}, {
+  radius: 14,                       // corner size (Sci-Fi Terminal is the only square one)
+  cardWidth: 2, cardEdgeColor: '#e8b84a',   // colored card outlines
+  display: '"Limelight", serif',    // title font (add it to FONT_URL)
+  texture: GRAIN(0.08),             // faint texture: GRAIN, SCANLINES, DOTS, RAIN, STARS
+  art: { image: 'art/themes/midnight.webp', position: 'center top', size: 'cover' },
+})
+```
+
+- **Ids never change** once released: people's saved choice points at the id. Retire a theme by mapping its id to
+  another in `RETIRED`.
+- **Custom art:** put the image in `art/themes/` (WebP or JPEG, about 1200 px wide, under 300 KB) and pass `art`.
+  It's drawn behind everything, under the texture, so keep it quiet enough for text to read over it.
+- **Popcorn Pick's ticket and bucket** can match the theme too: add any of the `POPCORN_ART` colors to `art`
+  (`art: { ticketPaper: '#e8b84a', ticketInk: '#1a1405' }`).
+- Everything becomes CSS variables (`--accent`, `--card-edge`, `--r-lg`, `--font-display`, `--bg-art`, …) set on
+  the page, so the CSS never needs to change for a new theme.
+- Fonts must be from Google Fonts (free licenses). Only the ones a theme uses are downloaded.
+
+## How themes work
 
 One theme for the whole app (`settings.theme`), picked in Settings → Themes. Add or move themes in the
 `THEME_GROUPS` list in `js/themes.js`. Never change a theme's id; saved choices point at it.
@@ -234,10 +324,10 @@ Settings → Export Backup saves a copy.
   original in `base`, which Start fresh restores.
 - **Saved for Later** (Popcorn tab): swipe left removes, swipe right moves it to the watch history as a Popcorn Pick.
 - Logged movies that aren't on a table use the category id `off-menu` ("Off the menu").
-- Backups and data from the account are checked and repaired before use (`sanitize()` in `store.js`): broken
+- Backups and data from the account are checked and repaired before use (`sanitize()` in `js/store/migrate.js`): broken
   entries are dropped, long text is trimmed, list sizes are capped.
-- Version 1 and 2 data upgrade automatically. To change the shape again, bump `CURRENT_VERSION` in `store.js`
-  and add a step in `migrate()`.
+- Version 1 and 2 data upgrade automatically. To change the shape again, bump `CURRENT_VERSION` in
+  `js/store/migrate.js` and add a step in `migrate()`.
 
 ## Rules the app follows
 

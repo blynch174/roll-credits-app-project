@@ -26,7 +26,10 @@ const firstFilled = (f) => {
 
 test('a fresh install starts with the starter festivals and saves them', () => {
   const s = store.getState();
-  assert.deepEqual(s.festivals.map((f) => f.id), STARTER_FESTIVALS);
+  assert.deepEqual(
+    s.festivals.map((f) => f.id),
+    STARTER_FESTIVALS,
+  );
   assert.equal(s.version, 3);
   assert.equal(s.history.length, 0);
   assert.ok(store.isPristine());
@@ -54,8 +57,29 @@ test('version 1 data (one Halloween menu) upgrades to the current format', () =>
     version: 1,
     activeMenu: 'm1',
     settings: { diceMode: 'physical', slotMode: 'keep' },
-    menus: [{ id: 'm1', categories: [{ id: 'c1', name: 'Slashers', color: 'crimson', slots: [{ id: 'x', title: 'Halloween', year: 1978 }] }] }],
-    season: { watched: [{ id: 'w1', categoryId: 'c1', categoryName: 'Slashers', movieId: 'x', title: 'Halloween', year: 1978, slotIndex: 0, date: '2025-10-31T20:00:00Z', rating: 5 }] },
+    menus: [
+      {
+        id: 'm1',
+        categories: [
+          { id: 'c1', name: 'Slashers', color: 'crimson', slots: [{ id: 'x', title: 'Halloween', year: 1978 }] },
+        ],
+      },
+    ],
+    season: {
+      watched: [
+        {
+          id: 'w1',
+          categoryId: 'c1',
+          categoryName: 'Slashers',
+          movieId: 'x',
+          title: 'Halloween',
+          year: 1978,
+          slotIndex: 0,
+          date: '2025-10-31T20:00:00Z',
+          rating: 5,
+        },
+      ],
+    },
   };
   localStorage.setItem(KEY, JSON.stringify(v1));
   const s = store.load();
@@ -83,7 +107,11 @@ test('importJSON rejects text that is not Roll Credits data', () => {
   assert.equal(store.importJSON('not json'), false);
   assert.equal(store.importJSON('{"hello": "world"}'), false);
   assert.equal(store.importJSON(JSON.stringify({ version: 3, festivals: 'nope', history: [], settings: {} })), false);
-  assert.deepEqual(store.festivals().map((f) => f.id), STARTER_FESTIVALS, 'a rejected import changes nothing');
+  assert.deepEqual(
+    store.festivals().map((f) => f.id),
+    STARTER_FESTIVALS,
+    'a rejected import changes nothing',
+  );
 });
 
 test('importJSON drops broken entries and trims oversized text', () => {
@@ -96,7 +124,10 @@ test('importJSON drops broken entries and trims oversized text', () => {
   d.festivals[0].name = 'N'.repeat(1000);
   assert.equal(store.importJSON(JSON.stringify(d)), true);
   const s = store.getState();
-  assert.deepEqual(s.history.map((e) => e.id), ['ok']);
+  assert.deepEqual(
+    s.history.map((e) => e.id),
+    ['ok'],
+  );
   assert.equal(s.history[0].rating, 5, 'ratings are clamped to 0-5');
   assert.equal(s.history[0].notes.length, 4000);
   assert.equal(s.festivals[0].name.length, 300);
@@ -106,7 +137,10 @@ test('an import with no festivals gets the starter set back', () => {
   const d = JSON.parse(store.exportJSON());
   d.festivals = [];
   store.importJSON(JSON.stringify(d));
-  assert.deepEqual(store.festivals().map((f) => f.id), STARTER_FESTIVALS);
+  assert.deepEqual(
+    store.festivals().map((f) => f.id),
+    STARTER_FESTIVALS,
+  );
 });
 
 // ---------- Watching and history ----------

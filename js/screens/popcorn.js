@@ -7,15 +7,14 @@ import { posterImg, linksHTML, infoBlock, catalogMovie, scareHTML, watchSlot } f
 import * as streaming from '../streaming.js';
 import { randInt, wait } from '../dice.js';
 import { $, $$, esc, toast, attachSwipe, openSheet, closeSheet } from '../ui.js';
+import { reducedMotion } from '../util.js';
 
 const MOOD_MIN = 10; // only offer moods with at least this many movies
-let moods = new Set(); // empty = any mood. Several = movies with ANY of them (and/or).
+const moods = new Set(); // empty = any mood. Several = movies with ANY of them (and/or).
 let current = null; // the movie on the ticket
 let currentMoods = []; // the moods selected when it was popped
 let busy = false;
 let servicesOnly = false; // "My Services Only": shown once someone has picked their services in Settings
-
-const reducedMotion = () => window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 // A puffy popcorn kernel.
 const KERNEL = `<svg viewBox="0 0 40 36" aria-hidden="true">
@@ -50,7 +49,14 @@ function ticketHTML(m) {
       ${scareHTML(m, 't-scare')}
       ${watchSlot(m, true)}
       ${m.directors && m.directors.length ? `<p class="t-dir">Directed by ${esc(m.directors.join(', '))}</p>` : ''}
-      ${m.moodTone && m.moodTone.length ? `<p class="t-moods">${[...new Set([...moods, ...m.moodTone].filter((t) => m.moodTone.includes(t)))].slice(0, 3).map((t) => `<span>${esc(t)}</span>`).join('')}</p>` : ''}
+      ${
+        m.moodTone && m.moodTone.length
+          ? `<p class="t-moods">${[...new Set([...moods, ...m.moodTone].filter((t) => m.moodTone.includes(t)))]
+              .slice(0, 3)
+              .map((t) => `<span>${esc(t)}</span>`)
+              .join('')}</p>`
+          : ''
+      }
       ${m.overview ? `<p class="t-overview">${esc(m.overview)}</p>` : ''}
       ${linksHTML(m)}
     </div></div>`;
@@ -91,7 +97,8 @@ export async function renderPopcorn() {
       const chip = e.target.closest('.pp-chip');
       if (chip && !busy) {
         const t = chip.dataset.mood;
-        if (!t) moods.clear(); // "Any" clears the selection
+        if (!t)
+          moods.clear(); // "Any" clears the selection
         else if (moods.has(t)) moods.delete(t);
         else moods.add(t);
         drawMoods();
@@ -116,13 +123,17 @@ export async function renderPopcorn() {
       if (row) savedSheet(row.dataset.id);
     });
     root.addEventListener('keydown', (e) => {
-      if ((e.key === 'Enter' || e.key === ' ') && e.target.id === 'pp-bucket') { e.preventDefault(); popcorn(root); }
+      if ((e.key === 'Enter' || e.key === ' ') && e.target.id === 'pp-bucket') {
+        e.preventDefault();
+        popcorn(root);
+      }
     });
   }
 
   await catalog.load();
   if (!catalog.isReady()) {
-    $('#pp-moods', root).innerHTML = '<p class="hint">Popcorn Pick needs to download the movie list once. Connect to the internet and try again.</p>';
+    $('#pp-moods', root).innerHTML =
+      '<p class="hint">Popcorn Pick needs to download the movie list once. Connect to the internet and try again.</p>';
     $('#pp-bucket', root).classList.add('disabled');
     return;
   }
@@ -142,12 +153,17 @@ function drawServices() {
 function drawMoods() {
   const box = $('#pp-moods');
   if (!box || !catalog.isReady()) return;
-  const list = catalog.moodCounts().filter(([, n]) => n >= MOOD_MIN).map(([t]) => t).sort();
-  box.innerHTML = [null, ...list].map((t) => {
-    const on = t ? moods.has(t) : moods.size === 0;
-    return `<button type="button" class="pp-chip ${on ? 'on' : ''}" data-mood="${esc(t || '')}" aria-pressed="${on}">${esc(t || 'Any')}</button>`;
-  }
-  ).join('');
+  const list = catalog
+    .moodCounts()
+    .filter(([, n]) => n >= MOOD_MIN)
+    .map(([t]) => t)
+    .sort();
+  box.innerHTML = [null, ...list]
+    .map((t) => {
+      const on = t ? moods.has(t) : moods.size === 0;
+      return `<button type="button" class="pp-chip ${on ? 'on' : ''}" data-mood="${esc(t || '')}" aria-pressed="${on}">${esc(t || 'Any')}</button>`;
+    })
+    .join('');
 }
 
 function showTicket(root, movie, animate) {
@@ -160,8 +176,12 @@ function showTicket(root, movie, animate) {
   const ticket = $('#pp-ticket', root);
   if (animate && !reducedMotion() && ticket.animate) {
     ticket.animate(
-      [{ transform: 'scale(.4) rotate(-6deg)', opacity: 0 }, { transform: 'scale(1.04) rotate(1deg)', opacity: 1, offset: 0.7 }, { transform: 'none', opacity: 1 }],
-      { duration: 420, easing: 'cubic-bezier(.2,.9,.3,1.2)' }
+      [
+        { transform: 'scale(.4) rotate(-6deg)', opacity: 0 },
+        { transform: 'scale(1.04) rotate(1deg)', opacity: 1, offset: 0.7 },
+        { transform: 'none', opacity: 1 },
+      ],
+      { duration: 420, easing: 'cubic-bezier(.2,.9,.3,1.2)' },
     );
   }
   $('#pp-actions', root).hidden = false;
@@ -182,18 +202,25 @@ function drawSaved() {
   const box = $('#pp-saved');
   if (!box) return;
   const list = store.savedPicks();
-  if (!list.length) { box.innerHTML = ''; return; }
+  if (!list.length) {
+    box.innerHTML = '';
+    return;
+  }
   box.innerHTML = `
     <h2 class="section-title">Saved for Later</h2>
     <div class="saved-list" id="pp-saved-list">
-      ${list.map((s) => `
+      ${list
+        .map(
+          (s) => `
         <div class="swipe-row">
           <div class="swipe-right" aria-hidden="true">Watched</div>
           <button type="button" class="swipe-del" tabindex="-1">Delete</button>
           <button type="button" class="swipe-item saved-item" data-id="${esc(s.movieId)}">
             <span class="si-title">${esc(s.title)}</span>${s.year ? `<span class="si-year">${esc(String(s.year))}</span>` : ''}
           </button>
-        </div>`).join('')}
+        </div>`,
+        )
+        .join('')}
     </div>`;
   attachSwipe($('#pp-saved-list'), removeSavedRow, watchSavedRow);
 }
@@ -222,8 +249,22 @@ function savedSheet(id) {
     title: m.releaseYear ? `${m.title} (${m.releaseYear})` : m.title,
     body: infoBlock(m),
     actions: [
-      { label: 'Remove', kind: 'ghost', onClick: () => { closeSheet(); removeSavedRow(id); } },
-      { label: 'Watch it', kind: 'primary', onClick: () => { closeSheet(); watchSavedRow(id); } },
+      {
+        label: 'Remove',
+        kind: 'ghost',
+        onClick: () => {
+          closeSheet();
+          removeSavedRow(id);
+        },
+      },
+      {
+        label: 'Watch it',
+        kind: 'primary',
+        onClick: () => {
+          closeSheet();
+          watchSavedRow(id);
+        },
+      },
     ],
   });
 }
@@ -232,7 +273,8 @@ async function popcorn(root) {
   if (busy) return;
   if (!catalog.isReady()) return;
   const movie = pickMovie();
-  if (!movie) return toast(useServices() ? 'None of those are on your services right now.' : 'No movies match those moods.');
+  if (!movie)
+    return toast(useServices() ? 'None of those are on your services right now.' : 'No movies match those moods.');
   busy = true;
   current = movie;
   currentMoods = [...moods].sort();
@@ -248,7 +290,10 @@ async function popcorn(root) {
   $('#pp-tap', root).hidden = true;
 
   if (!reducedMotion()) await popAnimation(stage, bucket);
-  if (!root.isConnected || !$('#pp-stage', root)) { busy = false; return; }
+  if (!root.isConnected || !$('#pp-stage', root)) {
+    busy = false;
+    return;
+  }
   showTicket(root, movie, true);
   busy = false;
 }
@@ -257,8 +302,14 @@ async function popcorn(root) {
 async function popAnimation(stage, bucket) {
   const W = stage.clientWidth;
   bucket.animate(
-    [{ transform: 'rotate(0)' }, { transform: 'rotate(-6deg)' }, { transform: 'rotate(5deg)' }, { transform: 'rotate(-3deg)' }, { transform: 'rotate(0)' }],
-    { duration: 450 }
+    [
+      { transform: 'rotate(0)' },
+      { transform: 'rotate(-6deg)' },
+      { transform: 'rotate(5deg)' },
+      { transform: 'rotate(-3deg)' },
+      { transform: 'rotate(0)' },
+    ],
+    { duration: 450 },
   );
   await wait(250);
 
@@ -278,10 +329,14 @@ async function popAnimation(stage, bucket) {
     k.animate(
       [
         { transform: 'translate(-50%, 0) rotate(0) scale(.6)', opacity: 1 },
-        { transform: `translate(calc(-50% + ${dx * 0.6}px), -${up}px) rotate(${spin / 2}deg) scale(1)`, opacity: 1, offset: 0.45 },
+        {
+          transform: `translate(calc(-50% + ${dx * 0.6}px), -${up}px) rotate(${spin / 2}deg) scale(1)`,
+          opacity: 1,
+          offset: 0.45,
+        },
         { transform: `translate(calc(-50% + ${dx}px), 60px) rotate(${spin}deg) scale(.9)`, opacity: 0 },
       ],
-      { duration: 900 + Math.random() * 300, delay: i * 90, easing: 'cubic-bezier(.2,.6,.4,1)', fill: 'forwards' }
+      { duration: 900 + Math.random() * 300, delay: i * 90, easing: 'cubic-bezier(.2,.6,.4,1)', fill: 'forwards' },
     );
   }
 
@@ -293,14 +348,13 @@ async function popAnimation(stage, bucket) {
       { transform: 'translate(-50%, -150px) scale(1.7) rotate(200deg)', offset: 0.6 },
       { transform: 'translate(-50%, -140px) scale(1.8) rotate(360deg)' },
     ],
-    { duration: 800, easing: 'cubic-bezier(.2,.7,.3,1)', fill: 'forwards' }
+    { duration: 800, easing: 'cubic-bezier(.2,.7,.3,1)', fill: 'forwards' },
   );
   await rise.finished;
   // a little wobble while it "heats up"
-  await gold.animate(
-    [{ filter: 'brightness(1)' }, { filter: 'brightness(1.4)' }, { filter: 'brightness(1)' }],
-    { duration: 300 }
-  ).finished;
+  await gold.animate([{ filter: 'brightness(1)' }, { filter: 'brightness(1.4)' }, { filter: 'brightness(1)' }], {
+    duration: 300,
+  }).finished;
 
   // burst: crumbs fly out and the kernel blows up and fades
   for (let i = 0; i < 10; i++) {
@@ -311,14 +365,20 @@ async function popAnimation(stage, bucket) {
     c.animate(
       [
         { transform: 'translate(-50%, -140px) scale(1)', opacity: 1 },
-        { transform: `translate(calc(-50% + ${Math.cos(a) * 90}px), ${-140 + Math.sin(a) * 90}px) scale(.3)`, opacity: 0 },
+        {
+          transform: `translate(calc(-50% + ${Math.cos(a) * 90}px), ${-140 + Math.sin(a) * 90}px) scale(.3)`,
+          opacity: 0,
+        },
       ],
-      { duration: 450, easing: 'ease-out', fill: 'forwards' }
+      { duration: 450, easing: 'ease-out', fill: 'forwards' },
     );
   }
   await gold.animate(
-    [{ transform: 'translate(-50%, -140px) scale(1.8) rotate(360deg)', opacity: 1 }, { transform: 'translate(-50%, -140px) scale(3.2) rotate(380deg)', opacity: 0 }],
-    { duration: 300, easing: 'ease-out', fill: 'forwards' }
+    [
+      { transform: 'translate(-50%, -140px) scale(1.8) rotate(360deg)', opacity: 1 },
+      { transform: 'translate(-50%, -140px) scale(3.2) rotate(380deg)', opacity: 0 },
+    ],
+    { duration: 300, easing: 'ease-out', fill: 'forwards' },
   ).finished;
   $$('.pp-kernel, .pp-crumb', stage).forEach((k) => k.remove());
 }

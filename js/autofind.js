@@ -24,23 +24,33 @@ export function attachAutofind(sheet, { festivalId, onPick } = {}) {
 
   catalog.loadCollection(festivalId);
 
-  const tmdbRow = (q) => (tmdb.available() && q.length >= 2
-    ? `<button type="button" class="af-item af-tmdb" data-tmdb-search="1">
+  const tmdbRow = (q) =>
+    tmdb.available() && q.length >= 2
+      ? `<button type="button" class="af-item af-tmdb" data-tmdb-search="1">
         <span class="af-title">Search TMDB for “${esc(q)}”</span>
       </button>`
-    : '');
+      : '';
 
   function show() {
     const q = titleEl.value.trim();
     if (picked && q !== picked.title) picked = null;
     tmdbRun++;
-    if (picked || q.length < 2) { box.hidden = true; box.innerHTML = ''; return; }
+    if (picked || q.length < 2) {
+      box.hidden = true;
+      box.innerHTML = '';
+      return;
+    }
     const results = catalog.search(q, festivalId);
-    const rows = results.map((m) => `
+    const rows =
+      results
+        .map(
+          (m) => `
       <button type="button" class="af-item" data-id="${esc(m.id)}">
         <span class="af-title">${esc(m.title)} <span class="year">(${m.releaseYear})</span></span>
         <span class="af-sub">${esc([m.originalTitle && m.originalTitle !== m.title ? m.originalTitle : '', (m.directors || []).join(', ')].filter(Boolean).join(' · '))}</span>
-      </button>`).join('') + tmdbRow(q);
+      </button>`,
+        )
+        .join('') + tmdbRow(q);
     box.innerHTML = rows;
     box.hidden = !rows;
   }
@@ -54,7 +64,8 @@ export function attachAutofind(sheet, { festivalId, onPick } = {}) {
     try {
       results = await tmdb.search(q, yearEl.value);
     } catch (e) {
-      if (run === tmdbRun) box.innerHTML = `<p class="af-note">Couldn't reach TMDB. Check your connection and try again.</p>${tmdbRow(q)}`;
+      if (run === tmdbRun)
+        box.innerHTML = `<p class="af-note">Couldn't reach TMDB. Check your connection and try again.</p>${tmdbRow(q)}`;
       return;
     }
     if (run !== tmdbRun) return;
@@ -62,9 +73,10 @@ export function attachAutofind(sheet, { festivalId, onPick } = {}) {
       box.innerHTML = '<p class="af-note">Nothing on TMDB by that name. You can still save it as typed.</p>';
       return;
     }
-    box.innerHTML = results.map((r) => {
-      const inCat = catalog.byTmdbId(r.tmdbId);
-      return `
+    box.innerHTML = results
+      .map((r) => {
+        const inCat = catalog.byTmdbId(r.tmdbId);
+        return `
       <button type="button" class="af-item af-hit" data-tmdb="${r.tmdbId}">
         ${r.posterPath ? `<img class="af-poster" src="${POSTER}${esc(r.posterPath)}" alt="" loading="lazy">` : '<span class="af-poster"></span>'}
         <span class="af-text">
@@ -72,7 +84,8 @@ export function attachAutofind(sheet, { festivalId, onPick } = {}) {
           <span class="af-sub">${inCat ? 'In the catalog' : esc(r.overview || '')}</span>
         </span>
       </button>`;
-    }).join('');
+      })
+      .join('');
   }
 
   async function pickTmdb(tmdbId) {
@@ -84,7 +97,7 @@ export function attachAutofind(sheet, { festivalId, onPick } = {}) {
     try {
       m = await tmdb.details(tmdbId);
     } catch (e) {
-      if (run === tmdbRun) box.innerHTML = "<p class=\"af-note\">Couldn't reach TMDB. Try again in a moment.</p>";
+      if (run === tmdbRun) box.innerHTML = '<p class="af-note">Couldn\'t reach TMDB. Try again in a moment.</p>';
       return;
     }
     if (run !== tmdbRun || !m) return;
@@ -117,12 +130,25 @@ export function attachAutofind(sheet, { festivalId, onPick } = {}) {
     if (v !== yearEl.value) yearEl.value = v;
   });
   // Moving into the year box hides the suggestions so they don't cover it.
-  yearEl.addEventListener('focus', () => { if (!box.querySelector('.af-hit, .af-note')) { box.hidden = true; } });
-  titleEl.addEventListener('focus', () => { if (titleEl.value.trim().length >= 2 && box.hidden && !picked) show(); });
-  if (!catalog.isReady()) catalog.onReady(() => { if (document.activeElement === titleEl) show(); });
+  yearEl.addEventListener('focus', () => {
+    if (!box.querySelector('.af-hit, .af-note')) {
+      box.hidden = true;
+    }
+  });
+  titleEl.addEventListener('focus', () => {
+    if (titleEl.value.trim().length >= 2 && box.hidden && !picked) show();
+  });
+  if (!catalog.isReady())
+    catalog.onReady(() => {
+      if (document.activeElement === titleEl) show();
+    });
 
   return (commit = false) => {
-    if (picked && titleEl.value.trim() === picked.title && String(yearEl.value || '') === String(picked.releaseYear || '')) {
+    if (
+      picked &&
+      titleEl.value.trim() === picked.title &&
+      String(yearEl.value || '') === String(picked.releaseYear || '')
+    ) {
       if (commit && String(picked.id).startsWith('tmdb-') && !catalog.byTmdbId(picked.tmdbId)) {
         store.addCustomMovie(picked);
         sync.requestMovie(picked);

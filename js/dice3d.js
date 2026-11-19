@@ -2,6 +2,8 @@
 // Nothing here downloads until 3D dice are actually wanted, so Flat mode stays light.
 // If 3D can't start (no WebGL, offline on first use), rolls quietly fall back to the flat dice.
 
+import { reducedMotion } from './util.js';
+
 const LIB = '../vendor/dice-box/dice-box.es.min.js';
 const SUPPORTED = [4, 6, 8, 12, 20]; // coin (2) uses the CSS coin instead
 const INIT_TIMEOUT = 15000;
@@ -16,8 +18,6 @@ export const supports = (sides) => SUPPORTED.includes(sides);
 export const hasFailed = () => failed;
 export const isLoaded = () => !!box;
 
-const reducedMotion = () => window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
 function webglAvailable() {
   try {
     const c = document.createElement('canvas');
@@ -27,7 +27,8 @@ function webglAvailable() {
   }
 }
 
-const withTimeout = (p, ms) => Promise.race([p, new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), ms))]);
+const withTimeout = (p, ms) =>
+  Promise.race([p, new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), ms))]);
 
 // Starts loading the library and physics. Safe to call many times.
 export function prepare() {
@@ -59,7 +60,7 @@ export function prepare() {
       box.hide();
       return true;
     }),
-    INIT_TIMEOUT
+    INIT_TIMEOUT,
   ).catch(() => {
     stage.hidden = true;
     failed = true;

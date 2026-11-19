@@ -5,10 +5,13 @@ import * as store from './store.js';
 import { iconSVG } from './icons.js';
 import { $, esc } from './ui.js';
 
-const DIE = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect class="s" x="3.5" y="3.5" width="17" height="17" rx="4"/><circle class="b" cx="8.5" cy="8.5" r="1.5"/><circle class="b" cx="12" cy="12" r="1.5"/><circle class="b" cx="15.5" cy="15.5" r="1.5"/></svg>';
+const DIE =
+  '<svg viewBox="0 0 24 24" aria-hidden="true"><rect class="s" x="3.5" y="3.5" width="17" height="17" rx="4"/><circle class="b" cx="8.5" cy="8.5" r="1.5"/><circle class="b" cx="12" cy="12" r="1.5"/><circle class="b" cx="15.5" cy="15.5" r="1.5"/></svg>';
 const LIST = '<svg viewBox="0 0 24 24" aria-hidden="true"><path class="s" d="M4 6h16M4 12h16M4 18h16"/></svg>';
-const TICKET = '<svg viewBox="0 0 24 24" aria-hidden="true"><path class="s" d="M3 7a2 2 0 0 0 2-2h14a2 2 0 0 0 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 0-2 2H5a2 2 0 0 0-2-2v-3a2 2 0 0 0 0-4z"/><path class="s" d="M9 9h6M9 12h6M9 15h4"/></svg>';
-const GEAR = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle class="s" cx="12" cy="12" r="3.2"/><path class="s" d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/></svg>';
+const TICKET =
+  '<svg viewBox="0 0 24 24" aria-hidden="true"><path class="s" d="M3 7a2 2 0 0 0 2-2h14a2 2 0 0 0 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 0-2 2H5a2 2 0 0 0-2-2v-3a2 2 0 0 0 0-4z"/><path class="s" d="M9 9h6M9 12h6M9 15h4"/></svg>';
+const GEAR =
+  '<svg viewBox="0 0 24 24" aria-hidden="true"><circle class="s" cx="12" cy="12" r="3.2"/><path class="s" d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/></svg>';
 
 const STEPS = [
   {
@@ -74,7 +77,9 @@ function render() {
 function close() {
   const el = $('#tutorial');
   el.classList.remove('show');
-  setTimeout(() => { el.hidden = true; }, 200);
+  setTimeout(() => {
+    el.hidden = true;
+  }, 200);
   store.setSetting('tutorialSeen', true);
   document.removeEventListener('keydown', onKey);
   const cb = onDone;
@@ -84,8 +89,13 @@ function close() {
 
 function onKey(e) {
   if (e.key === 'Escape') close();
-  else if (e.key === 'ArrowRight' && step < STEPS.length - 1) { step++; render(); }
-  else if (e.key === 'ArrowLeft' && step > 0) { step--; render(); }
+  else if (e.key === 'ArrowRight' && step < STEPS.length - 1) {
+    step++;
+    render();
+  } else if (e.key === 'ArrowLeft' && step > 0) {
+    step--;
+    render();
+  }
 }
 
 export function startTutorial(done) {
@@ -104,10 +114,15 @@ export function initTutorial() {
     if (!b) return;
     const act = b.dataset.act;
     if (act === 'skip') close();
-    else if (act === 'back') { step--; render(); }
-    else if (act === 'next') {
+    else if (act === 'back') {
+      step--;
+      render();
+    } else if (act === 'next') {
       if (step === STEPS.length - 1) close();
-      else { step++; render(); }
+      else {
+        step++;
+        render();
+      }
     }
   });
 }

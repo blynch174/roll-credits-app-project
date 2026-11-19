@@ -11,7 +11,7 @@ import * as official from '../official.js';
 import { $, $$, esc, toast, nav, openSheet, closeSheet, confirmSheet, syncSeg, dieChips, wireChips } from '../ui.js';
 import { renderTables } from './tables.js';
 import { reviewSheet } from './updates.js';
-import { draftSettingsHTML, wireDraftSettings, closeDraftEditor } from './admin-official.js';
+import { loadedAdmin } from '../admin-loader.js';
 
 let part = 'tables'; // 'tables' | 'settings'
 
@@ -42,10 +42,10 @@ function renderFestivalSettings() {
       <div><p class="fest-name">${esc(f.name)}</p><p class="fest-sub">${diceSummary(f)}${f.builtIn ? ' · Official' : ''}</p></div>
     </div>`;
   if (f.draftInfo) {
-    $('#fest-card').innerHTML = head + draftSettingsHTML(f);
+    $('#fest-card').innerHTML = head + loadedAdmin().festivals.draftSettingsHTML(f);
     $('#btn-look').addEventListener('click', () => lookSheet(f.id));
     $('#btn-dice').addEventListener('click', () => diceSheet(f.id));
-    wireDraftSettings(f);
+    loadedAdmin().festivals.wireDraftSettings(f);
     return;
   }
   const upd = official.updateFor(f);
@@ -63,34 +63,50 @@ function renderFestivalSettings() {
   const look = $('#btn-look');
   if (look) look.addEventListener('click', () => lookSheet(f.id));
   $('#btn-dice').addEventListener('click', () => diceSheet(f.id));
-  $('#btn-fresh').addEventListener('click', () => confirmSheet(
-    'Start fresh?',
-    `Every movie in ${f.name} goes back to unseen, and slots that moved on to a sequel go back to the original. Your watch history isn't touched.`,
-    'Start fresh',
-    () => { store.startFresh(f.id); nav.render(); toast(`${f.name} starts fresh.`); }
-  ));
+  $('#btn-fresh').addEventListener('click', () =>
+    confirmSheet(
+      'Start fresh?',
+      `Every movie in ${f.name} goes back to unseen, and slots that moved on to a sequel go back to the original. Your watch history isn't touched.`,
+      'Start fresh',
+      () => {
+        store.startFresh(f.id);
+        nav.render();
+        toast(`${f.name} starts fresh.`);
+      },
+    ),
+  );
   const restore = $('#btn-restore');
-  if (restore) restore.addEventListener('click', () => confirmSheet(
-    'Restore default tables?',
-    `${f.name}'s categories, movies, and dice go back to the latest official version. Any movies you swapped in are removed. Your watch history isn't touched.`,
-    'Restore',
-    () => { store.restoreBuiltIn(f.id, official.get(f.id)); nav.render(); toast('Default tables restored.'); },
-    true
-  ));
+  if (restore)
+    restore.addEventListener('click', () =>
+      confirmSheet(
+        'Restore default tables?',
+        `${f.name}'s categories, movies, and dice go back to the latest official version. Any movies you swapped in are removed. Your watch history isn't touched.`,
+        'Restore',
+        () => {
+          store.restoreBuiltIn(f.id, official.get(f.id));
+          nav.render();
+          toast('Default tables restored.');
+        },
+        true,
+      ),
+    );
   const del = $('#btn-delete-fest');
-  if (del) del.addEventListener('click', () => confirmSheet(
-    `Delete ${f.name}?`,
-    f.builtIn
-      ? 'Movies you watched stay in your watch history. You can add it back from the festival menu.'
-      : 'Its tables are deleted. Movies you watched stay in your watch history.',
-    'Delete festival',
-    () => {
-      store.deleteFestival(f.id);
-      nav.go('home');
-      toast(`${f.name} deleted.`);
-    },
-    true
-  ));
+  if (del)
+    del.addEventListener('click', () =>
+      confirmSheet(
+        `Delete ${f.name}?`,
+        f.builtIn
+          ? 'Movies you watched stay in your watch history. You can add it back from the festival menu.'
+          : 'Its tables are deleted. Movies you watched stay in your watch history.',
+        'Delete festival',
+        () => {
+          store.deleteFestival(f.id);
+          nav.go('home');
+          toast(`${f.name} deleted.`);
+        },
+        true,
+      ),
+    );
 }
 
 function lookSheet(fId) {
@@ -106,7 +122,9 @@ function lookSheet(fId) {
     actions: [
       { label: 'Cancel', kind: 'ghost', onClick: closeSheet },
       {
-        label: 'Save', kind: 'primary', onClick: (s) => {
+        label: 'Save',
+        kind: 'primary',
+        onClick: (s) => {
           const name = $('#l-name', s).value.trim();
           if (!name) return toast('Give it a name.');
           store.updateFestivalLook(fId, { name, icon });
@@ -117,7 +135,8 @@ function lookSheet(fId) {
     ],
   });
   $('#l-icon', sheet).addEventListener('click', (e) => {
-    const b = e.target.closest('.icon-pick'); if (!b) return;
+    const b = e.target.closest('.icon-pick');
+    if (!b) return;
     icon = b.dataset.i;
     $$('#l-icon .icon-pick', sheet).forEach((x) => x.classList.toggle('on', x === b));
   });
@@ -144,9 +163,15 @@ function diceSheet(fId) {
     actions: [
       { label: 'Cancel', kind: 'ghost', onClick: closeSheet },
       {
-        label: 'Save', kind: 'primary', onClick: () => {
+        label: 'Save',
+        kind: 'primary',
+        onClick: () => {
           const loss = store.festivalDiceLoss(f, mode, catDie);
-          const apply = () => { store.setFestivalDice(fId, mode, catDie); nav.render(); toast('Dice updated.'); };
+          const apply = () => {
+            store.setFestivalDice(fId, mode, catDie);
+            nav.render();
+            toast('Dice updated.');
+          };
           closeSheet();
           if (loss.categories > 0) {
             confirmSheet(
@@ -154,7 +179,7 @@ function diceSheet(fId) {
               `This removes ${loss.categories} categor${loss.categories === 1 ? 'y' : 'ies'} and the ${loss.movies} movie${loss.movies === 1 ? '' : 's'} in ${loss.categories === 1 ? 'it' : 'them'} from this festival. Your watch history is not affected.`,
               'Remove and switch',
               apply,
-              true
+              true,
             );
           } else apply();
         },
@@ -170,22 +195,32 @@ function diceSheet(fId) {
       ? `${loss.categories} categor${loss.categories === 1 ? 'y' : 'ies'} (${loss.movies} movie${loss.movies === 1 ? '' : 's'}) will be removed if you save.`
       : count > f.categories.length
         ? `${count - f.categories.length} empty categor${count - f.categories.length === 1 ? 'y' : 'ies'} will be added.`
-        : mode === 'one' ? 'Rolls one die from a single list.' : `${count} categories.`;
+        : mode === 'one'
+          ? 'Rolls one die from a single list.'
+          : `${count} categories.`;
   };
   $('#d-mode', sheet).addEventListener('click', (e) => {
-    const b = e.target.closest('button'); if (!b) return;
-    mode = b.dataset.value; update();
+    const b = e.target.closest('button');
+    if (!b) return;
+    mode = b.dataset.value;
+    update();
   });
-  wireChips($('#d-cat-wrap', sheet), (n) => { catDie = n; update(); });
+  wireChips($('#d-cat-wrap', sheet), (n) => {
+    catDie = n;
+    update();
+  });
   update();
 }
 
 export function initEditor() {
   $('#edit-tab').addEventListener('click', (e) => {
-    const b = e.target.closest('button'); if (!b) return;
+    const b = e.target.closest('button');
+    if (!b) return;
     part = b.dataset.value;
     renderEditor();
     window.scrollTo(0, 0);
   });
-  $('#edit-done').addEventListener('click', () => (store.currentDraft() ? closeDraftEditor() : nav.back()));
+  $('#edit-done').addEventListener('click', () =>
+    store.currentDraft() ? loadedAdmin().festivals.closeDraftEditor() : nav.back(),
+  );
 }

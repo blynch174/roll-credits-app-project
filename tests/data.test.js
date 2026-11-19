@@ -70,10 +70,11 @@ test('built-in festivals are well formed', () => {
 // because one failed import stops every module that depends on it.
 test('every app module is in the service worker offline list, and every listed file exists', () => {
   const sw = read('sw.js');
+  // Every module must be in FILES (downloaded at install) or ADMIN_ONLY (downloaded when an admin opens Admin Tools).
   const listed = [...sw.matchAll(/'\.\/([^']+)'/g)].map((m) => m[1]).filter(Boolean);
   for (const f of listed) assert.ok(existsSync(path.join(ROOT, f)), `sw.js lists ${f}, which doesn't exist`);
   const missing = walk('js', '.js').filter((f) => !listed.includes(f));
-  assert.deepEqual(missing, [], 'add these to FILES in sw.js (and bump CACHE_VERSION)');
+  assert.deepEqual(missing, [], 'add these to FILES (or ADMIN_ONLY) in sw.js, and bump CACHE_VERSION');
 });
 
 test('the web app manifest parses and its icons exist', () => {

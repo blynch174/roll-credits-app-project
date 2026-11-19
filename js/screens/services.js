@@ -20,7 +20,14 @@ export function servicesSheet(after) {
         <div class="sv-grid" id="sv-grid"></div>`,
       actions: [
         { label: 'Cancel', kind: 'ghost', onClick: closeSheet },
-        { label: 'Clear All', kind: 'ghost', onClick: () => { chosen.clear(); draw(); } },
+        {
+          label: 'Clear All',
+          kind: 'ghost',
+          onClick: () => {
+            chosen.clear();
+            draw();
+          },
+        },
         {
           label: 'Save',
           kind: 'primary',
@@ -38,19 +45,28 @@ export function servicesSheet(after) {
     function draw() {
       const shown = all.filter((p) => chosen.has(p.id) || !q || p.name.toLowerCase().includes(q));
       const list = q ? shown : shown.filter((p, i) => chosen.has(p.id) || i < 40);
-      grid.innerHTML = list.map((p) => `
+      grid.innerHTML =
+        list
+          .map(
+            (p) => `
         <button type="button" class="sv-item${chosen.has(p.id) ? ' on' : ''}" data-id="${p.id}" aria-pressed="${chosen.has(p.id)}">
           ${p.logo ? `<img src="${p.logo}" alt="" loading="lazy" onerror="this.remove()">` : '<span class="sv-blank"></span>'}
           <span>${esc(p.name)}</span>
-        </button>`).join('') || '<p class="hint">No services match.</p>';
+        </button>`,
+          )
+          .join('') || '<p class="hint">No services match.</p>';
     }
     draw();
-    $('#sv-q', sheet).addEventListener('input', (e) => { q = e.target.value.trim().toLowerCase(); draw(); });
+    $('#sv-q', sheet).addEventListener('input', (e) => {
+      q = e.target.value.trim().toLowerCase();
+      draw();
+    });
     grid.addEventListener('click', (e) => {
       const b = e.target.closest('.sv-item');
       if (!b) return;
       const id = +b.dataset.id;
-      if (chosen.has(id)) chosen.delete(id); else chosen.add(id);
+      if (chosen.has(id)) chosen.delete(id);
+      else chosen.add(id);
       b.classList.toggle('on', chosen.has(id));
       b.setAttribute('aria-pressed', String(chosen.has(id)));
     });
