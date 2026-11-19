@@ -92,10 +92,7 @@ export function signInSheet(email = '') {
         <button type="button" class="link" id="a-forgot">Forgot password?</button>
         <button type="button" class="link" id="a-new">New here? Create an account</button>
       </div>`,
-    actions: [
-      { label: 'Cancel', kind: 'ghost', onClick: closeSheet },
-      { label: 'Sign In', kind: 'primary', id: 'a-go', onClick: (s) => submitSignIn(s) },
-    ],
+    actions: [{ label: 'Sign In', kind: 'primary', id: 'a-go', onClick: (s) => submitSignIn(s) }],
   });
   $('#a-forgot', sheet).addEventListener('click', () => resetSheet($('#a-email', sheet).value));
   $('#a-new', sheet).addEventListener('click', () => createSheet($('#a-email', sheet).value));
@@ -129,10 +126,7 @@ function createSheet(email = '') {
       ${field('a-pass2', 'Password again', 'password', 'new-password')}
       <p class="sheet-error" hidden></p>
       <div class="sheet-links"><button type="button" class="link" id="a-have">Already have an account? Sign in</button></div>`,
-    actions: [
-      { label: 'Cancel', kind: 'ghost', onClick: closeSheet },
-      { label: 'Create Account', kind: 'primary', id: 'a-go', onClick: (s) => submitCreate(s) },
-    ],
+    actions: [{ label: 'Create Account', kind: 'primary', id: 'a-go', onClick: (s) => submitCreate(s) }],
   });
   $('#a-have', sheet).addEventListener('click', () => signInSheet($('#a-email', sheet).value));
 }
@@ -211,7 +205,7 @@ function accountSheet() {
         <button type="button" class="row-btn danger" id="a-del"><span>Delete Account</span></button>
       </div>
       <p class="fine acct-uid">User ID <code>${esc(st.uid)}</code> <button type="button" class="link" id="a-copy">Copy</button></p>`,
-    actions: [{ label: 'Close', kind: 'ghost', onClick: closeSheet }, ...actions],
+    actions,
   });
   $('#a-pw', sheet).addEventListener('click', async () => {
     try {
@@ -301,7 +295,7 @@ export function chooseSideSheet(remote, done) {
         <button type="button" class="row-btn" id="c-device"><span>Use This Device's Data</span><small>Replaces what's in your account</small></button>
       </div>
 `,
-    actions: [],
+    closable: false, // a choice has to be made
     onClose: () => {
       if (!picked) setTimeout(() => chooseSideSheet(remote, done), 260);
     },

@@ -316,7 +316,6 @@ function resultAction(act, { fest, cat, idx, sequel, mode }) {
             rerollAll();
           },
         },
-        { label: 'Cancel', kind: 'ghost', onClick: closeSheet },
       ],
     });
   } else if (act === 'fill') {

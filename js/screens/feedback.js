@@ -28,7 +28,6 @@ export function feedbackSheet() {
       title: 'Send Feedback',
       body: '<p class="sheet-text">Sign in to send feedback. It keeps out spam, and lets us follow up if we have questions.</p>',
       actions: [
-        { label: 'Cancel', kind: 'ghost', onClick: closeSheet },
         {
           label: 'Sign In',
           kind: 'primary',
@@ -40,19 +39,12 @@ export function feedbackSheet() {
       ],
     });
   }
+  let sent = false;
   openSheet({
     title: 'Send Feedback',
     body: `<label class="field"><span class="label">What should we fix or add?</span>
       <textarea id="fb-text" rows="5" maxlength="2000" placeholder="Something broken, confusing, or missing…"></textarea></label>`,
     actions: [
-      {
-        label: 'Cancel',
-        kind: 'ghost',
-        onClick: () => {
-          draft = $('#fb-text').value;
-          closeSheet();
-        },
-      },
       {
         label: 'Send',
         kind: 'primary',
@@ -79,12 +71,17 @@ export function feedbackSheet() {
             draft = text;
             return toast("Couldn't send. Check your connection and try again.");
           }
+          sent = true;
           draft = '';
           closeSheet();
           toast('Thanks! Feedback sent.');
         },
       },
     ],
+    // Closing without sending keeps what was typed for next time.
+    onClose: () => {
+      if (!sent) draft = $('#fb-text').value;
+    },
   });
   const ta = $('#fb-text');
   ta.value = draft;

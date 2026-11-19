@@ -59,7 +59,6 @@ export function editMovieSheet(m, after) {
       <div class="field"><span class="label">Moods <em>up to 8</em></span>
         <div class="req-moods" id="em-moods">${all.map((t) => `<button type="button" data-mood="${esc(t)}" class="${moods.has(t) ? 'on' : ''}">${esc(t)}</button>`).join('')}</div></div>`,
     actions: [
-      { label: 'Cancel', kind: 'ghost', onClick: closeSheet },
       {
         label: 'Save',
         kind: 'primary',

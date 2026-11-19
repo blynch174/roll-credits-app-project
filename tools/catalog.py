@@ -43,7 +43,7 @@ COLLECTIONS = {  # festival id -> its list of movie ids (the app ranks these fir
 
 # Field order in data/all_movies.json
 OUT_KEYS = ['id', 'imdbId', 'imdbLink', 'tmdbId', 'tmdbType', 'title', 'originalTitle', 'releaseYear', 'type', 'runtimeMinutes',
-            'contentRating', 'countries', 'languages', 'genres', 'directors', 'posterPath', 'overview', 'moodTone', 'scariness',
+            'contentRating', 'countries', 'languages', 'genres', 'directors', 'posterPath', 'backdropPath', 'overview', 'moodTone', 'scariness',
             'comedy', 'franchise', 'seriesOrder', 'oscarCeremony', 'oscarNominationsTotal', 'oscarWinsTotal',
             'oscarNominationCategories', 'oscarWinCategories', 'oscarMajorNoms', 'oscarMajorWins']
 FACT_KEYS = ['originalTitle', 'runtimeMinutes', 'contentRating', 'countries', 'languages', 'genres', 'directors']
@@ -152,6 +152,7 @@ def movie_facts(tid):
         'genres': [GENRE_NAMES.get(g['name'], g['name']) for g in d.get('genres', [])],
         'directors': [c['name'] for c in (d.get('credits') or {}).get('crew', []) if c.get('job') == 'Director'],
         'posterPath': d.get('poster_path'),
+        'backdropPath': d.get('backdrop_path'),
         'overview': trim(d.get('overview')),
         'collection': {'id': col['id'], 'name': col['name']} if col else None,
         'imdbId': (d.get('external_ids') or {}).get('imdb_id') or d.get('imdb_id'),
@@ -169,7 +170,7 @@ def tv_facts(tid):
         'tmdbTitle': d.get('name'), 'tmdbYear': int(d['first_air_date'][:4]) if d.get('first_air_date') else None,
         'runtimeMinutes': (d.get('episode_run_time') or [None])[0], 'contentRating': rating,
         'genres': [g['name'] for g in d.get('genres', [])],
-        'posterPath': d.get('poster_path'), 'overview': trim(d.get('overview')),
+        'posterPath': d.get('poster_path'), 'backdropPath': d.get('backdrop_path'), 'overview': trim(d.get('overview')),
         'collection': None, 'source': 'tmdb', 'fetchedAt': time.strftime('%Y-%m-%d'),
     }
 
@@ -455,13 +456,15 @@ def cmd_fetch(args):
         if refresh:
             return True
         if f.get('source') == 'tmdb':
-            return False  # already has its details and poster
+            return 'backdropPath' not in f  # fetched before backdrops were saved: once more, by its known TMDB id
         return retry or not f.get('tmdbMissing')  # no match last time: skip unless asked to retry
     todo = [m for m in cur if needs(m)]
     print(f'Fetching {len(todo)} of {len(cur)} movies from TMDB…')
     missing = []
     for i, m in enumerate(todo, 1):
-        hit = find_on_tmdb(m)
+        old = facts.get(m['id'], {})
+        # A movie already matched keeps its match (a fresh search could land on a different movie)
+        hit = (old.get('tmdbType') or 'movie', old['tmdbId']) if old.get('source') == 'tmdb' and old.get('tmdbId') and not refresh else find_on_tmdb(m)
         f = None
         if hit:
             f = movie_facts(hit[1]) if hit[0] == 'movie' else tv_facts(hit[1])
@@ -469,7 +472,6 @@ def cmd_fetch(args):
             missing.append(m['id'])
             facts[m['id']] = {**facts.get(m['id'], {}), 'tmdbMissing': True}  # remembered, so the next run skips it
         else:
-            old = facts.get(m['id'], {})
             # keep earlier hand-entered values where TMDB has nothing
             for k in FACT_KEYS:
                 if f.get(k) in (None, [], '') and old.get(k) not in (None, [], ''):
@@ -665,6 +667,7 @@ def cmd_build(args):
         for k in ('countries', 'languages', 'genres', 'directors'):
             rec[k] = rec[k] or []
         rec['posterPath'] = f.get('posterPath')
+        rec['backdropPath'] = f.get('backdropPath')
         rec['overview'] = f.get('overview')
         rec['moodTone'] = rec['moodTone'] or []
         if not rec['franchise'] and m['id'] in auto:

@@ -87,7 +87,7 @@ export function editSlotSheet(fId, catId, index, after) {
   const cat = store.category(f, catId);
   const m = cat.slots[index];
   let getCatalogId = () => null;
-  const actions = [{ label: 'Cancel', kind: 'ghost', onClick: closeSheet }];
+  const actions = [];
   if (m) {
     actions.push({
       label: 'Clear Slot',
@@ -151,7 +151,6 @@ function editCategorySheet(fId, catId) {
       </div>
       <button type="button" class="btn danger-text" id="btn-clear-cat">Clear All Slots</button>`,
     actions: [
-      { label: 'Cancel', kind: 'ghost', onClick: closeSheet },
       {
         label: 'Save',
         kind: 'primary',

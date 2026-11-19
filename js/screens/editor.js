@@ -120,7 +120,6 @@ function lookSheet(fId) {
         <div class="icon-grid" id="l-icon">${RATING_ICONS.map((n) => `<button type="button" class="icon-pick ${n === icon ? 'on' : ''}" data-i="${n}" aria-label="${n}">${iconSVG(n)}</button>`).join('')}</div>
       </div>`,
     actions: [
-      { label: 'Cancel', kind: 'ghost', onClick: closeSheet },
       {
         label: 'Save',
         kind: 'primary',
@@ -161,7 +160,6 @@ function diceSheet(fId) {
       <p class="hint" id="d-hint"></p>
 `,
     actions: [
-      { label: 'Cancel', kind: 'ghost', onClick: closeSheet },
       {
         label: 'Save',
         kind: 'primary',

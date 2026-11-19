@@ -348,6 +348,12 @@ Settings → Export Backup saves a copy.
 - **Popcorn Pick** (Popcorn tab): one random movie from the whole catalog, optionally limited to a mood. Every movie
   has an equal chance and watched ones stay in the mix. Watched picks go under their own "Popcorn Pick" label
   (`festivalId: "popcorn"`) and are rated with popcorn.
+- **Sheets** all share one layout (`openSheet` in `js/ui/sheet.js`): the title and a ✕ at the top, the body
+  scrolling in between, and the buttons pinned at the bottom. The ✕ replaces Cancel and Close buttons; questions
+  that confirm something (delete, replace, publish) still get an explicit Cancel next to the action.
+  `closable: false` hides the ✕ when a choice has to be made.
+- **Movie details** show the movie's TMDB backdrop across the top (`backdropPath`), with the poster overlapping it.
+- **Watch history** is grouped by month, newest first, with a small poster on each row.
 - **Swipe a watched movie left** to delete it (same as *Rolled by mistake*), with Undo in the toast.
 - Removing from history: *Didn't finish* goes back to its slot and keeps the note, *Hated it* is removed
   from the table, *Rolled by mistake* is undone.

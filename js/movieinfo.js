@@ -2,7 +2,7 @@
 // Posters only exist after tools/catalog.py fetch has been run. Everything here hides itself when data is missing.
 
 import * as catalog from './catalog.js';
-import { esc, openSheet, closeSheet } from './ui.js';
+import { esc, openSheet } from './ui.js';
 import { iconSVG } from './icons.js';
 import * as sync from './sync.js';
 import * as streaming from './streaming.js';
@@ -142,10 +142,19 @@ export function initWatchSlots() {
   new MutationObserver(() => fillWatch()).observe(document.body, { childList: true, subtree: true });
 }
 
-// Poster + facts + summary + links, for sheets.
+// A wide still from the movie across the top of the sheet, fading into it. The poster overlaps its bottom edge.
+function backdropHTML(m) {
+  return m.backdropPath
+    ? `<div class="mi-backdrop"><img src="${IMG}w780${m.backdropPath}" alt="" decoding="async" onerror="this.parentNode.remove()"></div>`
+    : '';
+}
+
+// Backdrop + poster + facts + summary + links, for sheets. It goes first in the sheet so the backdrop sits under
+// the title.
 export function infoBlock(m) {
   if (!m) return '';
   return `
+    ${backdropHTML(m)}
     <div class="movie-info">
       ${posterImg(m, 'mi-poster', 'w185')}
       <div class="mi-text">
@@ -169,7 +178,6 @@ export function movieInfoSheet(m, onClose = null) {
   openSheet({
     title: `${m.title} (${m.releaseYear})`,
     body: infoBlock(m),
-    actions: [{ label: 'Close', kind: 'ghost', onClick: closeSheet }],
     onClose,
   });
 }

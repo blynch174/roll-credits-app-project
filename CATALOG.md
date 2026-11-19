@@ -6,7 +6,7 @@ files in `data/catalog/` by `tools/catalog.py`:
 | File | Who writes it | What's in it |
 |---|---|---|
 | `curation.json` | **You** | One line per movie: id, IMDb id, title, year, moods, scariness, comedy, franchise. Optional `"overrides"` |
-| `facts.json` | `fetch` | From TMDB: runtime, US rating, countries, languages, genres, directors, poster, summary |
+| `facts.json` | `fetch` | From TMDB: runtime, US rating, countries, languages, genres, directors, poster, backdrop, summary |
 | `oscars.json` | `oscars` | Oscar nominations and wins |
 
 The script only needs Python 3 (already on your Mac; check with `python3 --version` in the VS Code terminal).
@@ -14,7 +14,7 @@ The script only needs Python 3 (already on your Mac; check with `python3 --versi
 ## Automatic: GitHub Actions (recommended)
 
 `.github/workflows/catalog.yml` runs on every push. It fetches details and posters for movies that don't have them
-yet (everything that already has a poster is skipped), rebuilds `data/all_movies.json`, and commits both files
+yet (everything that already has them is skipped; movies fetched before backdrops were saved get fetched once more, by their known TMDB id), rebuilds `data/all_movies.json`, and commits both files
 back to the repo. Its own commit doesn't start it again.
 
 One-time setup: GitHub repo → **Settings → Secrets and variables → Actions → New repository secret**.

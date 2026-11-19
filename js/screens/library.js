@@ -111,7 +111,6 @@ function detailSheet(id) {
       <ol class="lib-cats">${e.cats.map((c) => `<li><span>${esc(c.name)}</span><small>${c.n}</small></li>`).join('')}</ol>`,
     actions: added
       ? [
-          { label: 'Close', kind: 'ghost', onClick: closeSheet },
           {
             label: 'Show It',
             kind: 'primary',
@@ -122,7 +121,6 @@ function detailSheet(id) {
           },
         ]
       : [
-          { label: 'Close', kind: 'ghost', onClick: closeSheet },
           {
             label: 'Add to My Festivals',
             kind: 'primary',

@@ -42,7 +42,6 @@ export function festivalSheet() {
           : '<button type="button" class="btn ghost big" id="btn-new-fest" disabled>Custom Festival Limit Reached</button>'
       }
       <button type="button" class="btn ghost big" id="btn-library">+ Browse Festivals${fresh ? `<span class="new-badge">${fresh} New</span>` : ''}</button>`,
-    actions: [{ label: 'Close', kind: 'ghost', onClick: closeSheet }],
   });
   const switchTo = (id) => {
     const changed = id !== store.activeFestival().id;

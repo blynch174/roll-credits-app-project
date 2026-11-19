@@ -19,7 +19,6 @@ export function servicesSheet(after) {
         <input type="search" id="sv-q" placeholder="Search services" autocomplete="off" autocorrect="off" spellcheck="false" enterkeyhint="search">
         <div class="sv-grid" id="sv-grid"></div>`,
       actions: [
-        { label: 'Cancel', kind: 'ghost', onClick: closeSheet },
         {
           label: 'Clear All',
           kind: 'ghost',

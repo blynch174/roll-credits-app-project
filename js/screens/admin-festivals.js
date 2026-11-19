@@ -123,7 +123,6 @@ function newFestivalSheet() {
         <div class="icon-grid" id="nf-icon">${RATING_ICONS.map((n) => `<button type="button" class="icon-pick ${n === icon ? 'on' : ''}" data-i="${n}" aria-label="${n}">${iconSVG(n)}</button>`).join('')}</div>
       </div>`,
     actions: [
-      { label: 'Cancel', kind: 'ghost', onClick: closeSheet },
       {
         label: 'Create Draft',
         kind: 'primary',
@@ -341,7 +340,6 @@ function shelfSheet(f) {
       <label class="field"><span class="label">Description</span>
         <input id="sh-blurb" type="text" maxlength="120" enterkeyhint="done" value="${esc(blurb)}" placeholder="One short line"></label>`,
     actions: [
-      { label: 'Cancel', kind: 'ghost', onClick: closeSheet },
       {
         label: 'Save',
         kind: 'primary',

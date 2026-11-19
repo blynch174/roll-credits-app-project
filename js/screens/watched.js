@@ -16,15 +16,15 @@ import {
   fmtDate,
   attachSwipe,
 } from '../ui.js';
-import { infoBlock, catalogMovie } from '../movieinfo.js';
+import { infoBlock, catalogMovie, posterImg } from '../movieinfo.js';
 import { autofindBox, attachAutofind } from '../autofind.js';
-import { localDay, today, dayToISO } from '../util.js';
+import { localDay, today, dayToISO, shortDate } from '../util.js';
 
 const blank = () => ({ q: '', festival: 'all', category: 'all', rating: 'any', year: 'all' });
 let filters = blank();
 
-// Row markup shared with the Roll screen.
-export function entryRow(e, showFestival) {
+// Row markup shared with the Roll screen. Under a month heading the date can leave out the year.
+export function entryRow(e, showFestival, underMonth = false) {
   const fest = store.festival(e.festivalId);
   const cat = fest && store.category(fest, e.categoryId);
   const color = swatchHex(cat ? cat.color : e.festivalId === store.POPCORN ? 'gold' : 'slate');
@@ -33,9 +33,10 @@ export function entryRow(e, showFestival) {
     <li class="swipe-row">
       <button type="button" class="swipe-del" tabindex="-1">Delete</button>
       <button type="button" class="watched-item swipe-item" data-id="${esc(e.id)}" style="--cat:${color}">
+        <span class="wi-poster">${posterImg(catalogMovie(e.catalogId), '', 'w92')}</span>
         <span class="wi-main">
           <span class="wi-title">${movieLabel(e)}</span>
-          <span class="wi-meta">${e.festivalId === store.NO_FEST ? `${esc(store.NO_FEST_NAME)} · ` : `${where}${esc(cat ? cat.name : e.categoryName)} · `}${fmtDate(e.date)}</span>
+          <span class="wi-meta">${e.festivalId === store.NO_FEST ? `${esc(store.NO_FEST_NAME)} · ` : `${where}${esc(cat ? cat.name : e.categoryName)} · `}${underMonth ? shortDate(e.date) : fmtDate(e.date)}</span>
           ${e.notes ? `<span class="wi-notes">${esc(e.notes)}</span>` : ''}
         </span>
         <span class="wi-rating">${e.rating ? ratingIcons(e.icon, e.rating) : '<span class="rate-me">Rate</span>'}</span>
@@ -130,6 +131,17 @@ export function renderWatched() {
   renderList();
 }
 
+// [['November 2026', entries], …], newest first (history is already in that order).
+function byMonth(list) {
+  const groups = new Map();
+  for (const e of list) {
+    const month = new Date(e.date).toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
+    if (!groups.has(month)) groups.set(month, []);
+    groups.get(month).push(e);
+  }
+  return [...groups];
+}
+
 function renderList() {
   const all = store.getState().history;
   const list = all.filter(matches);
@@ -150,7 +162,13 @@ function renderList() {
     return;
   }
   ul.innerHTML = list.length
-    ? list.map((e) => entryRow(e, filters.festival === 'all')).join('')
+    ? byMonth(list)
+        .map(
+          ([month, items]) =>
+            `<li class="month-head"><span>${month}</span><small>${items.length}</small></li>` +
+            items.map((e) => entryRow(e, filters.festival === 'all', true)).join(''),
+        )
+        .join('')
     : '<li class="empty-state">Nothing matches those filters.</li>';
   $$('.watched-item', ul).forEach((b) => b.addEventListener('click', () => entrySheet(b.dataset.id, renderList)));
   attachSwipe(ul, (id) => swipeDelete(id, () => nav.render()));
@@ -179,8 +197,8 @@ export function entrySheet(entryId, after) {
   const sheet = openSheet({
     title: e.title + (e.year ? ` (${e.year})` : ''),
     body: `
-      <p class="sheet-sub" id="e-sub">${subLine()}</p>
       ${infoBlock(catalogMovie(e.catalogId))}
+      <p class="sheet-sub" id="e-sub">${subLine()}</p>
       <div class="field-row">
         <label class="field"><span class="label">Festival</span>
           <select id="e-fest">${festOptions()}</select></label>
@@ -320,7 +338,6 @@ export function logSheet(after) {
       <label class="field"><span class="label">Notes</span>
         <textarea id="lg-notes" rows="2" maxlength="500" placeholder="Optional"></textarea></label>`,
     actions: [
-      { label: 'Cancel', kind: 'ghost', onClick: closeSheet },
       {
         label: 'Add to Watched List',
         kind: 'primary',

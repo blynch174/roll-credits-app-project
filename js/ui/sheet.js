@@ -6,17 +6,19 @@ import { esc } from '../util.js';
 
 let onSheetClose = null;
 
-export function openSheet({ title, body = '', actions = [], onClose = null }) {
+export function openSheet({ title, body = '', actions = [], onClose = null, closable = true }) {
   const sheet = $('#sheet');
-  // The sheet is a still frame; .sheet-scroll inside it does the scrolling. (A sheet that slides in and scrolls
-  // itself gets a misplaced scroll bar on iPhone.)
+  // A still frame: the title and ✕ at the top, the body scrolling in .sheet-scroll, and the buttons pinned at the
+  // bottom so they're always in reach. (A sheet that slides in and scrolls itself gets a misplaced scroll bar on
+  // iPhone.)
   sheet.innerHTML = `
     <div class="sheet-grip" aria-hidden="true"></div>
-    <div class="sheet-scroll">
+    <div class="sheet-head">
       <h3 class="sheet-title">${esc(title)}</h3>
-      <div class="sheet-body">${body}</div>
-      <div class="sheet-actions"></div>
-    </div>`;
+      ${closable ? '<button type="button" class="sheet-x" aria-label="Close">✕</button>' : ''}
+    </div>
+    <div class="sheet-scroll"><div class="sheet-body">${body}</div></div>
+    ${actions.length ? '<div class="sheet-actions"></div>' : ''}`;
   const scroller = $('.sheet-scroll', sheet);
   const bar = $('.sheet-actions', sheet);
   for (const a of actions) {
@@ -28,6 +30,16 @@ export function openSheet({ title, body = '', actions = [], onClose = null }) {
     b.addEventListener('click', () => a.onClick && a.onClick(sheet));
     bar.appendChild(b);
   }
+  if (closable) $('.sheet-x', sheet).addEventListener('click', closeSheet);
+  // Lines under the title and over the buttons appear only while there's more to scroll that way.
+  const edges = () => {
+    sheet.classList.toggle('scrolled', scroller.scrollTop > 2);
+    sheet.classList.toggle('more', scroller.scrollTop + scroller.clientHeight < scroller.scrollHeight - 2);
+  };
+  scroller.addEventListener('scroll', edges, { passive: true });
+  const watch = new ResizeObserver(edges);
+  watch.observe(scroller);
+  watch.observe(scroller.firstElementChild);
   onSheetClose = onClose;
   $('#toast').classList.remove('show');
   document.documentElement.classList.add('sheet-open');
@@ -111,7 +123,7 @@ export function typedConfirm(title, text, onOk) {
   input.addEventListener('input', () => (ok.disabled = input.value.trim() !== 'DELETE'));
 }
 
-// Swipe down to close a bottom sheet (phones). Starts from the grip/title anytime, or from the
+// Swipe down to close a bottom sheet (phones). Starts from the grip/title bar anytime, or from the
 // content when it's scrolled to the top. Sideways swipes and form fields are left alone.
 function initSheetSwipe() {
   const sheet = $('#sheet');
@@ -129,7 +141,7 @@ function initSheetSwipe() {
     (e) => {
       if (wide.matches || e.touches.length !== 1) return;
       const t = e.target;
-      const fromHandle = !!t.closest('.sheet-grip, .sheet-title');
+      const fromHandle = !!t.closest('.sheet-grip, .sheet-head') && !t.closest('.sheet-x');
       if (
         !fromHandle &&
         (scrollerOf(sheet).scrollTop > 0 ||
