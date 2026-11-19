@@ -6,3 +6,7 @@ node_modules/
 package-lock.json
 *.md
 index.html
+
+# Your own files, edited outside these updates: the workflows (on GitHub) and your Firebase settings
+.github/
+js/firebase-config.js
